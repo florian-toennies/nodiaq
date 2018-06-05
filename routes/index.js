@@ -1,4 +1,5 @@
 var express = require('express');
+var url = require('url');
 var router = express.Router();
 
 /* GET home page. */
@@ -7,15 +8,25 @@ router.get('/', function(req, res) {
 });
 
 router.get('/arm', function(req,res){
+
+    // Get argument if there is one
+    var q = url.parse(req.url, true).query;
+    var mode = q.mode;
+    if (typeof mode == 'undefined')
+	mode = "test";
+    console.log("THIS MODE");
+    console.log(mode);
     var db = req.db;
     var collection = db.get('control');
     console.log("ARM");
+
     var idoc = {
-	mode: 'test',
+	mode: mode,
 	command: 'arm',
 	host: 'fdaq00',
 	user: 'web'
     };
+
     collection.insert(idoc);
     return res.redirect('/status');
 });
@@ -75,6 +86,14 @@ router.get('/status_update', function(req, res){
     //    res.render('index', { clients: clients });
 });
 
+router.get('/modes', function(req,res){
+    var db = req.db;
+    var collection = db.get("options");
+    var spromise = collection.distinct("name");
+    spromise.then(function(doc){
+	return res.send(JSON.stringify(doc));
+    });
+});
     
 router.get('/status', function(req, res) {
     var clients = {

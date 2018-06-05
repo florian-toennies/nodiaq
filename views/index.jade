@@ -10,8 +10,9 @@ block content
       h3(id='host') 
       h3(id='hstatus')
       h3(id='hrate') 
-      h3(id='hbuff') 
-  button(onclick="location.href='/arm'", id="arm_button") Arm
+      h3(id='hbuff')
+  select(id='mode_select')
+  button(onclick="ArmDAQ()", id="arm_button") Arm
   br
   br
   button(onclick="location.href='/start'", id="start_button") Start
@@ -20,14 +21,24 @@ block content
   button(onclick="location.href='/stop'") Stop/Reset
 
   script.
+    function ArmDAQ(){
+      mode = $('#mode_select').val();
+      var url_to_call = "/arm?mode="+mode;
+      window.location.href = url_to_call;
+    }
+	
     $(document).ready(function () {
-    
+
+      $.getJSON('/modes', function(data){
+        var html = "";
+        for(var i=0; i<data.length; i+=1){
+           html+="<option value='"+data[i]+"'>"+data[i]+"</option>";
+        }
+        document.getElementById("mode_select").innerHTML = html;
+      });
       function Poll(){
-        console.log("POLLING");
         $.getJSON('/status_update', function(data) {
-          console.log(data);
           for(var key in data){
-            console.log(key);
             document.getElementById("host").innerHTML="Host: "+ key
             document.getElementById("hstatus").innerHTML="Status: "+ data[key]['status']
             document.getElementById("hrate").innerHTML="Rate: "+ data[key]['rate'] + " MB/s"
