@@ -1,0 +1,12 @@
+Simple nodejs DAQ Control
+
+Installation:
+
+  - Install nodejs and npm (ubuntu something like apt install nodejs npm)
+  - In source directory 'npm install' to install dependencies
+  - If needed change database connectivity in app.js
+  - npm start opens the test server on port 3000 of your machine
+
+
+I followed this tutorial to get started:
+https://closebrace.com/tutorials/2017-03-02/the-dead-simple-step-by-step-guide-for-front-end-developers-to-getting-up-and-running-with-nodejs-express-and-mongodb

@@ -1,0 +1,54 @@
+extends layout
+      
+
+block content
+
+  h1.
+   Test DAQ Status
+  ul
+    each val, key in clients
+      h3(id='host') 
+      h3(id='hstatus')
+      h3(id='hrate') 
+      h3(id='hbuff') 
+  button(onclick="location.href='/arm'", id="arm_button") Arm
+  br
+  br
+  button(onclick="location.href='/start'", id="start_button") Start
+  br
+  br
+  button(onclick="location.href='/stop'") Stop
+
+  script.
+    $(document).ready(function () {
+    
+      function Poll(){
+        console.log("POLLING");
+        $.getJSON('/status_update', function(data) {
+          console.log(data);
+          for(var key in data){
+            console.log(key);
+            document.getElementById("host").innerHTML="Host: "+ key
+            document.getElementById("hstatus").innerHTML="Status: "+ data[key]['status']
+            document.getElementById("hrate").innerHTML="Rate: "+ data[key]['rate'] + " MB/s"
+            document.getElementById("hbuff").innerHTML="Buffer: "+ data[key]['buffer_length'] + " events"
+            if(data[key]['status']=='Idle'){
+              document.getElementById("arm_button").disabled=false;
+              document.getElementById("start_button").disabled=true;
+            }
+            else if(data[key]['status']=="Armed"){
+              document.getElementById("arm_button").disabled=true;
+              document.getElementById("start_button").disabled=false;
+            }
+            else {
+              document.getElementById("arm_button").disabled=true;
+              document.getElementById("start_button").disabled=true;
+            }
+            
+          }
+					
+          setTimeout(Poll,1000);
+        });
+      }
+      Poll();
+    });
