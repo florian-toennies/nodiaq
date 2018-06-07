@@ -1,32 +1,63 @@
 extends layout
-      
 
 block content
+  - var attributes = ["Host", "Status", "Rate", "Mode", "Buffer"];
+  div.container(style="margin:3px")
+    h1(style="margin-left:-15px") Status
+    div.row
+     each val, key in clients
+       div.col-xs-6.col-sm-3(style="background-color:#5992c2;color:#eeeeee;border-radius:5px")
+         for att in attributes
+           div.row
+             div.col-xs-4
+               h4
+                 strong #{att}: 
+             div.col-xs-8
+               h4(id='#{att}_div')
 
-  h1.
-   Test DAQ Status
-  ul
-    each val, key in clients
-      h3(id='host') 
-      h3(id='hstatus')
-      h3(id='hrate') 
-      h3(id='hbuff')
-  select(id='mode_select')
-  button(onclick="ArmDAQ()", id="arm_button") Arm
-  br
-  br
-  button(onclick="location.href='/start'", id="start_button") Start
-  br
-  br
-  button(onclick="location.href='/stop'") Stop/Reset
-
+    br
+    div.row(style='background-color:#eeeeee;padding-top:3px;padding-bottom:3px;')
+      div.col-xs-12.col-sm-4
+        div.row
+          div.col-xs-8
+            select.form-control(id='mode_select', style='margin-right:5px')
+          div.col-xs-4
+            button#arm_button.btn.btn-info(onclick="ArmDAQ()") Arm
+      div.col-xs-12.col-sm-2
+        button#start_button.btn.btn-success(onclick="location.href='/start'") Start
+      div.col-xs-12.col-sm-2
+        button.btn.btn-error(onclick="location.href='/stop'") Stop/Reset
+    br
+    table#log_table.table.table-condensed
+    br
   script.
+    var priorities=["DEBUG", "MESSAGE","WARNING", "ERROR", "FATAL"];
     function ArmDAQ(){
       mode = $('#mode_select').val();
       var url_to_call = "/arm?mode="+mode;
       window.location.href = url_to_call;
     }
-	
+    document.newest_log = null;
+    function UpdateLog(){
+      $.getJSON('/log?limit=50', function(data){
+        var html = "";        
+        for(var i=0; i<data.length; i+=1){
+          if(i==0)
+            document.newest_log = data[i]['_id'];
+          html+="<tr><td>"+data[i]['time']+"</td><td>"+data[i]['user']+"</td>"+
+                "<td>"+data[i]['message']+"</td><td>"+priorities[parseInt(data[i]['priority'])]+
+                "</td></tr>";
+        }
+        document.getElementById("log_table").innerHTML=html;
+      });
+    }
+    function CheckLog(callback){
+      $.getJSON('/log?limit=1', function(data){
+        if(data.length>0 && data[0]['_id']!=document.newest_log)
+          UpdateLog();
+        callback;
+      });
+    }
     $(document).ready(function () {
 
       $.getJSON('/modes', function(data){
@@ -36,13 +67,16 @@ block content
         }
         document.getElementById("mode_select").innerHTML = html;
       });
+
+      UpdateLog();
       function Poll(){
         $.getJSON('/status_update', function(data) {
           for(var key in data){
-            document.getElementById("host").innerHTML="Host: "+ key
-            document.getElementById("hstatus").innerHTML="Status: "+ data[key]['status']
-            document.getElementById("hrate").innerHTML="Rate: "+ data[key]['rate'] + " MB/s"
-            document.getElementById("hbuff").innerHTML="Buffer: "+ data[key]['buffer_length'] + " events"
+            document.getElementById("Host_div").innerHTML=key
+            document.getElementById("Status_div").innerHTML=data[key]['status']
+            document.getElementById("Rate_div").innerHTML=data[key]['rate'].toFixed(2) + " MB/s"
+            document.getElementById("Buffer_div").innerHTML=data[key]['buffer_length'].toFixed(2) + " MB/s"
+            document.getElementById("Mode_div").innerHTML=data[key]['run_mode'];
             if(data[key]['status']=='Idle'){
               document.getElementById("arm_button").disabled=false;
               document.getElementById("start_button").disabled=true;
@@ -57,8 +91,7 @@ block content
             }
             
           }
-					
-          setTimeout(Poll,1000);
+          CheckLog(setTimeout(Poll, 1000));					
         });
       }
       Poll();

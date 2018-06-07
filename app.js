@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var mongo = require('mongodb');
+var ObjectID = require('mongodb').ObjectID;
 var monk = require('monk');
 mongo_pw = process.env.MONGO_PASSWORD
 var db = monk('daq:'+mongo_pw+'@localhost:27017/dax', {authSource: 'admin'});
@@ -21,6 +22,11 @@ function stop(){
     console.log("stop");
 };
 
+// Aliases for paths to node_modules
+app.use('/bs', express.static(__dirname + '/node_modules/bootstrap3/dist/'));
+app.use('/jq', express.static(__dirname + '/node_modules/jquery/dist/'));
+
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -34,6 +40,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Make our db accessible to our router
 app.use(function(req,res,next){
     req.db = db;
+    req.ObjectID = ObjectID;
     next();
 });
 

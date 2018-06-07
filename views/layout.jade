@@ -1,9 +1,22 @@
+- var navmenu = { Control: '/status'}
+
 doctype html
 html
   head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-
+    title= Xebra
+    link(rel="stylesheet", href="/bs/css/bootstrap.min.css")
+    link(rel="stylesheet", href="stylesheets/style.css")
+    script(src="/jq/jquery.min.js" type="text/javascript")
+    script(src="/bs/js/bootstrap.min.js" type="text/javascript")
   body
-    script(src='https://code.jquery.com/jquery-2.1.1.min.js' type='text/javascript')
+    nav.navbar.navbar-inverse(role='navigation')
+      button(type='button',data-toggle='collapse',data-target='#jcsnavbar-collapse-1').navbar-toggle
+        span.sr-only Toggle navigation
+        span.iconbar
+        span.iconbar
+        span.iconbar
+      a(href='#').navbar-brand Xebra
+    div#jcs-navbar-collapse-1.collapse.navbar-collapse
+      ul.nav.navbar-nav
+    
     block content

@@ -55,6 +55,33 @@ router.get('/stop', function(req, res){
     return res.redirect('/status');
 });
 
+router.get('/log', function(req, res){
+    var db = req.db;
+    var collection = db.get('log');
+    var q = url.parse(req.url, true).query;
+    var limit = q.limit;
+    if (typeof limit == 'undefined')
+	limit = 10; //sure, why not
+    collection.find({},  { "sort": {"_id": -1}, "limit" : parseInt(limit) },
+		    function(e,docs){
+			var ret = [];
+			for(var i in docs){			    
+			    var oid = new req.ObjectID(docs[i]['_id']);
+			    var rd = {
+				"_id": docs[i]['_id'],
+				"time": oid.getTimestamp(),
+				"user": docs[i]['user'],
+				"priority": docs[i]['priority'],
+				"message": docs[i]['message']
+			    };
+			    ret.push(rd);
+			}			 
+			return res.send(JSON.stringify(ret));
+			});
+});
+			       
+    
+
 router.get('/status_update', function(req, res){
     var db = req.db;
     var statuses = {
@@ -72,13 +99,13 @@ router.get('/status_update', function(req, res){
 	docs = collection.find({"host": client},
 			       { "sort": {"_id": -1}, "limit" : 1 },
 			       function(e,docs){
-				   darr = docs;
-				   console.log(darr[0]);
-				   console.log("This one");
-				   clients[client]['status'] = statuses[darr[0].status];
-				   clients[client]['rate'] = darr[0].rate;
-				   clients[client]['buffer_length'] = darr[0].buffer_length;
-
+				   
+				   if(docs.length>0){				   
+				       clients[client]['status'] = statuses[docs[0].status];
+				       clients[client]['rate'] = docs[0].rate;
+				       clients[client]['buffer_length'] = docs[0].buffer_length;
+				       clients[client]['run_mode'] = docs[0].run_mode;
+				   }
 				   return res.send(JSON.stringify(clients));
 			       });
     }
