@@ -8,19 +8,14 @@ var mongo = require('mongodb');
 var ObjectID = require('mongodb').ObjectID;
 var monk = require('monk');
 mongo_pw = process.env.MONGO_PASSWORD
-var db = monk('daq:'+mongo_pw+'@localhost:27017/dax', {authSource: 'admin'});
+var db = monk('web:'+mongo_pw+'@localhost:27017/dax', {authSource: 'dax'});
+var runs_db = monk('web:'+mongo_pw+'@localhost:27017/run', {authSource: 'dax'});
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
 
-function start(){
-    console.log("start");
-};
-function stop(){
-    console.log("stop");
-};
 
 // Aliases for paths to node_modules
 app.use('/bs', express.static(__dirname + '/node_modules/bootstrap3/dist/'));
@@ -40,6 +35,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Make our db accessible to our router
 app.use(function(req,res,next){
     req.db = db;
+    req.runs_db = runs_db;
     req.ObjectID = ObjectID;
     next();
 });

@@ -2,8 +2,9 @@ extends layout
 
 block content
   - var attributes = ["Host", "Status", "Rate", "Mode", "Buffer"];
-  div.container(style="margin:3px")
-    h1(style="margin-left:-15px") Status
+  div.container(style="margin:3px;margin-top:-25px;")
+    // h3(style="margin-left:-15px") DAQ Control
+    br
     div.row
      each val, key in clients
        div.col-xs-6.col-sm-3(style="background-color:#5992c2;color:#eeeeee;border-radius:5px")
@@ -28,9 +29,38 @@ block content
       div.col-xs-12.col-sm-2
         button.btn.btn-error(onclick="location.href='/stop'") Stop/Reset
     br
-    table#log_table.table.table-condensed
+    h4(style="background-color:#eeeeee;padding:5px") Recent Runs
+    table.table.table-condensed
+      th
+        strong Run ID
+      th
+        strong Start Time
+      th
+        strong End Time
+      th
+        strong Run Mode
+      th
+        strong User
+      tbody#runs_table
+    hr
+    h4(style="background-color:#eeeeee;padding:5px") Recent Log Entries
+    table.table.table-condensed
+      th
+        strong Time
+      th
+        strong User
+      th
+        strong Message
+      th
+        strong Priority
+      tbody#log_table
     br
   script.
+    function DateToString(date){
+      if(isNaN(date.getFullYear()))
+        return "none";
+      return (date.getFullYear().toString()+"-"+(date.getMonth()+1).toString()+"-"+date.getDay().toString()+" at " + date.getHours().toString() + ":"+date.getMinutes().toString()+":"+date.getSeconds().toString());
+    }
     var priorities=["DEBUG", "MESSAGE","WARNING", "ERROR", "FATAL"];
     function ArmDAQ(){
       mode = $('#mode_select').val();
@@ -38,17 +68,40 @@ block content
       window.location.href = url_to_call;
     }
     document.newest_log = null;
+    document.newest_run=-1;
+    document.first_update = false;
     function UpdateLog(){
-      $.getJSON('/log?limit=50', function(data){
+      $.getJSON('/log?limit=15', function(data){
         var html = "";        
         for(var i=0; i<data.length; i+=1){
           if(i==0)
             document.newest_log = data[i]['_id'];
-          html+="<tr><td>"+data[i]['time']+"</td><td>"+data[i]['user']+"</td>"+
+          html+="<tr><td>"+DateToString(new Date(data[i]['time']))+"</td><td>"+data[i]['user']+"</td>"+
                 "<td>"+data[i]['message']+"</td><td>"+priorities[parseInt(data[i]['priority'])]+
                 "</td></tr>";
         }
         document.getElementById("log_table").innerHTML=html;
+      });
+    }
+    function UpdateRuns(){
+      $.getJSON('/runs?limit=5', function(data){
+        var html = "";
+        for(var i=0; i<data.length; i+=1){
+          if(i==0)
+            document.newest_run = parseInt(data[i]['run_identifier']);
+          console.log(data[i]);
+          html+="<tr><td>"+data[i]['run_identifier']+"</td><td>"+
+                DateToString(new Date(data[i]['start']))+"</td><td>"+DateToString(new Date(data[i]['stop']))+"</td><td>"+data[i]['readout']['name']+
+                "</td><td>"+data[i]['user']+"</td></tr>";
+        }
+        document.getElementById("runs_table").innerHTML=html;
+      });
+    }
+    function CheckRuns(callback){
+      $.getJSON('/runs?limit=1', function(data){
+        if(data.length>0 && data[0]['run_identifier']>document.newest_run)
+          UpdateRuns();
+        callback;
       });
     }
     function CheckLog(callback){
@@ -72,8 +125,9 @@ block content
       function Poll(){
         $.getJSON('/status_update', function(data) {
           for(var key in data){
-            document.getElementById("Host_div").innerHTML=key
-            document.getElementById("Status_div").innerHTML=data[key]['status']
+            console.log(data[key]);
+            document.getElementById("Host_div").innerHTML=key;
+            document.getElementById("Status_div").innerHTML=data[key]['status'] + "(" + data[key]['current_run_id'] + ")";
             document.getElementById("Rate_div").innerHTML=data[key]['rate'].toFixed(2) + " MB/s"
             document.getElementById("Buffer_div").innerHTML=data[key]['buffer_length'].toFixed(2) + " MB/s"
             document.getElementById("Mode_div").innerHTML=data[key]['run_mode'];
@@ -89,9 +143,12 @@ block content
               document.getElementById("arm_button").disabled=true;
               document.getElementById("start_button").disabled=true;
             }
-            
+            if(!document.first_update && $('#mode_select').val()!=data[key]['run_mode'] &&
+               data[key]['status']!="Idle"){
+              $('#mode_select').val(data[key]['run_mode']);
+            }
           }
-          CheckLog(setTimeout(Poll, 1000));					
+          CheckRuns(CheckLog(setTimeout(Poll, 1000)));
         });
       }
       Poll();

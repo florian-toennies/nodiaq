@@ -9,13 +9,16 @@ html
     script(src="/jq/jquery.min.js" type="text/javascript")
     script(src="/bs/js/bootstrap.min.js" type="text/javascript")
   body
-    nav.navbar.navbar-inverse(role='navigation')
+    nav.navbar.navbar-inverse(role='navigation' style='border-top-width:-1px')
       button(type='button',data-toggle='collapse',data-target='#jcsnavbar-collapse-1').navbar-toggle
         span.sr-only Toggle navigation
         span.iconbar
         span.iconbar
         span.iconbar
-      a(href='#').navbar-brand Xebra
+      a(href='#' style='margin-left:-10px').navbar-brand
+        strong('style=font-weight:900;font-variant:small-caps;font-size:26px;color:white') Xebra
+        strong('style=font-weight:900;font-variant:small-caps;font-size:26px;color:white;margin-left:3px') DAQ
+
     div#jcs-navbar-collapse-1.collapse.navbar-collapse
       ul.nav.navbar-nav
     
