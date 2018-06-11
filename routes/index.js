@@ -2,6 +2,20 @@ var express = require('express');
 var url = require('url');
 var router = express.Router();
 
+function GetNextRunIdentifier(req, res, callback){
+    var db = req.runs_db;
+    var collection = db.get('run');
+    collection.find(
+	{},  { "sort": {"_id": -1}, "limit" : 1 },
+	function(e, docs){
+	    var run_identifier = 0;
+	    if(docs.length>0)
+		run_identifier = parseInt(docs[0]['run_identifier']) + 1;
+	    callback(run_identifier.toString());
+	}
+    );
+};
+
 function InsertRunDoc(req, res, host, callback){
     var db = req.runs_db;
     var collection = db.get('run');
@@ -56,21 +70,30 @@ router.get('/arm', function(req,res){
     var mode = q.mode;
     if (typeof mode == 'undefined')
 	mode = "test";
-    console.log("THIS MODE");
-    console.log(mode);
-    var db = req.db;
-    var collection = db.get('control');
-    console.log("ARM");
 
-    var idoc = {
-	mode: mode,
-	command: 'arm',
-	host: 'fdaq00',
-	user: 'web'
-    };
-
-    collection.insert(idoc);
-    return res.redirect('/status');
+    GetNextRunIdentifier(req, res, 
+	function(run_identifier){
+    
+	    console.log("THIS MODE");
+	    console.log(mode);
+	    var db = req.db;
+	    var collection = db.get('control');
+	    console.log("ARM");
+	    
+	    var idoc = {
+		mode: mode,
+		command: 'arm',
+		host: 'fdaq00',
+		user: 'web',
+		options_override: {
+		    mongo_collection: "run_" + run_identifier + "_daq_out"
+		}
+	    };    
+	    console.log(idoc);
+	    collection.insert(idoc);
+	    return res.redirect('/status');
+	}
+    );
 });
 
 router.get('/start', function(req, res){
@@ -164,7 +187,34 @@ router.get('/runs', function(req, res){
 		   
 
     
+router.get('/status_history', function(req, res){
+    var db = req.db;
+    var collection = db.get('status');
+    var clients = ['fdaq00'];
 
+    // Get limit from GET options
+    var q = url.parse(req.url, true).query;
+    var limit = q.limit;
+
+    if(typeof limit == 'undefined')
+	limit=1;
+    
+    // Only works with 1 client now
+    collection.find({'host': "fdaq00"},
+		    {'sort': {'_id': -1}, 'limit': parseInt(limit)},
+		    function(e, docs){			
+			ret = {"fdaq00": []};
+			for(var i = docs.length-1; i>=0; i-=1){
+			    var oid = new req.ObjectID(docs[i]['_id']);
+			    var dt = Date.parse(oid.getTimestamp());
+			    rate = docs[i]["rate"];
+			    if(typeof rate == "undefined")
+				rate = 0.;
+			    ret["fdaq00"].push([dt, rate]);
+			}
+			return res.send(JSON.stringify(ret));
+		    });
+});
 router.get('/status_update', function(req, res){
     var db = req.db;
     var statuses = {
@@ -184,12 +234,15 @@ router.get('/status_update', function(req, res){
 			       function(e,docs){
 
 				   if(docs.length>0){
+				       var oid = new req.ObjectID(docs[0]['_id']);
+				       var dt = Date.parse(oid.getTimestamp());
 				       for(var key in docs[0]){
 					   clients[client]['status'] = statuses[docs[0].status];
 					   clients[client][key] = docs[0][key];
 				       }
 				       // Overwrite status with human readable
 				       clients[client]['status'] = statuses[docs[0].status];
+				       clients[client]['timestamp'] = dt;
 				   }
 				   return res.send(JSON.stringify(clients));
 			       });

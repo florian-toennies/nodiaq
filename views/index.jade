@@ -5,7 +5,7 @@ block content
   div.container(style="margin:3px;margin-top:-25px;")
     // h3(style="margin-left:-15px") DAQ Control
     br
-    div.row
+    div.row(style="height:200px")
      each val, key in clients
        div.col-xs-6.col-sm-3(style="background-color:#5992c2;color:#eeeeee;border-radius:5px")
          for att in attributes
@@ -15,7 +15,7 @@ block content
                  strong #{att}: 
              div.col-xs-8
                h4(id='#{att}_div')
-
+       div.col-xs-12.col-sm-9(id="chartdiv" style="height:100%")
     br
     div.row(style='background-color:#eeeeee;padding-top:3px;padding-bottom:3px;')
       div.col-xs-12.col-sm-4
@@ -112,7 +112,7 @@ block content
       });
     }
     $(document).ready(function () {
-
+      document.ratechart=null;
       $.getJSON('/modes', function(data){
         var html = "";
         for(var i=0; i<data.length; i+=1){
@@ -120,10 +120,11 @@ block content
         }
         document.getElementById("mode_select").innerHTML = html;
       });
-
+      
       UpdateLog();
+      DrawChart('chartdiv');
       function Poll(){
-        $.getJSON('/status_update', function(data) {
+        $.getJSON('/status_update', function(data) {	
           for(var key in data){
             console.log(data[key]);
             document.getElementById("Host_div").innerHTML=key;
@@ -131,6 +132,8 @@ block content
             document.getElementById("Rate_div").innerHTML=data[key]['rate'].toFixed(2) + " MB/s"
             document.getElementById("Buffer_div").innerHTML=data[key]['buffer_length'].toFixed(2) + " MB/s"
             document.getElementById("Mode_div").innerHTML=data[key]['run_mode'];
+            if(parseInt(data[key]['timestamp']) != document.last_time_chart)
+                UpdateChart(parseInt(data[key]['timestamp']), parseFloat(data[key]['rate']));
             if(data[key]['status']=='Idle'){
               document.getElementById("arm_button").disabled=false;
               document.getElementById("start_button").disabled=true;
