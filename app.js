@@ -13,6 +13,7 @@ var runs_db = monk('web:'+mongo_pw+'@localhost:27017/run', {authSource: 'dax'});
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var optionsRouter = require('./routes/options');
 
 var app = express();
 
@@ -20,6 +21,7 @@ var app = express();
 // Aliases for paths to node_modules
 app.use('/bs', express.static(__dirname + '/node_modules/bootstrap3/dist/'));
 app.use('/jq', express.static(__dirname + '/node_modules/jquery/dist/'));
+app.use('/je', express.static(__dirname + '/node_modules/jsoneditor/dist/'));
 
 
 // view engine setup
@@ -42,6 +44,7 @@ app.use(function(req,res,next){
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/options', optionsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

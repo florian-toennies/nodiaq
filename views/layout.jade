@@ -17,11 +17,12 @@ html
         span.iconbar
         span.iconbar
         span.iconbar
-      a(href='#' style='margin-left:-10px').navbar-brand
+      a(href='/status' style='margin-left:-10px').navbar-brand
         strong('style=font-weight:900;font-variant:small-caps;font-size:26px;color:white') Xebra
         strong('style=font-weight:900;font-variant:small-caps;font-size:26px;color:white;margin-left:3px') DAQ
+      ul.nav.navbar-nav.navbar-right
+        li: a(href='/status') Control
+        li: a(href='/options' style='margin-right:15px') Options							      
 
-    div#jcs-navbar-collapse-1.collapse.navbar-collapse
-      ul.nav.navbar-nav
     
     block content
