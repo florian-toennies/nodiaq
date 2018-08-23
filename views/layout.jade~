@@ -1,8 +1,0 @@
-doctype html
-html
-  head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-    link(src='https://code.jquery.com/jquery-2.1.1.min.js' type='text/javascript')
-  body
-    block content
