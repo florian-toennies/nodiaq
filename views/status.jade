@@ -1,0 +1,44 @@
+extends layout
+
+block extrahead
+  script(src="javascripts/status_script.js", type="text/javascript")
+
+block content
+  - var readers = ["fdaq00_reader_0", "fdaq00_reader_1"];
+  div.main-container
+    each reader in readers
+      div.reader_detail
+        div.reader_header
+          table.table(style="width:100%;height:100%")
+            tr
+              td(style="padding:0")
+                strong Node:  
+                span #{reader}
+              td(style="padding:0")
+                strong Status: 
+                span(id="#{reader}_status")
+              td(style="padding:0")
+                strong Rate:  
+                span(id="#{reader}_rate")
+              td(style="padding:0")
+                strong Buffer Size:  
+                span(id="#{reader}_buffer")
+              td(style="padding:0")
+                strong Mode:  
+                span(id="#{reader}_mode")
+              td(style="padding:0")
+                strong Run:  
+                span(id="#{reader}_run")
+              td(style="padding:0")
+                strong Check-in:  
+                spend(id="#{reader}_check-in")
+        div.reader_chartdiv(id="#{reader}_chartdiv")
+  script.
+    var readers = ["fdaq00_reader_0", "fdaq00_reader_1"];
+    $(document).ready(function () {
+      DrawInitialCharts();
+      UpdateStatusPage();
+      DrawActiveLink("#lstatus");
+    });
+      
+    
