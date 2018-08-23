@@ -68,6 +68,9 @@ router.get('/arm', function(req,res){
     // Get argument if there is one
     var q = url.parse(req.url, true).query;
     var mode = q.mode;
+    var det = q.detector;
+    var adet = req.detectors[det];
+    
     if (typeof mode == 'undefined')
 	mode = "test";
 
@@ -83,9 +86,10 @@ router.get('/arm', function(req,res){
 	    var idoc = {
 		mode: mode,
 		command: 'arm',
-		host: 'fdaq00',
+		host: adet, //'fdaq00_reader_0',
 		user: 'web',
 		options_override: {
+		    run_identifier: run_identifier.toString(),
 		    mongo_collection: "run_" + run_identifier + "_daq_out"
 		}
 	    };    
@@ -101,14 +105,19 @@ router.get('/start', function(req, res){
     // unique run identifier and will insert a run document
     // into the runs database
     console.log("HERE");
-    host = 'fdaq00';
+    
+    var q = url.parse(req.url, true).query;
+    var det = q.detector;
+    var adet = req.detectors[det];
+
+    host = 'fdaq00_reader_0';
     InsertRunDoc(req, res, host, function(req, res, run_identifier){
 	var db = req.db;
 	var collection = db.get('control');
 	var idoc = {
 	    run_identifier: run_identifier,
 	    command: 'start',
-	    host: host,
+	    host: adet, //host,
 	    user: 'web'
 	};
 	collection.insert(idoc);
@@ -121,7 +130,12 @@ router.get('/stop', function(req, res){
     // First get most recent status to see if DAQ running
     var daxdb = req.db;
     var daxcoll = daxdb.get('status');
-    host = "fdaq00";
+    //host = "fdaq00_reader_0";
+
+    var q = url.parse(req.url, true).query;
+    var det = q.detector;
+    var adet = req.detectors[det];
+
     daxcoll.find(
 	{"host": host}, { "sort": {"_id": -1}, "limit" : 1 },
 	function(e, sdoc){
@@ -142,7 +156,7 @@ router.get('/stop', function(req, res){
 	    var collection = db.get('control');
 	    var idoc = {
 		command: 'stop',
-		host: 'fdaq00',
+		host: adet, //'fdaq00_reader_0',
 		user: 'web'
 	    };
 	    collection.insert(idoc);
@@ -190,7 +204,7 @@ router.get('/runs', function(req, res){
 router.get('/status_history', function(req, res){
     var db = req.db;
     var collection = db.get('status');
-    var clients = ['fdaq00'];
+    var clients = ['fdaq00_reader_0', 'fdaq00_reader_1'];
 
     // Get limit from GET options
     var q = url.parse(req.url, true).query;
@@ -200,17 +214,18 @@ router.get('/status_history', function(req, res){
 	limit=1;
     
     // Only works with 1 client now
-    collection.find({'host': "fdaq00"},
+    collection.find({'host': {"$in": clients}},//"fdaq00_reader_0"},
 		    {'sort': {'_id': -1}, 'limit': parseInt(limit)},
 		    function(e, docs){			
-			ret = {"fdaq00": []};
+			ret = {"fdaq00_reader_0": [],
+			       "fdaq00_reader_1": []};
 			for(var i = docs.length-1; i>=0; i-=1){
 			    var oid = new req.ObjectID(docs[i]['_id']);
 			    var dt = Date.parse(oid.getTimestamp());
 			    rate = docs[i]["rate"];
 			    if(typeof rate == "undefined")
 				rate = 0.;
-			    ret["fdaq00"].push([dt, rate]);
+			    ret[docs[i]['host']].push([dt, rate]);
 			}
 			return res.send(JSON.stringify(ret));
 		    });
@@ -224,11 +239,15 @@ router.get('/status_update', function(req, res){
 	3: "Running",
 	4: "Error"
     };
+    var q = url.parse(req.url, true).query;
+    var limit = q.client;
+
     var collection = db.get('status');
-    var clients = {
-	fdaq00: { status: 'none', rate: 0, buffer_length: 0}
-    };
-    for (var client in clients){
+    //var clients = {
+    //    fdaq00_reader_0: { status: 'none', rate: 0, buffer_length: 0},
+    //    fdaq00_reader_1: { status: 'none', rate: 0, buffer_length: 0},
+    //};
+    //for (var client in clients){
 	docs = collection.find({"host": client},
 			       { "sort": {"_id": -1}, "limit" : 1 },
 			       function(e,docs){
@@ -246,7 +265,7 @@ router.get('/status_update', function(req, res){
 				   }
 				   return res.send(JSON.stringify(clients));
 			       });
-    }
+    //}
 
     //    res.render('index', { clients: clients });
 });
@@ -259,14 +278,12 @@ router.get('/modes', function(req,res){
 	return res.send(JSON.stringify(doc));
     });
 });
-    
-router.get('/status', function(req, res) {
-    var clients = {
-	fdaq00: { status: 'none', rate: 0, buffer_length: 0}
-    };
-    res.render('index', { clients: clients});
-//    res.render('index', { clients: clients });
+
+router.get("/detectors", function(req, res){
+    var dets = req.detectors;    
+    return res.send(JSON.stringify(Object.keys(dets)));
 });
+    
 
 router.get('/helloworld', function(req, res){
     res.render('helloworld', {title: 'Hello, World!'});

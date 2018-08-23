@@ -6,14 +6,30 @@ function DrawChart(div){
     //{fdaq00: {x:[] y:[]}}
     ///status_history
     $.getJSON("/status_history?limit=500", function(data){
-	console.log(data);
-	thedata = [];
-	for(var entry in data["fdaq00"]){
-	    thedata.push([parseInt(data["fdaq00"][entry][0]), parseFloat(data["fdaq00"][entry][1])]);
+	//console.log(data);
+	thedata = {};
+	var hosts = Object.keys(data);
+	console.log("HOSTS");
+	console.log(hosts);
+	for(var i in hosts){
+	    var host = hosts[i];
+	    thedata[host] = [];	    
+	    for(var entry in data[host]){
+		thedata[host].push([parseInt(data[host][entry][0]),
+				    parseFloat(data[host][entry][1])]);
+	    }
 	}
-	if(thedata.length!=0)
-	    document.last_time_chart = thedata[0][0];
-	console.log(thedata);
+	var series = [];
+	for(var i in hosts){
+	    series.push({
+		"type": "area",
+		"name": host,
+		"data": thedata[hosts[i]]
+	    })
+	    if(thedata[hosts[i]] > document.last_time_chart)
+		document.last_time_chart = thedata[hosts[i]];
+	}
+
 	document.ratechart = Highcharts.chart(div, {
 	    chart: {
 		zoomType: 'x'
@@ -21,7 +37,6 @@ function DrawChart(div){
 	    credits: {enabled: false},
 	    title: {
 		text: '',
-		//text: 'USD to EUR exchange rate over time'
 	    },
 	    //subtitle: {
 	    //text: document.ontouchstart === undefined ?
@@ -66,11 +81,12 @@ function DrawChart(div){
 		}
 	    },
 
-	    series: [{
-		type: 'area',
-		name: 'DAQ rate',
-		data: thedata
-	    }]
+	    series: series,
+	    //[{
+	//	type: 'area',
+	//	name: 'DAQ rate',
+	//	data: thedata
+	  //  }]
 	});
     });
 }

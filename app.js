@@ -11,9 +11,21 @@ mongo_pw = process.env.MONGO_PASSWORD
 var db = monk('web:'+mongo_pw+'@localhost:27017/dax', {authSource: 'dax'});
 var runs_db = monk('web:'+mongo_pw+'@localhost:27017/run', {authSource: 'dax'});
 
+// Define detectors
+var detectors = {
+    "det_0": ["fdaq00_reader_0",
+	    "fdaq00_reader_1"]
+};
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var optionsRouter = require('./routes/options');
+var playlistRouter = require('./routes/playlist');
+var hostsRouter = require('./routes/hosts');
+var runsRouter = require('./routes/runsui');
+var logRouter = require('./routes/logui');
+var helpRouter = require('./routes/help');
+var statusRouter = require('./routes/status');
 
 var app = express();
 
@@ -39,12 +51,19 @@ app.use(function(req,res,next){
     req.db = db;
     req.runs_db = runs_db;
     req.ObjectID = ObjectID;
+    req.detectors = detectors;
     next();
 });
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/options', optionsRouter);
+app.use('/hosts', hostsRouter);
+app.use('/playlist', playlistRouter);
+app.use('/runsui', runsRouter);
+app.use('/logui', logRouter);
+app.use('/help', helpRouter);
+app.use('/status', statusRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
