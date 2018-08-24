@@ -1,9 +1,67 @@
 extends layout
+block extrahead
+  script(src="javascripts/playlist.js", type="text/javascript")
 
-block content     
-  div.container Playlist placeholder
+block content
+  div.main-container
+    div.container-fluid
+      div.row
+        div.col-6.col-xs-6(style="padding-right:3px")
+          div.two-panel-div#playlist_div(style="overflow:hidden")
 
+        div.col-6.col-xs-6(style="padding-left:3px")          
+          div.two-panel-div
+            h5 Stop or Pause the DAQ
+            div.row
+              div.col-4.col-sm-4
+                button.btn.btn-danger.dropdown-toggle(type="button" data-toggle="dropdown") Stop DAQ
+                div.dropdown-menu
+                  a.dropdown-item(href="/playlist/stop_daq?detector=tpc") Stop TPC
+                  a.dropdown-item(href="/playlist/stop_daq?detector=muon_veto") Stop Muon Veto
+                  a.dropdown-item(href="/playlist/stop_daq?detector=all") Stop Combined
+                  div.dropdown-divider(role="separator")
+                  a.dropdown-item(href="#" onclick="alert('Venting xenon. This cannot be undone')") Vent xenon
+              div.col-4.col-sm-4
+                a.btn.btn-warning(href="/playlist/clear_queue") Clear Runs Queue
+              div.col-4.col-sm-4
+                a.btn.btn-info(href="/playlist/pause_daq") Pause DAQ (stops run)
+            hr
+            h5 Or : Add a new run
+
+            form#new_run_form(action="/playlist/new_run", method="post")
+              div.form-group
+                label.form-label(for="user") Who are you
+                input.form-control#user(type="text" value="web user" name="user" readonly required)
+              div.form-group
+                label.form-label(for="detector") Detector : &nbsp;&nbsp;
+                div.form-check.form-check-inline
+                  input.form-check-input#det_tpc(type="radio" name="detector" value="tpc" checked onclick="PopulateRunsList('run_mode_select', 'tpc')")
+                  label.form-check-label(for="det_tpc") TPC
+                div.form-check.form-check-inline
+                  input.form-check-input#det_mv(type="radio" name="detector" value="muon_veto" disabled, onclick="PopulateRunsList('run_mode_select', 'muon_veto')")
+                  label.form-check-label(for="det_mv") Muon Veto
+                div.form-check.form-check-inline
+                  input.form-check-input#det_all(type="radio" name="detector" value="all" onclick="PopulateRunsList('run_mode_select', 'all')" disabled)
+                  label.form-check-label(for="det_all") Combined
+                div.form-group
+                  label.form-label(for="stop_after") Stop run after (minutes, blank = run forever)
+                  input.form-control#stop_after(type="number" name="stop_after" min=1 max=240 value=60)
+                div.form-group
+                  label.form-label(for="run_mode") Run mode
+                  select.form-control#run_mode_select(size="10" name="run_mode" type="text" required)
+                div.form-group
+                  label.form-label(for="how_many") How many?
+                  input.form-control#how_many(type="number" name="how_many" value=1 min=1 max=50 required)
+                div.form-group
+                  label.form-label(for="comment") Comment
+                  textarea.form-control#comment(rows="3" name="comment" type='text')
+                button.btn.btn-primary.btn-lg(type="submit") Submit Runs
   script.
     $(document).ready(function(){
       DrawActiveLink("#lplaylist");
+      PopulateRunsList("run_mode_select", "detector");
+      function PageUpdate(callback){
+        PopulatePlaylist("playlist_div");
+      }
+      PageUpdate(setTimeout(PageUpdate,5000));
     });

@@ -88,3 +88,17 @@ a {
     padding: 0;
     margin: 0;
 }
+
+.two-panel-div{
+    height: calc(100vh - 52px);
+    width: 100%;
+    /*margin-left: 1px;
+    margin-right:1px;*/
+    border: 1px solid #cccccc;
+    padding: 3px;
+    background-color: white;
+}
+
+.form-label{
+    color: #5992c2;
+}
