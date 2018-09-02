@@ -11,6 +11,10 @@ mongo_pw = process.env.MONGO_PASSWORD
 var db = monk('web:'+mongo_pw+'@localhost:27017/dax', {authSource: 'dax'});
 var runs_db = monk('web:'+mongo_pw+'@localhost:27017/run', {authSource: 'dax'});
 
+// For Runs DB Datatable
+var runs_mongo = require("./runs_mongo");
+
+
 // Define detectors
 var detectors = {
     "det_0": ["fdaq00_reader_0",
@@ -54,6 +58,8 @@ app.use(function(req,res,next){
     req.detectors = detectors;
     next();
 });
+
+app.get('/runtable/getDatatable', runs_mongo.getDataForDataTable) //Here's the line that we're looking at specifically
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

@@ -1,9 +1,41 @@
 extends layout
 
-block content     
-  div.container Runs placeholder
+block extrahead
+  link(rel="stylesheet", href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css")
+  script(src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js", type="text/javascript")
 
+block content     
+  div.main-container Runs placeholder
+    table#runs_table
+      thead
+        tr
+          th Number
+          th Detectors
+          th Mode
+          th Source
+          th User
+          th Start
+          th End
+          th Tags
+          th Comments
+          
   script.
     $(document).ready(function(){
       DrawActiveLink("#lruns");
-    });
+      $('#runs_table').dataTable({
+        processing : true,
+        serverSide : true,	
+        ajax : { url: '/runtable/getDatatable' },
+          columns : [
+            { data : "number" },
+            { data : "detector" },
+            { data : "mode" },
+            { data : "source" },
+            { data : "user"},
+            { data : "start"},
+            { data : "end"},
+            { data : "tags"},
+            { data : "comments"}
+          ]
+        });
+      });
