@@ -29,8 +29,8 @@ router.get('/get_reader_status', function(req, res){
 	    // since client time may vary we assume server time
 	    // is correct
 	    var now = new Date();
-	    var timestamp = rdoc['_id'].toString().substring(0,8);
-	    var indate = Date.parse( parseInt( timestamp, 16 ) * 1000 )
+	    var oid = new req.ObjectID(rdoc['_id']);
+	    var indate = Date.parse(oid.getTimestamp());
 	    rdoc['checkin'] = parseInt((now-indate)/1000);
 	    rdoc['ts'] = indate;
 	    return res.send(JSON.stringify(rdoc));

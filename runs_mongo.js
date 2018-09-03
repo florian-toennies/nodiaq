@@ -21,13 +21,13 @@ runsdb.once('open', function callback ()
 		{
 		    number : String,
 		    detector: [String],
-		    startDate : String,
-		    endDate : String,
+		    start : Date,
+		    end : Date,
 		    user: String,
 		    mode: String,
 		    source: String,
-		    tags: [ {user: String, date: Date, text: String} ],	    
-		    comments: [{user: String, date: String, text: String}],		 
+		    tags: [ {user: String, date: Date, text: String} ],
+		    comments: [{user: String, date: Date, text: String}],		 
 		},
 		{ collection: "run"});
 	    runs = mongoose.model('runs', runsTableSchema);

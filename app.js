@@ -11,6 +11,8 @@ mongo_pw = process.env.MONGO_PASSWORD
 var db = monk('web:'+mongo_pw+'@localhost:27017/dax', {authSource: 'dax'});
 var runs_db = monk('web:'+mongo_pw+'@localhost:27017/run', {authSource: 'dax'});
 
+var bodyParser = require("body-parser");
+
 // For Runs DB Datatable
 var runs_mongo = require("./runs_mongo");
 
@@ -33,6 +35,8 @@ var statusRouter = require('./routes/status');
 
 var app = express();
 
+// For parsing POST data from request body
+app.use(bodyParser.urlencoded({extended: true}));                                                    
 
 // Aliases for paths to node_modules
 app.use('/bs', express.static(__dirname + '/node_modules/bootstrap3/dist/'));

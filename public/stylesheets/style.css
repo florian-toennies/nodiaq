@@ -5,6 +5,8 @@
     background-position: center;
     
 }
+
+
 .navbar-brand{
 /*    -webkit-text-stroke: 1px black;
     color: white;
@@ -20,9 +22,9 @@
 .main-container{
     margin-left: 150px;
     margin-right: 0;
-    top: 52px;
+    top: 0px;
     width: calc(100% - 150px);
-    height: calc(100% - 41px);
+    height: calc(100vh - 41px);
     padding:5px;
 }
 

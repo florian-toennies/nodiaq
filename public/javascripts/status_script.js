@@ -15,6 +15,7 @@ function UpdateStatusPage(){
     for(i in readers){
 	var reader = readers[i];
 	$.getJSON("/status/get_reader_status?reader="+reader, function(data){
+	    console.log(data);
 	    var rd = data['host'];
 	    document.getElementById(rd+"_status").innerHTML = GetStatus(data['status']);
 	    document.getElementById(rd+"_rate").innerHTML	= data['rate'].toString() + " MB/s";
