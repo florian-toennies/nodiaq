@@ -31,7 +31,7 @@ block content
             form#new_run_form(action="/playlist/new_run", method="post")
               div.form-group
                 label.form-label(for="user") Who are you
-                input.form-control#user(type="text" value="web user" name="user" readonly required)
+                input.form-control#user(type="text" value="#{user.last_name}" name="user" readonly required)
               div.form-group
                 label.form-label(for="detector") Detector : &nbsp;&nbsp;
                 div.form-check.form-check-inline

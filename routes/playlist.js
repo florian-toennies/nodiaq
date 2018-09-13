@@ -3,7 +3,7 @@ var url = require("url");
 var router = express.Router();
 
 router.get('/', function(req, res) {
-    res.render('playlist', { title: 'Playlist' });
+    res.render('playlist', { title: 'Playlist', user:req.user });
 });
 
 router.get('/modes', function(req, res){

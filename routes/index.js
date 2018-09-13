@@ -2,6 +2,10 @@ var express = require('express');
 var url = require('url');
 var router = express.Router();
 
+function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) { return next(); }
+    return res.redirect('/login');
+}  
 function GetNextRunIdentifier(req, res, callback){
     var db = req.runs_db;
     var collection = db.get('run');
@@ -58,11 +62,11 @@ function InsertRunDoc(req, res, host, callback){
 }
 
 /* GET home page. */
-router.get('/', function(req, res) {
-    res.render('index', { title: 'Express' });
+router.get('/', ensureAuthenticated, function(req, res) {
+    res.render('index', { title: 'Express', user: req.user });
 });
 
-router.get('/arm', function(req,res){
+router.get('/arm', ensureAuthenticated, function(req,res){
     // Arm the DAQ with a specific settings doc
     
     // Get argument if there is one
@@ -77,11 +81,8 @@ router.get('/arm', function(req,res){
     GetNextRunIdentifier(req, res, 
 	function(run_identifier){
     
-	    console.log("THIS MODE");
-	    console.log(mode);
 	    var db = req.db;
 	    var collection = db.get('control');
-	    console.log("ARM");
 	    
 	    var idoc = {
 		mode: mode,
@@ -93,18 +94,16 @@ router.get('/arm', function(req,res){
 		    mongo_collection: "run_" + run_identifier + "_daq_out"
 		}
 	    };    
-	    console.log(idoc);
 	    collection.insert(idoc);
 	    return res.redirect('/status');
 	}
     );
 });
 
-router.get('/start', function(req, res){
+router.get('/start', ensureAuthenticated, function(req, res){
     // Start an armed DAQ. This requires creation of a
     // unique run identifier and will insert a run document
     // into the runs database
-    console.log("HERE");
     
     var q = url.parse(req.url, true).query;
     var det = q.detector;
@@ -125,7 +124,7 @@ router.get('/start', function(req, res){
     });
 });
 
-router.get('/stop', function(req, res){
+router.get('/stop', ensureAuthenticated, function(req, res){
 
     // First get most recent status to see if DAQ running
     var daxdb = req.db;
@@ -142,10 +141,7 @@ router.get('/stop', function(req, res){
 	    s = sdoc[0]['status'];
 
 	    // If running update run doc
-	    console.log("HERE");
-	    console.log(s);
 	    if(s==3){
-		console.log(sdoc[0]['current_run_id']);
 		var rdb = req.runs_db;
 		var rcoll = rdb.get("run");
 		rcoll.update({"run_identifier": parseInt(sdoc[0]['current_run_id'])},
@@ -164,7 +160,7 @@ router.get('/stop', function(req, res){
 	});
 });
 
-router.get('/log', function(req, res){
+router.get('/log', ensureAuthenticated, function(req, res){
     var db = req.db;
     var collection = db.get('log');
     var q = url.parse(req.url, true).query;
@@ -186,7 +182,7 @@ router.get('/log', function(req, res){
 			});
 });
 
-router.get('/runs', function(req, res){
+router.get('/runs', ensureAuthenticated, function(req, res){
     var db = req.runs_db;
     var collection = db.get("run");
     var q = url.parse(req.url, true).query;
@@ -201,7 +197,7 @@ router.get('/runs', function(req, res){
 		   
 
     
-router.get('/status_history', function(req, res){
+router.get('/status_history', ensureAuthenticated, function(req, res){
     var db = req.db;
     var collection = db.get('status');
     var clients = ['fdaq00_reader_0', 'fdaq00_reader_1'];
@@ -230,7 +226,7 @@ router.get('/status_history', function(req, res){
 			return res.send(JSON.stringify(ret));
 		    });
 });
-router.get('/status_update', function(req, res){
+router.get('/status_update', ensureAuthenticated, function(req, res){
     var db = req.db;
     var statuses = {
 	0: "Idle",
@@ -270,7 +266,7 @@ router.get('/status_update', function(req, res){
     //    res.render('index', { clients: clients });
 });
 
-router.get('/modes', function(req,res){
+router.get('/modes', ensureAuthenticated, function(req,res){
     var db = req.db;
     var collection = db.get("options");
     var spromise = collection.distinct("name");
@@ -279,14 +275,39 @@ router.get('/modes', function(req,res){
     });
 });
 
-router.get("/detectors", function(req, res){
+router.get("/detectors", ensureAuthenticated, function(req, res){
     var dets = req.detectors;    
     return res.send(JSON.stringify(Object.keys(dets)));
 });
     
 
-router.get('/helloworld', function(req, res){
+router.get('/helloworld', ensureAuthenticated, function(req, res){
     res.render('helloworld', {title: 'Hello, World!'});
+});
+
+
+// Github Auth
+// Simple route middleware to ensure user is authenticated.
+//   Use this route middleware on any resource that needs to be protected.  If
+//   the request is authenticated (typically via a persistent login session),
+//   the request will proceed.  Otherwise, the user will be redirected to the
+//   login page.
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) { return next(); }
+  res.redirect('/login')
+}
+
+router.get('/account', ensureAuthenticated, function(req, res){
+    res.render('account', { user: req.user });
+});   
+
+router.get('/login', function(req, res){
+    res.render('login', { user: req.user });
+});
+
+router.get('/logout', function(req, res){
+    req.logout();
+    res.redirect('/');
 });
 
 module.exports = router;

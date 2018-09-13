@@ -1,0 +1,42 @@
+extends layout
+
+block extrahead
+  link(rel="stylesheet", href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css")
+  script(src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js", type="text/javascript")
+  script(src="https://cdn.datatables.net/plug-ins/1.10.19/dataRender/datetime.js", type="text/javascript")
+  script(src="https://cdn.datatables.net/plug-ins/1.10.19/features/pageResize/dataTables.pageResize.min.js", type="text/javscript")
+  script(src="javascripts/moment.min.js", type="text/javascript")
+  script(src="javascripts/users_table.js", type="text/javascript")
+
+block content
+  div.main-container
+    div(style="height:100%")
+      table.nowrap.pageResize#users_table(style="height:100%")
+
+  div.modal#detailModal(tabindex="-1" role="dialog")
+    div.modal-dialog(role="document")
+      div.modal-content
+        div.modal-header
+          h5.modal-title User Info
+          button.close(type="button" data-dismiss="modal" aria-label="Close")
+            span(aria-hidden="true")&times;
+        div.modal-body
+          div.row(style="width:100%")
+            div.col-6
+              span image
+            div.col-6
+              h5
+                span#headerName
+              h6
+                span#headerInstitute
+          hr
+          table#info_table
+               
+        div.modal-footer
+          button.btn.btn-secondary(type="button" data-dismiss="modal") Close
+
+  script.
+    $(document).ready(function(){
+      DrawActiveLink("#lusers");
+      InitializeUsersTable("#users_table");
+    });

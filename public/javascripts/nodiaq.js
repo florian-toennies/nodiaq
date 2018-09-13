@@ -1,7 +1,7 @@
 function DrawActiveLink(page){
     pages = [
 	"#lindex", "#lplaylist", "#lstatus", "#lhosts", "#loptions", "#lruns",
-	"#llog", "#lhelp"
+	"#llog", "#lusers", "#lhelp"
     ];
     for(i in pages){
 	if(pages[i] != page)

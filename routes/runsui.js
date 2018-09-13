@@ -3,7 +3,7 @@ var url = require("url");
 var router = express.Router();
 
 router.get('/', function(req, res) {
-    res.render('runsui', { title: 'Runs UI' });
+    res.render('runsui', { title: 'Runs UI', user: req.user });
 });
 
 router.post('/addtags', function(req, res){
@@ -12,7 +12,7 @@ router.post('/addtags', function(req, res){
 
     var runs = req.body.runs;
     var tag = req.body.tag;
-    var user = req.body.user;
+    var user = req.user.last_name;
 
     // Convert runs to int
     runsint = [];

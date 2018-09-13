@@ -11,7 +11,7 @@ function GetStatus(i){
 
 function UpdateStatusPage(){
     var readers = ["fdaq00_reader_0", "fdaq00_reader_1"];
-    
+    var detectors = ["tpc"];
     for(i in readers){
 	var reader = readers[i];
 	$.getJSON("/status/get_reader_status?reader="+reader, function(data){
@@ -28,6 +28,13 @@ function UpdateStatusPage(){
 		document.last_time_charts[rd] = data['ts'];
 		UpdateChart(rd, data['ts'], data['rate'], data['buffer_length']);
 	    }
+	});
+    }
+    for(i in detectors){
+	var detector = detectors[i];
+	$.getJSON("/status/get_detector_status?detector="+detector, function(data){
+	    document.getElementById(detector+"_status").innerHTML = GetStatus(data['status']);
+	    document.getElementById(detector+"_checkin").innerHTML = data['checkin'];
 	});
     }
     setTimeout(UpdateStatusPage, 5000);	   

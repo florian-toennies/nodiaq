@@ -3,7 +3,7 @@ var url = require("url");
 var router = express.Router();
 
 router.get('/', function(req, res) {
-    res.render('options', { title: 'Options' });
+    res.render('options', { title: 'Options', user:req.user });
 });
 
 router.get("/options_list", function(req, res){
@@ -47,7 +47,7 @@ router.post("/set_run_mode", function(req, res){
 
     collection.remove({name: doc['name']}, {}, function(err, result){
 	collection.insert(doc, {}, function(){
-	    return res.render("options", {title: "Options"});
+	    return res.render("options", {title: "Options", user:req.user});
 	});
     });
 });
@@ -59,7 +59,7 @@ router.get("/remove_run_mode", function(req, res){
     var collection = db.get('options');
     collection.remove({'name': name}, {},
 		      function(e){
-			  return res.render("options", {"title": "Options"});
+			  return res.render("options", {"title": "Options", user:req.user});
 		      });
 });
 

@@ -34,28 +34,29 @@ html
           li.nav-item
             a.nav-link.py-0(href="#" onclick='alert("1 Month free trial. After that just 3999 EUR/month without support contract. Support contracts start at 999 EUR/month for the basic plan.")') Pricing
           li.nav-item.dropdown(style='align-right')
-            a.nav-link.dropdown-toggle#navbarDropdownMenuLink.py-0(href="#" data-toggle="dropdown") Account
+            a.nav-link.dropdown-toggle#navbarDropdownMenuLink.py-0(href="#" data-toggle="dropdown") User: #{user.first_name} #{user.last_name}
             div.dropdown-menu
-              a.dropdown-item(href="#") Profile
-              a.dropdown-item(href="#") Sign Out
-
-    div.sidebar      
-      a.sidebar-item#lindex(href='/') Overview
-      br
-      a.sidebar-item#lplaylist(href='/playlist') Control
-      br
-      a.sidebar-item#lstatus(href='/status') Processes
-      br
-      a.sidebar-item#lhosts(href='/hosts') Hosts
-      br
-      a.sidebar-item#loptions(href='/options') Config
-      br
-      a.sidebar-item#lruns(href='/runsui') Runs
-      br
-      a.sidebar-item#llog(href='/logui') Log
-      br
-      a.sidebar-item#lhelp(href='/help') Help
-     
+              a.dropdown-item(href="/account") Profile              
+              a.dropdown-item(href="/logout") Sign Out
+    block sidebar
+      div.sidebar      
+        a.sidebar-item#lindex(href='/') Overview
+        br
+        a.sidebar-item#lplaylist(href='/playlist') Control
+        br
+        a.sidebar-item#lstatus(href='/status') Processes
+        br
+        a.sidebar-item#lhosts(href='/hosts') Hosts
+        br
+        a.sidebar-item#loptions(href='/options') Config
+        br
+        a.sidebar-item#lruns(href='/runsui') Runs
+        br
+        a.sidebar-item#llog(href='/logui') Log
+        br
+        a.sidebar-item#lhelp(href='/help') Help
+        hr
+        a.sidebar-item#lusers(href='/users') Users
       
 
     block content

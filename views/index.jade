@@ -1,7 +1,10 @@
 extends layout
 
 block content     
-  div.container Hello world
+  div.main-container Welcome #{user.first_name} #{user.last_name}
+    hr
+    span (this will be a general overview page where you can tell at a glance if everything is working)
+
 
   script.
     $(document).ready(function(){
