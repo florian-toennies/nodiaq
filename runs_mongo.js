@@ -27,7 +27,7 @@ runsdb.once('open', function callback ()
 		    mode: String,
 		    source: String,
 		    tags: [ {user: String, date: Date, text: String} ],
-		    comments: [{user: String, date: Date, text: String}],		 
+		    comments: [{user: String, date: Date, text: String}],
 		},
 		{ collection: "run"});
 	    runs = mongoose.model('runs', runsTableSchema);

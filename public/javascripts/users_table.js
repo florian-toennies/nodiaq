@@ -48,9 +48,9 @@ function InitializeUsersTable(divname){
 		   ["Percent XENON: ", "percent_xenon"], ["Start Date: ", "start_date"],
 		   ["End Date: ", "end_date"], ["Notes: ", "notes"],
 		   ["Email: ", "email"], ["Skype: ", "skype"], ["GitHub: ", "github"],
-		   ["Phone: ", "phone"]];
+		   ["Phone: ", "cell"]];
 	for(i in fields){
-	    html += "<tr><td><strong>"+fields[i][0]+"</strong></td><td>";
+	    html += "<tr><td><strong>"+fields[i][0]+"</strong></td><td style='padding-left:30px'>";
 	    if(typeof(data[fields[i][1]]) == "undefined")
 		html+="";
 	    else if(fields[i][1] == 'start_date' || fields[i][1] == 'end_date'){
@@ -59,6 +59,10 @@ function InitializeUsersTable(divname){
 	    else
 		html+=data[fields[i][1]];
 	    html+="</td></tr>";
+	    if(typeof(data['picture_url'])!="undefined"){
+		document.getElementById("ppic").innerHTML="<img src='"+data['picture_url']+
+		    "', style='width:100%;max-width:150px'/>";
+	    }
 	}
 	document.getElementById("headerName").innerHTML=data['first_name'] +
 	    " " + data['last_name'];

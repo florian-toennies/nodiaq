@@ -43,19 +43,19 @@ block content
                 div.form-check.form-check-inline
                   input.form-check-input#det_all(type="radio" name="detector" value="all" onclick="PopulateRunsList('run_mode_select', 'all')" disabled)
                   label.form-check-label(for="det_all") Combined
-                div.form-group
-                  label.form-label(for="stop_after") Stop run after (minutes, blank = run forever)
-                  input.form-control#stop_after(type="number" name="stop_after" min=1 max=240 value=60)
-                div.form-group
-                  label.form-label(for="run_mode") Run mode
-                  select.form-control#run_mode_select(size="10" name="run_mode" type="text" required)
-                div.form-group
-                  label.form-label(for="how_many") How many?
-                  input.form-control#how_many(type="number" name="how_many" value=1 min=1 max=50 required)
-                div.form-group
-                  label.form-label(for="comment") Comment
-                  textarea.form-control#comment(rows="3" name="comment" type='text')
-                button.btn.btn-primary.btn-lg(type="submit") Submit Runs
+              div.form-group
+                label.form-label(for="stop_after") Stop run after (minutes, blank = run forever)
+                input.form-control#stop_after(type="number" name="stop_after" min=1 max=240 value=60)
+              div.form-group
+                label.form-label(for="run_mode") Run mode
+                select.form-control#run_mode_select(size="10" name="run_mode" type="text" required)
+              div.form-group
+                label.form-label(for="how_many") How many?
+                input.form-control#how_many(type="number" name="how_many" value=1 min=1 max=50 required)
+              div.form-group
+                label.form-label(for="comment") Comment
+                textarea.form-control#comment(rows="3" name="comment" type='text')
+              button.btn.btn-primary.btn-lg(type="submit") Submit Runs
   script.
     $(document).ready(function(){
       DrawActiveLink("#lplaylist");

@@ -19,6 +19,16 @@ var runs_db = monk('web:'+mongo_pw+'@localhost:27017/run', {authSource: 'dax'});
 // For Runs DB Datatable
 var runs_mongo = require("./runs_mongo");
 
+// For email confirmations
+var nodemailer = require("nodemailer");
+var transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+      user: process.env.DAQ_CONFIRMATION_ACCOUNT,
+      pass: process.env.DAQ_CONFIRMATION_PASSWORD
+  }
+});
+
 
 // Define detectors
 var detectors = {
@@ -92,6 +102,13 @@ passport.use(new GitHubStrategy({
 				      ret_profile[extra_fields[i]] = doc[extra_fields[i]];
 			      }
 			      ret_profile['github_info'] = profile;
+			      // Save a couple things from the github profile
+			      collection.update({"github": profile._json.login},
+						{"$set": { "picture_url": profile._json.avatar_url,
+							   "github_home": profile._json.profileUrl}
+						});
+			      ret_profile['picture_url'] = profile._json.avatar_url;
+			      ret_profile['github_home'] = profile._json.profileUrl;
 			      return done(null, ret_profile);
 			  });
       });
@@ -121,6 +138,7 @@ app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')));
 // Make our db accessible to our router
 app.use(function(req,res,next){
     req.db = db;
+    req.transporter = transporter;
     req.runs_db = runs_db;
     req.ObjectID = ObjectID;
     req.detectors = detectors;

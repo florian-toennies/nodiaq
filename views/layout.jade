@@ -18,7 +18,7 @@ html
     script(src="javascripts/chart.js" type="text/javascript")
     block extrahead
   body
-    nav.navbar.navbar-expand-sm.navbar-light.bg-light.py-0(style="border-bottom:1px solid #aaaaaa")
+    nav.navbar.navbar-expand-sm.navbar-light.bg-light.py-0#navbar(style="border-bottom:1px solid #888888")
 
       a.navbar-brand(href='/status' style="padding-left:5px") XENONnT DAQ
       button.navbar-toggler(type="button" data-toggle="collapse" data-target="#navbarNavDropdown")
@@ -26,11 +26,6 @@ html
 
       div.collapse.navbar-collapse#navbarNavDropdown
         ul.navbar-nav.ml-auto
-          //li.nav-item.active
-          //  a.nav-link.py-0(href="#") Home
-          //    span.sr-only (current)
-          //li.nav-item
-          //  a.nav-link.py-0(href="#") Features
           li.nav-item
             a.nav-link.py-0(href="#" onclick='alert("1 Month free trial. After that just 3999 EUR/month without support contract. Support contracts start at 999 EUR/month for the basic plan.")') Pricing
           li.nav-item.dropdown(style='align-right')
@@ -60,3 +55,8 @@ html
       
 
     block content
+
+    script.
+      $(document).ready(function(){
+        SetNavbar("#{user.favorite_color}");
+      });

@@ -299,7 +299,35 @@ function ensureAuthenticated(req, res, next) {
 
 router.get('/account', ensureAuthenticated, function(req, res){
     res.render('account', { user: req.user });
-});   
+});
+
+router.post('/updateContactInfo', ensureAuthenticated, (req, res) => {
+    var db = req.runs_db;
+    var collection = db.get("users");
+    var idoc = {};
+    if(req.body.email != ""){
+	idoc['email'] = req.body.email;
+	req.user.email = req.body.email;
+    }
+    if(req.body.skype != ""){
+        idoc["skype"] = req.body.skype;
+	req.user.skype = req.body.skype;
+    }
+    if(req.body.cell != ""){	
+        idoc["cell"] = req.body.cell;
+	req.user.cell = req.body.cell;
+    }
+    if(req.body.favorite_color != ""){
+        idoc["favorite_color"] = req.body.favorite_color;
+	req.user.favorite_color = req.body.favorite_color;
+    }
+    collection.update({"first_name": req.user.first_name,
+		       "last_name": req.user.last_name},
+		      {"$set": idoc});
+    console.log(req.user);
+    console.log(idoc);    
+    return(res.redirect('/account'));
+}); 
 
 router.get('/login', function(req, res){
     res.render('login', { user: req.user });
@@ -308,6 +336,78 @@ router.get('/login', function(req, res){
 router.get('/logout', function(req, res){
     req.logout();
     res.redirect('/');
+});
+
+
+router.get("/verify", function(req, res){
+    var db = req.runs_db;
+    var collection = db.get("users");
+    var q = url.parse(req.url, true).query;
+    var code = q.code;    
+    collection.find({"github_hash": code},
+		    function(e, docs){
+			if(docs.length == 1){
+			    collection.update({'_id': docs[0]['_id']},
+					      {"$set": {"github": docs[0]['github_temp']},
+					       "$unset": {"github_temp": 1, "github_hash": 1}});
+			    return res.render("confirmationLander",
+					      {message: "Account linked, you can now login with GitHub"});
+			}
+			else
+			    res.render("confirmationLander",
+				       {message: "Couldn't find an account to link"});
+		    });
+});
+
+router.post("/linkGithub", (req, res) => {
+    var db = req.runs_db;
+    var collection = db.get("users");
+    console.log(req.body.email);
+    console.log(req.body.github);
+    if(req.body.github != "" && req.body.email != ""){
+	// set github ID to github_temp and send mail
+	collection.find({"email": req.body.email},
+			function(e, docs){
+			    if(docs.length!=1)
+				return (res.render("confirmationLander",
+						   {message:"You don't seem to be in our database"}));
+			    else if(typeof(docs[0]['github']) != "undefined"){
+				return (res.render("confirmationLander",
+						   {message: "That account already has a github ID"}));
+			    }
+			    else{
+				// Synchronous
+				const cryptoRandomString = require('crypto-random-string');
+				const random_hash = cryptoRandomString(128);
+				collection.update({"email": req.body.email},
+						  {"$set": {"github_temp": req.body.github,
+							    "github_hash": random_hash}});
+				// send mail
+				var transporter = req.transporter;
+				var mailOptions = {
+				    from: process.env.DAQ_CONFIRMATION_ACCOUNT,
+				    to: req.body.email,
+				    subject: 'XENONnT Account Confirmation',
+				    html: '<p>Please click <a href="http://10.4.73.169:3000/verify?code='+random_hash+'">here</a> to verify your email.</p><p>If you did not request this email please delete.</p>'
+				};
+				
+				transporter.sendMail(mailOptions, function(error, info){
+				    if (error) {
+					console.log(error);
+					return res.render("confirmationLander",
+							  {message: "Failed to send email confirmation"});
+				    } else {
+					console.log('Email sent: ' + info.response);
+					return res.render("confirmationLander",
+							  {message: "Check your email"});
+				    }
+				});
+			    
+			    }
+			});
+    }
+    else
+	return res.render("confirmationLander", {message: "You must provide a valid email and GitHub account ID"});
 });
 
 module.exports = router;
