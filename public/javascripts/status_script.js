@@ -64,7 +64,7 @@ function DrawInitialCharts(){
 	    if(Object.keys(data).length==0)
 		return;
 	    var host = Object.keys(data)[0];
-	    document.last_time_charts[host] = data[host]['rates'][data[host]['rates']-1];
+	    document.last_time_charts[host] = data[host]['rates'][data[host]['rates'].length-1];
 	    var series = [
 		{"type": "area", "name": "transfer rate", "data": data[host]['rates']},
 		{"type": "area", "name": "buffered data", "data": data[host]['buffs']}

@@ -2,11 +2,16 @@ var express = require("express");
 var url = require("url");
 var router = express.Router();
 
-router.get('/', function(req, res) {
+function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) { return next(); }
+    return res.redirect('/login');
+}
+
+router.get('/', ensureAuthenticated, function(req, res) {
     res.render('runsui', { title: 'Runs UI', user: req.user });
 });
 
-router.post('/addtags', function(req, res){
+router.post('/addtags', ensureAuthenticated, function(req, res){
     var db = req.runs_db;
     var collection = db.get("run");
 

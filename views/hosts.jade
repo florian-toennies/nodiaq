@@ -2,10 +2,12 @@ extends layout
 
 block content     
   div.main-container Hosts placeholder
+    - hosts = ['fdaq00']
     hr
     span This page will have system monitor information from each connected host
 
   script.
     $(document).ready(function(){
       DrawActiveLink("#lhosts");
+      UpdateMonitorPage(#{hosts});
     });

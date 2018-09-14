@@ -2,7 +2,12 @@ var express = require('express');
 var url = require('url');
 var router = express.Router();
 
-router.get('/', function(req, res) {
+function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) { return next(); }
+    return res.redirect('/login');
+}
+
+router.get('/', ensureAuthenticated, function(req, res) {
     var clients = {
 	fdaq00_reader_0: { status: 'none', rate: 0, buffer_length: 0},
 	fdaq00_reader_1: { status: 'none', rate: 0, buffer_length: 0}
@@ -11,7 +16,7 @@ router.get('/', function(req, res) {
     //    res.render('index', { clients: clients });
 });
 
-router.get('/get_detector_status', function(req, res){
+router.get('/get_detector_status', ensureAuthenticated, function(req, res){
     var db = req.db;
     var collection = db.get('aggregate_status');
 
@@ -36,7 +41,7 @@ router.get('/get_detector_status', function(req, res){
 });
 			
 			
-router.get('/get_reader_status', function(req, res){
+router.get('/get_reader_status', ensureAuthenticated, function(req, res){
     var db=req.db;
     var collection = db.get('status');
 
@@ -62,7 +67,7 @@ router.get('/get_reader_status', function(req, res){
 	});
 });
 
-router.get('/get_reader_history', function(req,res){
+router.get('/get_reader_history', ensureAuthenticated, function(req,res){
     var db = req.db;
     var collection = db.get('status');
 

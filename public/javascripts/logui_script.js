@@ -7,7 +7,7 @@ function DateToString(date){
 function InitializeTable(DOM){
     var STATUS=["<span style='font-weight:bold;color:black'>DEBUG</span>",
 		"<span style='font-weight:bold;color:blue'>MESSAGE</span>",
-		"<span style='font-weight:bold;color:yellow'>WARNING</span>",
+		"<span style='font-weight:bold;color:orange'>WARNING</span>",
 		"<span style='font-weight:bold;color:red'>ERROR</span>",
 		"<span style='font-weight:bold;color:red'>FATAL</span>",
 		"<span style='font-weight:bold;color:green'>USER</span>"];

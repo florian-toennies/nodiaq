@@ -195,7 +195,32 @@ router.get('/runs', ensureAuthenticated, function(req, res){
 		    });
 });
 		   
+router.get('/detector_history', ensureAuthenticated, function(req, res){
+    var db = req.db;
+    var collection = db.get('aggregate_status');
 
+    // Get limit from GET
+    var q = url.parse(req.url, true).query;
+    var limit = q.limit;
+    var detector = q.detector;
+
+    if(typeof(limit) == 'undefined')
+	limit = 1;
+    if(typeof(detector) == 'undefined')
+	return res.send(JSON.stringify({}));
+
+    collection.find({'detector': detector}, {'sort': {'_id': -1}, 'limit': parseInt(limit)},
+		    function(e, docs){
+			ret = { "rates": [], "buffs": []};
+			for(i in docs){
+			    var oid = new req.ObjectID(docs[i]['_id']);
+			    var dt = Date.parse(oid.getTimestamp());
+			    ret['rates'].unshift([dt, docs[i]['rate']]);
+			    ret['buffs'].unshift([dt, docs[i]['buff']]);
+			}
+			return res.send(JSON.stringify(ret));
+		    });
+});
     
 router.get('/status_history', ensureAuthenticated, function(req, res){
     var db = req.db;
@@ -285,17 +310,6 @@ router.get('/helloworld', ensureAuthenticated, function(req, res){
     res.render('helloworld', {title: 'Hello, World!'});
 });
 
-
-// Github Auth
-// Simple route middleware to ensure user is authenticated.
-//   Use this route middleware on any resource that needs to be protected.  If
-//   the request is authenticated (typically via a persistent login session),
-//   the request will proceed.  Otherwise, the user will be redirected to the
-//   login page.
-function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) { return next(); }
-  res.redirect('/login')
-}
 
 router.get('/account', ensureAuthenticated, function(req, res){
     res.render('account', { user: req.user });

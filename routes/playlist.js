@@ -2,11 +2,16 @@ var express = require("express");
 var url = require("url");
 var router = express.Router();
 
-router.get('/', function(req, res) {
+function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) { return next(); }
+    return res.redirect('/login');
+}
+
+router.get('/', ensureAuthenticated, function(req, res) {
     res.render('playlist', { title: 'Playlist', user:req.user });
 });
 
-router.get('/modes', function(req, res){
+router.get('/modes', ensureAuthenticated, function(req, res){
     var db = req.db;
     var collection = db.get("options");
     var q = url.parse(req.url, true).query;
@@ -27,7 +32,7 @@ router.get('/modes', function(req, res){
 		    });
 });
 
-router.get("/get_playlist", function(req, res){
+router.get("/get_playlist", ensureAuthenticated, function(req, res){
     var db = req.db;
     var collection = db.get("command_queue");
 
@@ -56,7 +61,7 @@ router.get("/get_playlist", function(req, res){
 		    });
 });
 
-router.get("/stop_daq", function(req, res){
+router.get("/stop_daq", ensureAuthenticated, function(req, res){
 
     var q = url.parse(req.url, true).query;
     var det = q.detector;
@@ -74,7 +79,7 @@ router.get("/stop_daq", function(req, res){
     return res.redirect("/playlist");
 });
 
-router.post("/new_run", (req, res) => {
+router.post("/new_run", ensureAuthenticated, (req, res) => {
     var db = req.db;
     var collection = db.get("command_queue");
 

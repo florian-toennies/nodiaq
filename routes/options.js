@@ -2,11 +2,16 @@ var express = require("express");
 var url = require("url");
 var router = express.Router();
 
-router.get('/', function(req, res) {
+function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) { return next(); }
+    return res.redirect('/login');
+}
+
+router.get('/', ensureAuthenticated, function(req, res) {
     res.render('options', { title: 'Options', user:req.user });
 });
 
-router.get("/options_list", function(req, res){
+router.get("/options_list", ensureAuthenticated, function(req, res){
     var db = req.db;
     var collection = db.get('options');
     collection.find({}, {"sort": {"name": 1}},
@@ -18,7 +23,7 @@ router.get("/options_list", function(req, res){
 		    });
 });
 
-router.get("/options_json", function(req, res){
+router.get("/options_json", ensureAuthenticated, function(req, res){
     var query = url.parse(req.url, true).query;
     var name = query.name;
     if(typeof name == "undefined")
@@ -38,7 +43,7 @@ router.get("/options_json", function(req, res){
 		       });
 });
 
-router.post("/set_run_mode", function(req, res){
+router.post("/set_run_mode", ensureAuthenticated, function(req, res){
     doc = JSON.parse(req.body.doc);
     console.log(doc);
     delete doc._id;
@@ -52,7 +57,7 @@ router.post("/set_run_mode", function(req, res){
     });
 });
 
-router.get("/remove_run_mode", function(req, res){
+router.get("/remove_run_mode", ensureAuthenticated, function(req, res){
     var query = url.parse(req.url, true).query;
     var name = query.name;
     var db = req.db;
