@@ -1,0 +1,90 @@
+extends layout
+
+block sidebar
+
+block content
+  div.container
+    br
+    div.row
+      div.col-10
+        h4 User Account
+      div.col-2
+        button.btn.btn-default(data-target="#updateModal" data-toggle="modal") Update Contact Info
+    hr
+    div.row
+      div.col-sm-3.col-xs-12
+        img(src="#{user.picture_url}", style="width:100%;max-width:200px;")
+        h5 #{user.first_name} #{user.last_name}
+        h6 #{user.position} at #{user.institute}
+        h6 Member since: #{user.start_date.substring(0, 7)}
+    
+      div.col-sm-9.col-xs-12
+        table
+          tr
+            td(style="width:150px")
+              strong XENON Profile
+            td
+          tr
+            td Email
+            td #{user.email}
+          tr
+            td Skype
+            td #{user.skype}
+          tr
+            td Cell
+            td #{user.cell}
+          tr
+            td LNGS ID
+            td #{user.lngs}
+          tr
+            td Coolness
+            td #{user.percent_xenon}% cool
+          tr
+            td
+              strong GitHub
+            td
+          tr
+            td GitHub number 
+            td #{user.github_info.id}
+          tr
+            td GitHub ID
+            td #{user.github}
+          tr
+            td Display Name
+            td #{user.github_info.displayName}
+          tr
+            td My GitHub
+            td
+              a(href='#{user.github_home}') Link
+    br
+    br
+    a(href="/") back to home page
+
+    div.modal.fade#updateModal(tabindex="-1" role="dialog")
+      div.modal-dialog(role="document")
+        div.modal-content
+          div.modal-body
+            form(method="post" action="/updateContactInfo")
+              div.form-group
+                label.form-label(for="email") Email
+                input.form-control(type="email" value="#{user.email}" name="email")
+              div.form-group
+                label.form-label(for="skype") Skype
+                input.form-control(type="text" value="#{user.skype}" name="skype")
+              div.form-group
+                label.form-label(for="phone") Phone
+                input.form-control(type="tel" value="#{user.cell}" name="cell")
+              div.form-group
+                label.form-label(for="favorite_color") Favorite Color
+                input.form-control#form_color(type="color" name="favorite_color")
+              br
+              button.btn.btn-info(type="submit") Submit
+              &nbsp;&nbsp;&nbsp;
+              button.btn.btn-default(type='button' data-dismiss='modal') Close
+  script.
+    $(document).ready(function(){
+      if('#{user.favorite_color}' != "not set"){
+        console.log("HERE");
+        $("#form_color").val("#{user.favorite_color}");
+      }
+    });

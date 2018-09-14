@@ -1,0 +1,21 @@
+doctype html
+html
+  head
+    title XENONnT DAQ
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous") 
+    script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous")
+    link(rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous")    
+    
+
+  body(style="background-color:#aaaaaa")
+
+    div.row(style="padding-top:5%")
+      div.col-sm-3.col-xs-1
+      div.col-sm-6.col-xs-9(style="background-color:white;border-color:#aaaaaa")
+        br
+        span #{message}
+        hr
+        a(href="/login") Back to the login page
+        br
+        br
+      div.col-sm-3.col-xs-1
