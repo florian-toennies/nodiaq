@@ -40,7 +40,6 @@ router.get('/get_detector_status', ensureAuthenticated, function(req, res){
 		    });
 });
 			
-			
 router.get('/get_reader_status', ensureAuthenticated, function(req, res){
     var db=req.db;
     var collection = db.get('status');

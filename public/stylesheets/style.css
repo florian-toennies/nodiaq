@@ -67,6 +67,11 @@ a {
 .active_sidebar_link{
     color: red;
 }
+.host_detail{
+    width: 100%;
+    margin-top: 5px;
+    border: 1px solid #cccccc;
+}
 .reader_detail{
     width: 100%;
     height: 200px;

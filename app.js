@@ -94,7 +94,8 @@ passport.use(new GitHubStrategy({
 			      ret_profile = {};
 			      extra_fields = ['skype', 'github_id', 'cell', 'favorite_color', 'email',
 					      'last_name', 'first_name', 'institute', 'position',
-					      'percent_xenon', 'start_date', 'lngs'];
+					      'percent_xenon', 'start_date', 'lngs', 'github',
+					      'picture_url', 'github_home'];
 			      for(i in extra_fields){
 				  if(typeof(doc[extra_fields[i]])=='undefined')
 				      ret_profile[extra_fields[i]] = "not set";
@@ -105,10 +106,10 @@ passport.use(new GitHubStrategy({
 			      // Save a couple things from the github profile
 			      collection.update({"github": profile._json.login},
 						{"$set": { "picture_url": profile._json.avatar_url,
-							   "github_home": profile._json.profileUrl}
+							   "github_home": profile.html_url}
 						});
 			      ret_profile['picture_url'] = profile._json.avatar_url;
-			      ret_profile['github_home'] = profile._json.profileUrl;
+			      ret_profile['github_home'] = profile._json.html_url;
 			      return done(null, ret_profile);
 			  });
       });

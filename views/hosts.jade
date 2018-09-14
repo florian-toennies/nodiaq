@@ -1,13 +1,38 @@
 extends layout
+block extrahead
+  script(src="javascripts/hosts.js" type="text/javascript")
 
 block content     
-  div.main-container Hosts placeholder
+  div.main-container
     - hosts = ['fdaq00']
-    hr
-    span This page will have system monitor information from each connected host
+    each host in hosts
+      div.host_detail
+        div.row(style="width:100%;height:100%;margin:0")
+          div.col-sm-4.col-md-3(style="padding:5px")
+            div.row(style="margin:0;padding:0")
+              div.col-12
+                span(style="font-size:24px;font-weight:bold;") #{host}
+              - atts_cpu = [['cpu_percent', 'CPU %'], ['cpu_count', 'Num CPUs'], ['cpu_count_logical', 'Num cores']]
+              each att in atts_cpu
+                div.col-4(style='font-size:12px')
+                  strong #{att[1]}
+                div.col-8(style='font-size:12px')
+                  span(id="#{host}_#{att[0]}")
+              hr
+              - atts_mem = [['Mem total', 'mem_total'], ['Mem used', 'mem_used'], ['Swap', 'swap']]
+              each att in atts_mem
+                div.col-4(style='font-size:12px')
+                  strong #{att[0]}
+                div.col-8(style='font-size:12px')
+                  span(id="#{host}_#{att[1]}")              
+          div.col-sm-4.col-md-3
+            div.row(id="#{host}_disk_row" style="margin:0;padding:0")
+          div.col-sm-4.col-md-6(id="#{host}_chart")
+            span Chart
 
   script.
     $(document).ready(function(){
       DrawActiveLink("#lhosts");
-      UpdateMonitorPage(#{hosts});
+      UpdateMonitorPage();
+      DrawMonitorCharts();
     });
