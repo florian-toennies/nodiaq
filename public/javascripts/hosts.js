@@ -85,16 +85,22 @@ function DrawMonitorCharts(){
 	$.getJSON("/hosts/get_host_history?limit=1000&host="+host, (function(h){
 	    return function(data){
 		console.log(data);
+
+		// Can update style here
+		for(var i in data){
+		    data[i]['type'] = 'line';
+		}
+		
 		var div = h + "_chart";
 		document.last_time_charts[host] = data[0]['data'][data[0]['data'].length-1][0];
 		document.charts[host] = Highcharts.chart(
 		    div, {
 			chart: {
 			    zoomType: 'x',
-			    marginLeft: 50,
+			    //marginLeft: 50,
 			    //marginTop: 20,
 			    //marginBottom: 30,
-			    marginRight: 10
+			   // marginRight: 10
 			},
 			credits: {
 			    enabled: false
@@ -111,9 +117,15 @@ function DrawMonitorCharts(){
 			    },
 			    min: 0,
 			},
+			plotOptions:{
+			    series: {
+				lineWidth: 1
+			    },
+			},
 			legend: {
 			    enabled: true,
-			    loc: "top",
+			    align: "right",
+			    layout: "vertical"
 			},
 			series: data
 		    });	    			    
