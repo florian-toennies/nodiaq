@@ -16,7 +16,7 @@ block content
         img(src="#{user.picture_url}", style="width:100%;max-width:200px;")
         h5 #{user.first_name} #{user.last_name}
         h6 #{user.position} at #{user.institute}
-        h6 Member since: #{user.start_date.substring(0, 7)}
+        h6 Member since: #{user.start_date.toString().substring(4, 15)}
     
       div.col-sm-9.col-xs-12
         table

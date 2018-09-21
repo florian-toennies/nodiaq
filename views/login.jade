@@ -37,7 +37,7 @@ html
                 p Please add your github account login and the email associated with your XENON account. You will receive a mail with an activation link, which you must click to link the accounts. If you need to change the email associated with your XENON account, login with your LNGS credentials and change it in the account page.		
                 form(method="post" action="/linkGithub")
                   div.form-group
-                    label.form-label(for="email") Email associated with your XENON Membership
+                    label.form-label(for="email") Email associated with your XENON membership
                     input.form-control(type="email" name="email")
                   div.form-group
                     label.form-label(for="github") GitHub ID
@@ -51,5 +51,20 @@ html
           a.btn.btn-block.btn-social.btn-large.btn-facebook(style="max-width:300px;color:white;" onclick="alert('LNGS Credentials only work inside LNGS')")
             i.fa.fa-hand-spock
             span Login via LNGS
+        br
+        br
+        strong Option 3: Login with password
+        br
+        br
+        div(style='width:40%;text-align:left')
+          form(method='post' action='/auth/password')
+            div.form-group
+              label.form-label(for='email') Email associated with your XENON membership
+              input.form-control(type='email' name='email')
+            div.form-group
+              label.form-label(for='password') Password
+              input.form-control(type='password' name='password')
+            button.btn.btn-info(type='submit') Submit
+        br
         br
       div.col-sm-3.col-xs-1

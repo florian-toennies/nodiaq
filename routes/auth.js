@@ -16,6 +16,11 @@ router.get('/github',
 	    // function will not be called.
 	});
 
+router.post('/password', 
+  passport.authenticate('local', { failureRedirect: '/login' }),
+  function(req, res) {
+    res.redirect('/');
+ });
 // GET /auth/github/callback
 //   Use passport.authenticate() as route middleware to authenticate the
 //   request.  If authentication fails, the user will be redirected back to the

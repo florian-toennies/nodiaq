@@ -58,10 +58,13 @@ var app = express();
 // For parsing POST data from request body
 app.use(bodyParser.urlencoded({extended: true}));
 
+// LONG STUFF TRY TO SPLIT OUT?
 // Session caching
 var session = require('express-session');
 var MongoDBStore = require('connect-mongodb-session')(session);
-
+var dax_cstr = process.env.DAQ_MONGO_USER + ":" + process.env.DAQ_MONGO_PASSWORD + "@" + 
+			process.env.DAQ_MONGO_HOST + ":" + process.env.DAQ_MONGO_PORT + "/" + process.env.DAQ_MONGO_DB;
+			
 var store = new MongoDBStore({
   uri: 'mongodb://' + dax_cstr,
   collection: 'mySessions'
@@ -89,9 +92,7 @@ app.use(session({
   resave: true,
   saveUninitialized: false
 }));
- 
-
-// Auth middleware
+// Passport github strategy
 var passport = require('passport');
 var GitHubStrategy = require('passport-github2').Strategy;
 var GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID;
@@ -153,7 +154,59 @@ passport.use(new GitHubStrategy({
 			  });
       });
   }));
+ 
+//For testing it's pretty useful to have local auth as well. We'll use email/pw and ensure the email is in our DB
+var auth = require('passport-local-authenticate');
+var LocalStrategy = require('passport-local').Strategy;
+passport.use(new LocalStrategy({
+		usernameField: 'email',
+	},
+  function(username, password, done) {
+  	var collection = runs_db.get("users");
+  	collection.find({"email": username},
+  	function(e, docs){     
+			  
+		
+		if(docs.length===0){
+			console.log("Password auth failed, no user");
+			console.log(username);
+			return done(null, false, "Couldn't find user in DB");
+		}
+		
+		// For now we're using a general password since this is just a workaround
+		auth.hash(process.env.GENERAL_PASSWORD, function(err, hashed) {
+			auth.verify(password, hashed, function(err, verified) {
+				if(verified){
+					var doc = docs[0];
+					var ret_profile = {};
+					var extra_fields = ['skype', 'github_id', 'cell', 'favorite_color', 'email',
+					      'last_name', 'first_name', 'institute', 'position',
+					      'percent_xenon', 'start_date', 'lngs', 'github',
+					      'picture_url', 'github_home'];
+					for(var i in extra_fields){
+		  				if(typeof doc[extra_fields[i]]==='undefined')
+		      				ret_profile[extra_fields[i]] = "not set";
+						else
+			  				ret_profile[extra_fields[i]] = doc[extra_fields[i]];
+					}
+					ret_profile['github_info'] = {};
+	    			console.log("Login success");
+	    			return done(null, ret_profile);
+  				}
+  				return done(null, false);
+	  		});
+  		});
+
+    });
+  }
+));
+
+
 // End auth
+// End long stuff
+//require("./mongo_session_cache.js")
+//require("./passport_session.js")
+
 
 // Aliases for paths to node_modules (you might want to just copy .mins to static folder)
 app.use('/bs', express.static(__dirname + '/node_modules/bootstrap3/dist/'));
