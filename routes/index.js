@@ -402,7 +402,7 @@ router.post("/linkGithub", (req, res) => {
 				    from: process.env.DAQ_CONFIRMATION_ACCOUNT,
 				    to: req.body.email,
 				    subject: 'XENONnT Account Confirmation',
-				    html: '<p>Please click <a href="http://10.4.73.169:3000/verify?code='+random_hash+'">here</a> to verify your email.</p><p>If you did not request this email please delete.</p>'
+				    html: '<p>Please click <a href="http://daq-page.appspot.com/verify?code='+random_hash+'">here</a> to verify your email.</p><p>If you did not request this email please delete.</p>'
 				};
 				
 				transporter.sendMail(mailOptions, function(error, info){

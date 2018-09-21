@@ -1,8 +1,8 @@
 var mongoose = require('mongoose');
 var DataTable = require('mongoose-datatable');
-var RunsModel;
-mongo_pw = process.env.MONGO_PASSWORD
-var dbURI = 'mongodb://web:'+mongo_pw+'@localhost:27017/dax';
+var runsModel;
+var dbURI = "mongodb://" + process.env.RUNS_MONGO_USER + ":" + process.env.RUNS_MONGO_PASSWORD + '@' +
+ 			process.env.RUNS_MONGO_HOST+':'+process.env.RUNS_MONGO_PORT+'/'+process.env.RUNS_MONGO_DB;
 var runsdb = mongoose.connection;
 
 var runs;
@@ -11,6 +11,8 @@ var runsTableSchema;
 DataTable.configure({ verbose: true, debug : true });
 mongoose.plugin(DataTable.init);
 mongoose.connect(dbURI, {dbName: 'run'});
+
+console.log(dbURI);
 
 runsdb.on('error', console.error.bind(console, 'connection error:'));
 runsdb.once('open', function callback ()
