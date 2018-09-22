@@ -110,13 +110,18 @@
     background-color: white;
 }
 
+.json_detail{
+	height: calc(100vh - 25%);
+	width: calc(100vh - 30%);
+}
+
 .form-label{
     color: #5992c2;
 }
 
 table.dataTable tbody tr.selected {
     color: white !important;
-    background-color: #0582c2 !important;
+    background-color: #06d6a0 !important;
 }
 
 /*

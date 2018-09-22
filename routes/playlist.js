@@ -93,10 +93,11 @@ router.post("/new_run", ensureAuthenticated, (req, res) => {
 	    "command": "start",
 	    "detector": req.body.detector,
 	    "user": req.body.user,
-	    "comment": req.body.comment,
 	    "stop_after": req.body.stop_after,
 	    "status": "queued"
 	}
+	if(typeof req.body.comment !== 'undefined' && req.body.comment !== "")
+		idoc['comment'] = req.body.comment;
 	
 	collection.insert(idoc);
     }
