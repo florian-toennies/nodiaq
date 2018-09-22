@@ -13,10 +13,10 @@ function InitializeTable(DOM){
 		"<span style='font-weight:bold;color:green'>USER</span>"];
 
     // Get the window height minus padding (80px)
-    var vh = $(window).height() - $("#newentry").outerHeight(true) - $("body > nav").outerHeight(true) - 10;
+    var vh = $(window).height() - $("#newentry").outerHeight(true) - 20;
     $(DOM).tabulator({
 	height: vh, // set height of table (in CSS or here), this enables the Virtual DOM and improves render speed dramatically (can be any valid css height value)
-	layout:"fitColumns", //fit columns to width of table (optional)
+	layout:"fitDataFill", //fit columns to width of table (optional)
 	pagination: "local",
 	columns:[ //Define Table Columns
             {title:"Time", field:"time", width: 200},

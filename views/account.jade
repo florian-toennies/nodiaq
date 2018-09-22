@@ -1,7 +1,5 @@
 extends layout
 
-block sidebar
-
 block content
   div.container
     br
@@ -83,6 +81,7 @@ block content
               button.btn.btn-default(type='button' data-dismiss='modal') Close
   script.
     $(document).ready(function(){
+    	DrawActiveLink("#laccount");
       if('#{user.favorite_color}' != "not set"){
         console.log("HERE");
         $("#form_color").val("#{user.favorite_color}");

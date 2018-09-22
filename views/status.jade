@@ -21,32 +21,47 @@ block content
               span(id="#{detector}_checkin")
           
     each reader in readers
-      div.reader_detail
-        div.reader_header
-          table.table(style="width:100%;height:100%;margin:0")
-            tr
-              td(style="padding:0")
-                strong Node:  
-                span #{reader}
-              td(style="padding:0")
-                strong Status: 
-                span(id="#{reader}_status")
-              td(style="padding:0")
-                strong Rate:  
-                span(id="#{reader}_rate")
-              td(style="padding:0")
-                strong Buffer Size:  
-                span(id="#{reader}_buffer")
-              td(style="padding:0")
-                strong Mode:  
-                span(id="#{reader}_mode")
-              td(style="padding:0")
-                strong Run:  
-                span(id="#{reader}_run")
-              td(style="padding:0")
-                strong Check-in:  
-                spend(id="#{reader}_check-in")
-        div.reader_chartdiv(id="#{reader}_chartdiv")
+      div.container(style="width:100%;margin:0;max-width:100%")
+        div.row.reader_detail
+          div.col-sm-12.col-md-4.col-lg-3(style="padding:5px;")
+            table.table.table-condensed(style="width:100%;height:100%;margin:0")
+              tr
+                td(style="padding:0")
+                  strong Node:
+                td(style="padding:0")
+                  strong(style="color:#2a5935") #{reader}
+              tr
+                td(style="padding:0")
+                  strong Status: 
+                td(style="padding:0")
+                  span(id="#{reader}_status")
+              tr
+                td(style="padding:0")
+                  strong Rate:  
+                td(style="padding:0")
+                  span(id="#{reader}_rate")
+              tr
+                td(style="padding:0")
+                  strong Buffer Size:  
+                td(style="padding:0")
+                  span(id="#{reader}_buffer")
+              tr
+                td(style="padding:0")
+                  strong Mode:  
+                td(style="padding:0")  
+                  span(id="#{reader}_mode")
+              tr
+                td(style="padding:0")
+                  strong Run:  
+                td(style="padding:0")
+                  span(id="#{reader}_run")
+              tr
+                td(style="padding:0")
+                  strong Check-in:  
+                td(style="padding:0")
+                  span(id="#{reader}_check-in")
+          div.col-sm-12.col-md-8.col-lg.9
+            div.reader_chartdiv(id="#{reader}_chartdiv")
   script.
     var readers = ["fdaq00_reader_0", "fdaq00_reader_1"];
     $(document).ready(function () {

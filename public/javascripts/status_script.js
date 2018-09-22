@@ -18,8 +18,8 @@ function UpdateStatusPage(){
 	    console.log(data);
 	    var rd = data['host'];
 	    document.getElementById(rd+"_status").innerHTML = GetStatus(data['status']);
-	    document.getElementById(rd+"_rate").innerHTML	= data['rate'].toString() + " MB/s";
-	    document.getElementById(rd+"_buffer").innerHTML	= data['buffer_length'].toString() + " MB";
+	    document.getElementById(rd+"_rate").innerHTML	= data['rate'].toFixed(2) + " MB/s";
+	    document.getElementById(rd+"_buffer").innerHTML	= data['buffer_length'].toFixed(2) + " MB";
 	    document.getElementById(rd+"_mode").innerHTML	= data['run_mode'];
 	    document.getElementById(rd+"_run").innerHTML	= data['current_run_id'];
 	    document.getElementById(rd+"_check-in").innerHTML	= data['checkin'];

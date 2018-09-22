@@ -7,14 +7,14 @@ block extrahead
   script(src="javascripts/tabulator.min.js" type="text/javascript")
 
 block content     
-  div.main-container
+  div.main-container(style="width:100%;padding:25")
     form(action="/logui/new_log_message", method="post")
       div.input-group.mb-3#newentry(style='padding-top:5px')
         input.form-control(type="text", name="entry", placeholder="New Log Entry...")
         div.input-group-append
           button.btn.btn-outline-secondary(type="submit") Enter
 
-    table#log_table
+    table#log_table(style="width:100%;height:100%")
 
 
   script.

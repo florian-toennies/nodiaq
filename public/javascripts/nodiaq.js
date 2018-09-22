@@ -1,13 +1,14 @@
 function DrawActiveLink(page){
-    pages = [
+    var pages = [
 	"#lindex", "#lplaylist", "#lstatus", "#lhosts", "#loptions", "#lruns",
-	"#llog", "#lusers", "#lhelp"
+	"#llog", "#lusers", "#lhelp", "#laccount"
     ];
-    for(i in pages){
-	if(pages[i] != page)
-	    $(pages[i]).removeClass("active_sidebar_link");
-	else
-	    $(pages[i]).addClass("active_sidebar_link");
+    for(var i in pages){
+    	console.log(pages[i]);
+		if(pages[i] !== page)
+	    	$(pages[i]).removeClass("active");
+		else
+	    	$(pages[i]).addClass("active");
     }
 }
 
@@ -25,13 +26,16 @@ function SetNavbar(fc){
     var hcol = hexToRgb(fc);
     console.log(hcol);
     if(hcol!=null){
-        //$("#navbar").css("cssText", "background_color:"+ fc+" !important");
-        complement = "#eeeeee";
-        if((hcol['r']+hcol['g']+hcol['b'])/3 > 128)
-            complement="#333333";
-        $("#navbar").css("cssText", "background-color: " + fc +
-			 "!important;border-bottom: 1px solid #888888");
-	$("#navbar > .navbar-brand").css("cssText", "color: "+ complement+ "!important");
-	$(".nav-item > a").css("cssText", "color:"+complement+"!important");
+      complement = "#eeeeee";
+      if((hcol['r']+hcol['g']+hcol['b'])/3 > 128)
+         complement="#333333";
+    $("#sidebar").css("cssText", "background-color: " + fc +
+		 "!important;color:"+complement+" !important");
+		$(".colored").css("cssText", "background-color: " + fc +
+			 "!important;color:"+complement+" !important");
+			 $(".anticolored").css("cssText", "background-color: " + complement +
+			 "!important");
+	//$("#navbar > .navbar-brand").css("cssText", "color: "+ complement+ "!important");
+	//$(".nav-item > a").css("cssText", "color:"+complement+"!important");
     }
 }
