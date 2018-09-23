@@ -50,6 +50,25 @@ router.post('/addtags', ensureAuthenticated, function(req, res){
 
 });
 
+router.post('/removetag', ensureAuthenticated, function(req, res){
+    var db = req.runs_db;
+    var collection = db.get("run");
+
+    var run = req.body.run;
+    var tag = req.body.tag;
+    var user = req.user.last_name;
+
+    // Convert runs to int
+    runint = parseInt(run);
+    // Update one
+    collection.update({"number": runint},
+		      {"$pull": {"tags": {"name": tag, "user": user}}},
+		      {multi:false}, function(){
+			  return res.sendStatus(200);
+		      });
+});
+
+
 router.post('/addcomment', ensureAuthenticated, function(req, res){
     var db = req.runs_db;
     var collection = db.get("run");

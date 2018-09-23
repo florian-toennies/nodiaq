@@ -101,7 +101,9 @@ block content
             br
             button.btn.btn-error(type='button' data-dismiss='modal') Close         
   script.
-    $(document).ready(function(){
+    // This allows the included javascript to see who the user is
+    var user = '#{user.last_name}';
+    $(document).ready(function(){    	
       DrawActiveLink("#lruns");
       InitializeRunsTable("#runs_table");
       });

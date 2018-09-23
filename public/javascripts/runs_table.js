@@ -161,11 +161,27 @@ function InitializeRunsTable(divname){
     
     });
 }
+function RemoveTag(run, user, tag){
+	console.log("Remove tag!");
+	console.log(run, user, tag);
+	// Remove ALL tags with a given text string
+	if(typeof run === 'undefined' || typeof user === 'undefined' || typeof tag === 'undefined')
+		return;
+	$.ajax({
+		type: "POST",
+		url: "/runsui/removetag",
+		data: {"run": run, "user": user, "tag": tag},
+		success: function(){ ShowDetail(run);},
+		error: function(jqXHR, textStatus, errorThrown){
+			alert("Error, status = " +textStatus + ", " + "error thrown: " + errorThrown);
+		}
+	});
+}
 
 function ShowDetail(run){
 	//var namefield =  [['Number', 'number'], ['Detectors', 'detectors'], ['Start', 'start']End', 'User', 'Mode', 'Source'];
 	$.getJSON("/runsui/get_run_doc?run="+run, function(data){
-			
+			console.log(window['user']);
 		// Set base data
 		document.getElementById("detail_Number").innerHTML = data['number'];
 		$("#detail_Detectors").html(data['detector']);
@@ -179,13 +195,19 @@ function ShowDetail(run){
 		for(var i in data['tags']){
 			var row = data['tags'][i];
 			tag_html += "<tr><td>" + row['name'] + "</td><td>" + row['user'] + "</td><td>";
-			tag_html += moment(row['date']).format("DD.MM.YYYY hh:mm") + "</td><td></td></tr>";
+			tag_html += moment(row['date']).format("DD.MM.YYYY hh:mm") + "</td>";
+			if(row['user'] === window['user']){
+				tag_html += "<td><button onclick='RemoveTag("+data['number']+", "+'"'+row['user']+'"'+", "+'"'+row['name']+'"';
+				tag_html += ")' class='btn btn-warning'>Remove tag</button></td></tr>";
+			}
+			else
+				tag_html += "<td></td></tr>";
 		}
 		$("#detail_Tags").html(tag_html);
 		var comment_html = "";
 		for(var i in data['comments']){
 			var row = data['comments'][i];
-			comment_html += "<tr><td>" + row['comment'] + "</td><td>" + row['user'] + "</td><td>";
+			comment_html += "<tr><td>" + row['user'] + "</td><td>" + row['comment'] + "</td><td>";
 			comment_html += moment(row['date']).format("DD.MM.YYYY hh:mm") + "</td></tr>";
 		}
 		$("#detail_Comments").html(comment_html);

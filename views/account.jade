@@ -33,7 +33,7 @@ block content
             td #{user.cell}
           tr
             td LNGS ID
-            td #{user.lngs}
+            td #{user.LNGS}
           tr
             td Coolness
             td #{user.percent_xenon}% cool
@@ -83,7 +83,6 @@ block content
     $(document).ready(function(){
     	DrawActiveLink("#laccount");
       if('#{user.favorite_color}' != "not set"){
-        console.log("HERE");
         $("#form_color").val("#{user.favorite_color}");
       }
     });

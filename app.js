@@ -133,7 +133,7 @@ passport.use(new GitHubStrategy({
 			      var ret_profile = {};
 			      var extra_fields = ['skype', 'github_id', 'cell', 'favorite_color', 'email',
 					      'last_name', 'first_name', 'institute', 'position',
-					      'percent_xenon', 'start_date', 'lngs', 'github',
+					      'percent_xenon', 'start_date', 'LNGS', 'github',
 					      'picture_url', 'github_home'];
 			      for(var i in extra_fields){
 				  if(typeof doc[extra_fields[i]]==='undefined')
@@ -181,7 +181,7 @@ passport.use(new LocalStrategy({
 					var ret_profile = {};
 					var extra_fields = ['skype', 'github_id', 'cell', 'favorite_color', 'email',
 					      'last_name', 'first_name', 'institute', 'position',
-					      'percent_xenon', 'start_date', 'lngs', 'github',
+					      'percent_xenon', 'start_date', 'LNGS', 'github',
 					      'picture_url', 'github_home'];
 					for(var i in extra_fields){
 		  				if(typeof doc[extra_fields[i]]==='undefined')
