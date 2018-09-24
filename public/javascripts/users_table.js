@@ -70,6 +70,9 @@ function InitializeUsersTable(divname){
 		document.getElementById("ppic").innerHTML="<img src='"+data['picture_url']+
 		    "', style='width:100%;max-width:150px'/>";
 	    }
+	    else{
+	    	document.getElementById("ppic").innerHTML = "";
+	    }
 	}
 	document.getElementById("headerName").innerHTML=data['first_name'] +
 	    " " + data['last_name'];

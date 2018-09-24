@@ -195,6 +195,16 @@ span {
     transition: all 0.3s;
 }
 
+#sidebar .logo{
+	display: none;
+}
+#sidebar.active .logo{
+	display: block;
+	width:80px;
+	height:80px;
+	margin-left:-20px !important;
+}
+
 #sidebar.active {
     min-width: 80px;
     max-width: 80px;
