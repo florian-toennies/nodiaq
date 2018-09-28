@@ -5,17 +5,20 @@ function GetStatus(i){
 	"<span style='color:cyan'><strong>Armed</strong></span>",
 	"<span style='color:green'><strong>Running</strong></span>",
 	"<span style='color:red'><strong>Error</strong></span>",
+	"<span style='color:red'><strong>Timeout</strong></span>", 
+	"<span style='color:yellow'><strong>Undecided</strong></span>"
     ];
     return STATUSES[i];
 }
 
 function UpdateStatusPage(){
     var readers = ["fdaq00_reader_0", "fdaq00_reader_1"];
-    var detectors = ["tpc"];
+    var controllers = ['fdaq00_controller_0'];
+    var brokers = ["fdaq00_broker_0"];
+    
     for(i in readers){
 	var reader = readers[i];
 	$.getJSON("/status/get_reader_status?reader="+reader, function(data){
-	    console.log(data);
 	    var rd = data['host'];
 	    document.getElementById(rd+"_status").innerHTML = GetStatus(data['status']);
 	    document.getElementById(rd+"_rate").innerHTML	= data['rate'].toFixed(2) + " MB/s";
@@ -30,23 +33,78 @@ function UpdateStatusPage(){
 	    }
 	});
     }
-    for(i in detectors){
-	var detector = detectors[i];
-	$.getJSON("/status/get_detector_status?detector="+detector, function(data){
-	    document.getElementById(detector+"_status").innerHTML = GetStatus(data['status']);
-	    document.getElementById(detector+"_checkin").innerHTML = data['checkin'];
-	});
+
+    
+    for(i in controllers){
+    	var controller = controllers[i];
+    	$.getJSON("/status/get_controller_status?controller="+controller, (function(c){ return function(data) {
+			atts = ['checkin', 'host'];
+			for (var i in atts){
+				att = atts[i];
+				console.log(c+"_"+att);
+				document.getElementById(c+"_"+att).innerHTML = data[att];
+			}
+		};
+	}(controller)));
+	
+	for(i in brokers){
+		var broker = brokers[i];
+		$.getJSON("/status/get_broker_status?broker="+broker, (function(b){return function(data){
+			for(var i in data){
+				doc = data[i];
+				var idstart = b + '_' + doc['detector'] + '_';
+				atts = ['active', 'comment', 'detector', 'hosts', 'crate_controller', 'diagnosis', 'mode', 'number', 'started_at', 'status', 'stop_after', 'user'];
+				//state ishas
+				document.getElementById(idstart+"detector").innerHTML = "<strong>"+doc['detector']+"</strong>";
+				if(doc['diagnosis'] == 'goal')
+			  		document.getElementById(idstart+"state").innerHTML="<strong style='color:green'>Goal</strong>";
+				else if(doc['diagnosis'] == 'processing')
+			  		document.getElementById(idstart+"state").innerHTML="<strong style='color:blue'>Processing</strong>";
+				else if(doc['diagnosis'] == 'error')
+			  		document.getElementById(idstart+"state").innerHTML="<strong style='color:red'>Error</strong>";
+				var endstring = "&nbsp;&nbsp;<strong>(</strong>" + GetStatus(doc['status']);
+				endstring += '/';
+				if(doc['active'] == 'true')
+			  		endstring += "<strong>Active)</strong>";
+				else
+			  		endstring += "<strong>Inactive)</strong>";
+				document.getElementById(idstart+"ishas").innerHTML = endstring;
+			
+				var atts = ["mode", "user", "run", 'stop_after'];
+				for(var i in atts){
+					var att = atts[i];
+					var a = doc[att];
+					if(typeof doc[att] === 'undefined')
+				 		 a = "";
+				 	var endstring = "";
+				 	if(att==="mode") endstring = " min";
+				document.getElementById(idstart+att).innerHTML = a + endstring;
+			}
+			document.getElementById(idstart+"started").innerHTML = moment(doc['started_at']).format('DD. MMM. hh:mm');
+			if(typeof doc['crate_controller'] !== 'undefined')
+			  document.getElementById(idstart+"crate_controller").innerHTML = doc['crate_controller'];
+			if(typeof doc['hosts'] !== 'undefined'){
+				var html = "";
+				for(var j in doc['hosts']){
+					html += "<p style='margin-top:1px;margin-bottom:1px'>"+doc["hosts"][j]+"</p>";
+				}
+			  document.getElementById(idstart+"readers").innerHTML = html;
+			}
+
+		  }
+
+		};
+		}(broker)));
+	}
+
+
     }
+    
     setTimeout(UpdateStatusPage, 5000);	   
 }
 
 function UpdateChart(host, ts, rate, buff){
-    console.log("UPDATE");
-    console.log(document.charts);
     if(host in (document.charts) && document.charts[host] != null){
-	console.log("REALLY");
-	console.log(ts);
-	console.log(rate);
 	var tss = (new Date(ts)).getTime();
 	document.charts[host].series[0].addPoint([tss, rate], true, true);    
 	document.charts[host].series[1].addPoint([tss, buff], true, true);
@@ -71,7 +129,6 @@ function DrawInitialCharts(){
 	    ];
 
 	    var div = host+"_chartdiv";
-	    console.log(div);
 	    document.charts[host] = Highcharts.chart(
 		div, {
 		    chart: {

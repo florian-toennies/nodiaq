@@ -60,42 +60,58 @@ html
           span.anticolored
           span.anticolored
           span.anticolored
-        div.sidebar-header.colored
-          h3 XENONnT DAQ
+        div.sidebar-header.colored(style="padding-bottom:5px")
+          div.CTAs
+            h3(style="margin-left:25px;") XENONnT
+            img(src="images/dumpster_fire.png", style="margin-left:35px;width:100px;")
+            h3(style="margin-left:55px;") DAQ
           img.logo(src="images/mstile-310x310.png")
           //strong nT
-        ul.list-unstyled.components
+        ul.list-unstyled.components(style="padding-top:5px")
           li.colored#lindex
              a(href="/")
-               //i.fas.fa-home
+               i.fa.fa-binoculars
                span Overview
-          li.colored#lplaylist
-            a(href='/playlist') 
-              span Control
+          //li.colored#lplaylist
+          //  a(href='/playlist') 
+          //    span Playlist
+          li.colored#lcontrol
+            a(href='/control') 
+              i.fa.fa-wrench 
+              span Control          
           li.colored#lstatus
-            a(href='/status') 
+            a(href='/status')
+              i.fa.fa-tasks
               span Processes
-          li.colored#lhosts
+          li.colored.CTAs#lhosts
             a(href='/hosts') 
+              i.fa.fa-desktop
               span Hosts
-          li.colored#loptions
+          li.colored.CTAs#loptions
             a(href='/options') 
+              i.fa.fa-cogs
               span Config
           li.colored#lruns
-            a(href='/runsui') 
+            a(href='/runsui')
+              i.fab.fa-accessible-icon
               span Runs
-          li.colored#llog
-            a(href='/logui') 
+          li.colored.CTAs#llog
+            a(href='/logui')
+              i.fa.fa-book-open
               span Log
           li.colored#lhelp
-            a(href='/help') 
+            a(href='/help')
+              i.fa.fa-question
               span Help
           br
-          li.colored#lusers
+          li.colored.CTAs#lusers
             a(href='/users') 
+              i.fa.fa-kiwi-bird
               span Users
-          li.colored#laccount
-            a(href="/account") Profile
+          li.colored.CTAs#laccount
+            a(href="/account") 
+              i.fa.fa-user
+              span Profile
           br
           li.colored(style="background-color:#06d6a0")
             a(href="/logout") Sign Out

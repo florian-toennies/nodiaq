@@ -1,7 +1,7 @@
 function DrawActiveLink(page){
     var pages = [
 	"#lindex", "#lplaylist", "#lstatus", "#lhosts", "#loptions", "#lruns",
-	"#llog", "#lusers", "#lhelp", "#laccount"
+	"#llog", "#lusers", "#lhelp", "#laccount", "#lcontrol"
     ];
     for(var i in pages){
     	console.log(pages[i]);

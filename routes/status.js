@@ -16,28 +16,63 @@ router.get('/', ensureAuthenticated, function(req, res) {
     //    res.render('index', { clients: clients });
 });
 
-router.get('/get_detector_status', ensureAuthenticated, function(req, res){
+router.get('/get_broker_status', ensureAuthenticated, function(req, res){
     var db = req.db;
-    var collection = db.get('aggregate_status');
+    var collection = db.get('dispatcher_status');
 
-    var q = url.parse(req.url, true).query;
-    var detector = q.detector;
+    //var q = url.parse(req.url, true).query;
+    //var detector = q.detector;
 
-    collection.find({"detector": detector},
-		    {"sort": {"_id": -1}, "limit": 1},
+    collection.find({},
 		    function(e, sdoc){
-			if(sdoc.length == 0)
-			    return res.send(JSON.stringify({"status": -1,
-							   "ts": new Date(),
-							    "checkin": 0}));
-			var rdoc = sdoc[0];
-			var now = new Date();
-			var oid = new req.ObjectID(rdoc['_id']);
-			var indate = Date.parse(oid.getTimestamp());
-			rdoc['checkin'] = parseInt((now-indate)/1000);
-			rdoc['ts'] = indate;
-			return res.send(JSON.stringify(rdoc));
+			if(sdoc.length === 0)
+			    return res.send(JSON.stringify({}));
+			return res.send(JSON.stringify(sdoc));
 		    });
+});
+
+router.get('/get_detector_status', ensureAuthenticated, function(req, res){
+	var db = req.db;
+	var collection = db.get('aggregate_status');
+	
+	var q = url.parse(req.url, true).query;
+	var detector = q.detector;
+	
+	collection.find({"detector": detector},
+	{"sort": {"_id": -1}, "limit": 1},
+	function(e, sdoc){
+		if(sdoc.length === 0)
+			return res.send(JSON.stringify({}));
+		var rdoc = sdoc[0];
+		var now = new Date();
+		var oid = new req.ObjectID(rdoc['_id']);
+		var indate = Date.parse(oid.getTimestamp());
+		rdoc['checkin'] = parseInt((now-indate)/1000, 10);
+		rdoc['timestamp'] = indate;
+		return res.send(JSON.stringify(rdoc));
+	});
+});
+
+router.get('/get_controller_status', ensureAuthenticated, function(req, res){
+	var db = req.db;
+	var collection = db.get('status');
+	
+	var q = url.parse(req.url, true).query;
+	var controller = q.controller;
+	
+	collection.find({"host": controller},
+	{"sort": {"_id": -1}, "limit": 1},
+	function(e, sdoc){
+		if(sdoc.length === 0)
+			return res.send(JSON.stringify({}));
+		var rdoc = sdoc[0];
+		var now = new Date();
+		var oid = new req.ObjectID(rdoc['_id']);
+		var indate = Date.parse(oid.getTimestamp());
+		rdoc['checkin'] = parseInt((now-indate)/1000, 10);
+		rdoc['timestamp'] = indate;
+		return res.send(JSON.stringify(rdoc));
+	});
 });
 			
 router.get('/get_reader_status', ensureAuthenticated, function(req, res){
@@ -60,7 +95,7 @@ router.get('/get_reader_status', ensureAuthenticated, function(req, res){
 	    var now = new Date();
 	    var oid = new req.ObjectID(rdoc['_id']);
 	    var indate = Date.parse(oid.getTimestamp());
-	    rdoc['checkin'] = parseInt((now-indate)/1000);
+	    rdoc['checkin'] = parseInt((now-indate)/1000, 10);
 	    rdoc['ts'] = indate;
 	    return res.send(JSON.stringify(rdoc));
 	});
@@ -80,7 +115,7 @@ router.get('/get_reader_history', ensureAuthenticated, function(req,res){
 	return res.send(JSON.stringify({}));
 
     collection.find({"host": reader},
-		    {"sort": {"_id": -1}, "limit": parseInt(limit)},
+		    {"sort": {"_id": -1}, "limit": parseInt(limit, 10)},
 		    function(e, docs){
 			rates = [];
 			buffs = [];
@@ -90,7 +125,7 @@ router.get('/get_reader_history', ensureAuthenticated, function(req,res){
 			    var dt = Date.parse(oid.getTimestamp());
 			    if(host == null)
 				host = docs[i]['host'];			    
-			    rates.push([dt, docs[i]['rate']])
+			    rates.push([dt, docs[i]['rate']]);
 			    buffs.push([dt, docs[i]['buffer_length']]);
 			}
 			if(host==null){

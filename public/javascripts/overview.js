@@ -31,12 +31,16 @@ function UpdateOverviewPage(){
 		    if(typeof(data[atts[j]])!="undefined"){
 			if(atts[j]=="time")
 			    document.getElementById(det+"_"+atts[j]).innerHTML =
-			    moment(data[atts[j]]).format('DD. MMM. hh:mm');
-			else
-			    document.getElementById(det+"_"+atts[j]).innerHTML = data[atts[j]];
+			    	moment(data[atts[j]]).format('DD. MMM. hh:mm');
+			else if(atts[j] == "rate")
+			    document.getElementById(det+"_"+atts[j]).innerHTML = data[atts[j]].toFixed(2) + " MB/s";
+			else if(atts[j] == "buff")
+				document.getElementById(det+"_"+atts[j]).innerHTML = data[atts[j]].toFixed(2) + " MB";
+		 	else
+		 		document.getElementById(det+"_"+atts[j]).innerHTML = data[atts[j]];
 		    }
 		    else
-			document.getElementById(det+"_"+atts[j]).innerHTML = '-';
+				document.getElementById(det+"_"+atts[j]).innerHTML = '-';
 		}
 
 		// Update charts if needed
@@ -65,7 +69,7 @@ function DrawOverviewCharts(){
     document.charts = {};
     document.last_time_charts = {};
     var detectors = ["tpc", "muon_veto", "neutron_veto"];
-
+	var colors = {"tpc": "#1c0877", "muon_veto": "#df3470", "neutron_veto": "#3dd89f"}
     for(i in detectors){
 	var detector = detectors[i];
 	$.getJSON("/detector_history?limit=1000&detector="+detector, (function(det){
@@ -78,8 +82,8 @@ function DrawOverviewCharts(){
 		    return;
 		document.last_time_charts[det] = data['rates'][data['rates'].length-1][0];
 		var series = [
-		    {"type": "area", "name": "transfer rate", "data": data['rates']},
-		    {"type": "area", "name": "buffered data", "data": data['buffs']}
+		    {"type": "area", "name": "transfer rate", "data": data['rates'], "color": colors[det]},
+		    {"type": "area", "name": "buffered data", "data": data['buffs'], "color": "#222222"}
 		];
 		var div = det+"_chartdiv";
 		document.charts[det] = Highcharts.chart(
@@ -91,6 +95,12 @@ function DrawOverviewCharts(){
 			    marginBottom: 30,
 			    marginRight:10
 			},
+			plotOptions: {
+            	series: {
+               	 	fillOpacity: 0.3,
+               	 	lineWidth: 1
+            	}	
+        	},
 			credits: {
 			    enabled: false,
 			},

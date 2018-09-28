@@ -19,7 +19,7 @@ function InitializeRunsTable(divname){
             { data : "mode", searchable: true },
             { data : "source", searchable: true },
             { data : "user"},
-            { data : "start", format: 'DD.MM.YYYY hh:mm', type: 'datetime'},
+            { data : "start", format: 'DD.MM.YYYY HH:mm', type: 'datetime'},
             { data : "end", "defaultContent": "<i>Not set</i>"},
             { data : "tags", "defaultContent": "",
 	      searchable: true,
@@ -45,7 +45,7 @@ function InitializeRunsTable(divname){
 	    {
 		targets: [6, 7],
 		render: function(data){
-		    return moment(data).format('DD.MM.YYYY hh:mm');
+		    return moment(data).format('DD.MM.YYYY HH:mm');
 		}
 	    }
 	]
@@ -185,8 +185,8 @@ function ShowDetail(run){
 		// Set base data
 		document.getElementById("detail_Number").innerHTML = data['number'];
 		$("#detail_Detectors").html(data['detector']);
-		$("#detail_Start").html(moment(data['start']).format('DD.MM.YYYY hh:mm'));
-		$("#detail_End").html(moment(data['end']).format('DD.MM.YYYY hh:mm'));
+		$("#detail_Start").html(moment(data['start']).format('DD.MM.YYYY HH:mm'));
+		$("#detail_End").html(moment(data['end']).format('DD.MM.YYYY HH:mm'));
 		$("#detail_User").html(data['user']);
 		$("#detail_Mode").html(data['mode']);
 		$("#detail_Source").html(data['source']);
@@ -195,7 +195,7 @@ function ShowDetail(run){
 		for(var i in data['tags']){
 			var row = data['tags'][i];
 			tag_html += "<tr><td>" + row['name'] + "</td><td>" + row['user'] + "</td><td>";
-			tag_html += moment(row['date']).format("DD.MM.YYYY hh:mm") + "</td>";
+			tag_html += moment(row['date']).format("DD.MM.YYYY HH:mm") + "</td>";
 			if(row['user'] === window['user']){
 				tag_html += "<td><button onclick='RemoveTag("+data['number']+", "+'"'+row['user']+'"'+", "+'"'+row['name']+'"';
 				tag_html += ")' class='btn btn-warning'>Remove tag</button></td></tr>";
@@ -208,7 +208,7 @@ function ShowDetail(run){
 		for(var i in data['comments']){
 			var row = data['comments'][i];
 			comment_html += "<tr><td>" + row['user'] + "</td><td>" + row['comment'] + "</td><td>";
-			comment_html += moment(row['date']).format("DD.MM.YYYY hh:mm") + "</td></tr>";
+			comment_html += moment(row['date']).format("DD.MM.YYYY HH:mm") + "</td></tr>";
 		}
 		$("#detail_Comments").html(comment_html);
 		$("#detail_JSON").JSONView(data);

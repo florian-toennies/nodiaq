@@ -51,6 +51,7 @@ var logRouter = require('./routes/logui');
 var helpRouter = require('./routes/help');
 var statusRouter = require('./routes/status');
 var authRouter = require('./routes/auth');
+var controlRouter = require('./routes/control');
 
 // Using express!
 var app = express();
@@ -251,6 +252,7 @@ app.use('/help', helpRouter);
 app.use('/users', userRouter);
 app.use('/status', statusRouter);
 app.use('/auth', authRouter);
+app.use('/control', controlRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

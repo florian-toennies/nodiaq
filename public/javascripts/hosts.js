@@ -12,7 +12,7 @@ function UpdateMonitorPage(){
 		    if(typeof(data[atts[j][0]])!="undefined"){
 			//if(atts[j]=="time")
 			 //   document.getElementById(det+"_"+atts[j]).innerHTML =
-			  //  moment(data[atts[j]]).format('DD. MMM. hh:mm');			
+			  //  moment(data[atts[j]]).format('DD. MMM. HH:mm');			
 			document.getElementById(h+"_"+atts[j][0]).innerHTML = data[atts[j][0]];
 		    }
 		    else

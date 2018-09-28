@@ -1,0 +1,95 @@
+extends layout
+block extrahead
+  script(src="javascripts/bootstrap-toggle.min.js", type="text/javascript")
+  script(src="javascripts/control.js", type="text/javascript")
+  link(rel="stylesheet", href="stylesheets/bootstrap-toggle.css")
+  link(rel="stylesheet", href="stylesheets/control.css")
+  //script(src="javascripts/control.js", type="text/javascript")
+
+block content
+  div.main-container
+    div#confirm_div(style="width:100%;border:1px solid #ccc;margin:0;display:none")
+        div.row(style="padding:5px;")
+          div.col-12
+            strong DAQ control. &nbsp;
+            span Once you're done, submit your changes with this button. And, you know, take care.
+          div.col-12
+            div.float-right
+              button.btn.btn-warning.btn-xl(onclick="PostServerData()") Submit Changes
+          
+    - var detectors = [["tpc", "TPC"], ["muon_veto", "Muon Veto"], ["neutron_veto", "Neutron Veto"]];
+    each det in detectors
+      //div.reader_detail
+      div(style="width:100%;border:1px solid #ccc;margin-top:10px")
+        div.row(style="padding-left:5px;padding-top:5px;")
+          div.col-xs-12.col-sm-2.col-md-3.col-lg-3.col-xl-3
+            h3 #{det[1]}
+          if det[0] == 'tpc'
+            div.col-xs-12.col-sm-10.col-md-9.col-lg-9.col-xl-9
+              div.float-right
+                div.form-check-inline 
+                  label.form-check-label
+                    span Run &nbsp;
+                    input#tpc_active(type="checkbox" checked data-toggle="toggle" style="height:25px" data-onstyle="success" data-offstyle="danger" data-on="on" data-off="off")
+                div.form-check-inline 
+                  label.form-check-label
+                    span Muon Veto &nbsp;
+                    input#link_mv(type="checkbox" checked data-toggle="toggle" data-onstyle="success" data-offstyle="danger" style="height:25px" data-on="Linked" data-off="Unlinked")
+                div.form-check-inline
+                  label.form-check-label
+                    span Neutron Veto &nbsp;
+                    input#link_nv(type="checkbox" checked data-toggle="toggle" data-onstyle="success" data-offstyle="danger"  data-on="Linked" data-off="Unlinked")
+          else
+            div.col-xs-12.col-sm-10.col-md-9.col-lg-9.col-xl-9
+              div.float-right
+                div.form-check-inline 
+                  label.form-check-label
+                    span Run &nbsp;
+                    input(id="#{det[0]}_active" type="checkbox" checked data-toggle="toggle" style="height:25px" data-onstyle="success" data-offstyle="danger" data-on="on" data-off="off")
+        hr(style="margin-top:8px;margin-bottom:8px")
+        div.row(style="padding:5px")  
+          div.col-sm-12.col-md-6.form-group
+            div.row
+              div.col-sm-12.col-md-6.form-group
+                label.form-label(for="user") Controller
+                input.form-control.my_name_is(id="#{det[0]}_user" type="text" value="#{user.last_name}" name="user" readonly required)   
+              div.col-sm-12.col-md-6.form-group
+                label.form-label(for="stopafter") Length (minutes)
+                input.form-control(id="#{det[0]}_stop_after" type="number" name="stop_after" min=0 max=1440 value=60)
+              div.col-sm-12.form-group
+                label.form-label(for="comment") Comment
+                textarea.form-control(id="#{det[0]}_comment" rows="2" name="comment" type='text')
+          div.col-sm-12.col-md-6.form-group
+            label.form-label(for="mode") Run Mode
+            select.form-control(id="#{det[0]}_mode" size="6" name="run_mode" type="text" required)
+        
+         
+     
+  script.
+    $(document).ready(function(){
+      document.page_ready = false;
+      DrawActiveLink("#lcontrol");
+      PopulateRunsList(PullServerData);
+      $("input").change(function(){console.log("!");if(document.page_ready==true){$("#confirm_div").fadeIn("fast"); $(".my_name_is").val("#{user.last_name}");}});
+      $("select").change(function(){if(document.page_ready==true){$("#confirm_div").fadeIn("fast"); $(".my_name_is").val("#{user.last_name}");}});
+      $("#tpc_active").change(function(){
+        var val = 'off';
+        if($("#tpc_active").is(":checked")) val = 'on';
+        if($("#link_mv").is(":checked")) $("#muon_veto_active").bootstrapToggle(val);
+        if($("#link_nv").is(":checked")) $("#neutron_veto_active").bootstrapToggle(val);
+      });
+      $("#link_nv").change(function(){
+        var val = 'off';
+        if($("#tpc_active").is(":checked")) val = 'on';
+        if($("#link_nv").is(":checked")) $("#neutron_veto_active").bootstrapToggle(val);
+      });
+      $("#link_mv").change(function(){
+        var val = 'off';
+        if($("#tpc_active").is(":checked")) val = 'on';
+        if($("#link_mv").is(":checked")) $("#muon_veto_active").bootstrapToggle(val);
+      });
+      //function PageUpdate(callback){
+      //  PopulatePlaylist("playlist_div");
+     // }
+      //PageUpdate(setTimeout(PageUpdate,5000));
+    });

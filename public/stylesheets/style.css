@@ -1,3 +1,8 @@
+.btn.btn-default{
+	background-color: #0c1178;
+	color: #ddd;
+}
+
 .navbar {
     border-radius: 0;
     /*background-image: url("https://www.publicdomainpictures.net/pictures/130000/velka/seamless-zebra-pattern.jpg");*/
@@ -215,6 +220,8 @@ span {
 #sidebar.active .CTAs {
     display: none;
 }
+
+
 
 #sidebar.active .sidebar-header strong {
     display: block;
