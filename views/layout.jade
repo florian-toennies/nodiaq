@@ -61,16 +61,25 @@ html
           span.anticolored
           span.anticolored
         div.sidebar-header.colored(style="padding-bottom:5px")
-          div.CTAs
-            h3(style="margin-left:25px;") XENONnT
-            img(src="images/dumpster_fire.png", style="margin-left:35px;width:100px;")
-            h3(style="margin-left:55px;") DAQ
+          div.CTAs(style="height:100px;width:100%")
+            div(style="width:100%;float:left")
+              div(style="float:left;width:100px")
+                img(src="images/dumpster_fire.png", style="width:100px;margin-left:-20px")
+              div
+                h4 XENONnT
+                h4 DAQ
+
+            //h3(style="margin-left:25px;") XENONnT
+            //img(src="images/dumpster_fire.png", style="margin-left:35px;width:100px;")
+            //h3(style="margin-left:55px;") DAQ
           img.logo(src="images/mstile-310x310.png")
           //strong nT
+          hr(style="border-top:1px solid #ccc")
         ul.list-unstyled.components(style="padding-top:5px")
           li.colored#lindex
              a(href="/")
-               i.fa.fa-binoculars
+               span.fa-stack.has-badge#errorIcon
+                 i.fa.fa-binoculars
                span Overview
           //li.colored#lplaylist
           //  a(href='/playlist') 
@@ -110,7 +119,7 @@ html
               span Users
           li.colored.CTAs#laccount
             a(href="/account") 
-              i.fa.fa-user
+              i.fa.fa-user-astronaut
               span Profile
           br
           li.colored(style="background-color:#06d6a0")
@@ -125,6 +134,7 @@ html
       //SetNavbar("#{user.favorite_color}");
       $(document).ready(function(){
 
+        CheckForErrors(setTimeout(CheckForErrors, 5000));
         $('#sidebarCollapse').on('click', function () {
           $('#sidebar').toggleClass('active');
                     $('#sidebarCollapse').toggleClass('active');

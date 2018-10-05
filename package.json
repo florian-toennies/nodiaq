@@ -6,6 +6,8 @@
 		"start": "node ./bin/www"
 	},
 	"dependencies": {
+		"apikeygen": "^1.1.0",
+		"bcrypt-nodejs": "0.0.3",
 		"bootstrap": "^3.0.0",
 		"connect-mongodb-session": "^2.0.3",
 		"constantinople": "^3.1.2",
@@ -29,6 +31,7 @@
 		"mongoose-datatable": "^1.0.6",
 		"monk": "^6.0.5",
 		"morgan": "~1.9.0",
+		"node-pre-gyp": "^0.11.0",
 		"nodemailer": "^4.6.8",
 		"passport": "^0.4.0",
 		"passport-github2": "^0.1.11",

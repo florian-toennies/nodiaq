@@ -135,7 +135,7 @@ passport.use(new GitHubStrategy({
 			      var extra_fields = ['skype', 'github_id', 'cell', 'favorite_color', 'email',
 					      'last_name', 'first_name', 'institute', 'position',
 					      'percent_xenon', 'start_date', 'LNGS', 'github',
-					      'picture_url', 'github_home'];
+					      'picture_url', 'github_home', 'api_username'];
 			      for(var i in extra_fields){
 				  if(typeof doc[extra_fields[i]]==='undefined')
 				      ret_profile[extra_fields[i]] = "not set";
@@ -143,6 +143,10 @@ passport.use(new GitHubStrategy({
 				      ret_profile[extra_fields[i]] = doc[extra_fields[i]];
 			      }
 			      ret_profile['github_info'] = profile;
+			      
+			      // This field has a bunch of funny characters that serialize poorly
+			      ret_profile['github_info']['_raw'] = '';
+			      
 			      // Save a couple things from the github profile
 			      collection.update({"github": profile._json.login},
 						{"$set": { "picture_url": profile._json.avatar_url,
@@ -150,6 +154,10 @@ passport.use(new GitHubStrategy({
 						});
 			      ret_profile['picture_url'] = profile._json.avatar_url;
 			      ret_profile['github_home'] = profile._json.html_url;
+			      
+			      // display API key set or not
+			      if(typeof doc['api_username'] !== 'undefined')
+						ret_profile['api_key'] = "SET";
 			      console.log("Login success");
 			      return done(null, ret_profile);
 			  });
@@ -183,7 +191,7 @@ passport.use(new LocalStrategy({
 					var extra_fields = ['skype', 'github_id', 'cell', 'favorite_color', 'email',
 					      'last_name', 'first_name', 'institute', 'position',
 					      'percent_xenon', 'start_date', 'LNGS', 'github',
-					      'picture_url', 'github_home'];
+					      'picture_url', 'github_home', 'api_username'];
 					for(var i in extra_fields){
 		  				if(typeof doc[extra_fields[i]]==='undefined')
 		      				ret_profile[extra_fields[i]] = "not set";
@@ -191,6 +199,8 @@ passport.use(new LocalStrategy({
 			  				ret_profile[extra_fields[i]] = doc[extra_fields[i]];
 					}
 					ret_profile['github_info'] = {};
+					if(typeof doc['api_username'] !== 'undefined')
+						ret_profile['api_key'] = "SET";
 	    			console.log("Login success");
 	    			return done(null, ret_profile);
   				}

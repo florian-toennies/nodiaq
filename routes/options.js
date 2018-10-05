@@ -16,9 +16,14 @@ router.get("/options_list", ensureAuthenticated, function(req, res){
     var collection = db.get('options');
     collection.find({}, {"sort": {"name": 1}},
 		    function(e, docs){
-			retlist = [];
-			for(var i in docs)
-			    retlist.push(docs[i]['name']);
+			retlist = {};
+			for(var i in docs){
+				if(typeof retlist[docs[i]['detector']] === 'undefined'){
+					retlist[docs[i]['detector']] = []
+				}
+			    retlist[docs[i]['detector']].push(docs[i]['name']);
+		    }
+
 			return res.send(JSON.stringify(retlist));
 		    });
 });
@@ -49,7 +54,8 @@ router.post("/set_run_mode", ensureAuthenticated, function(req, res){
     delete doc._id;
     var db = req.db;
     var collection = db.get('options');
-
+	if(typeof doc['name'] === 'undefined')
+		return res.render("options", {title: "Options", user:req.user});
     collection.remove({name: doc['name']}, {}, function(err, result){
 	collection.insert(doc, {}, function(){
 	    return res.render("options", {title: "Options", user:req.user});

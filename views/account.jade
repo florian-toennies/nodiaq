@@ -1,5 +1,8 @@
 extends layout
 
+block extrahead
+  script(src="javascripts/accounts_scripts.js", type="text/javascript")
+
 block content
   div.container
     br
@@ -54,9 +57,21 @@ block content
             td My GitHub
             td
               a(href='#{user.github_home}') Link
+          tr
+            td(style="width:150px")
+              strong API Credentials
+             td
+          tr
+            td Username
+            td#api_username
+          tr
+            td Key
+            td#api_key
     br
     br
     a(href="/") back to home page
+    div.float-right
+      a.btn.btn-info#request_api_button(href="/account/request_api_key", style="display:block") Request (new) API Key
 
     div.modal.fade#updateModal(tabindex="-1" role="dialog")
       div.modal-dialog(role="document")
@@ -82,6 +97,8 @@ block content
   script.
     $(document).ready(function(){
     	DrawActiveLink("#laccount");
+      var userdoc = JSON.parse('!{JSON.stringify(user)}');      
+      FillAPIInfo(userdoc);
       if('#{user.favorite_color}' != "not set"){
         $("#form_color").val("#{user.favorite_color}");
       }

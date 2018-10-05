@@ -9,7 +9,10 @@ function InitializeRunsTable(divname){
         order: [[0, "desc"]],
         iDisplayLength: 25,
         ajax : {
-            url: '/runtable/getDatatable'
+            url: '/runtable/getDatatable',
+            beforeSend: function ( jqXHR,  settings) {
+                      console.log(settings);
+                  },
         },
         columns : [
         	{ data : "number", "render": function(data, type, row){

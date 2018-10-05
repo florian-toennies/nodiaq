@@ -1,3 +1,29 @@
+function CheckForErrors(callback){
+	$.getJSON("/status/get_broker_status", function(data){
+		console.log(data);
+		var detectors = ["tpc", "muon_veto", "neutron_veto"];
+		var detector_names = ["TPC", "Muon Veto", "Neutron Veto"];
+		var error = 0;
+		for(var i in detectors){
+			var det = detectors[i];
+			for(var j in data){
+				if(data[j]['detector'] !== det)
+					continue;
+				// We report an error state for any detector with diagnosis 'error'
+				if(data[j]['diagnosis'] === 'error')
+					error+=1;
+			}
+		}
+		if(error>0){
+			$("#errorIcon").addClass("has-badge");
+			$("#errorIcon").attr("data-count", error);
+		}
+		else{
+			$("#errorIcon").removeClass("has-badge");
+
+		}
+	});
+}
 function DrawActiveLink(page){
     var pages = [
 	"#lindex", "#lplaylist", "#lstatus", "#lhosts", "#loptions", "#lruns",
