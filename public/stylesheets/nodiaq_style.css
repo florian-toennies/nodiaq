@@ -1,0 +1,391 @@
+/* Buttons get recolored in our color scheme */
+.btn.btn-default{
+	background-color: #0c1178;
+	color: #ddd;
+}
+
+/* CSS for the badge on sidebar buttons */
+#sidebar:not(:active) .fa-stack.has-badge[data-count]:after{
+  position:absolute;
+  right:-300%;
+  top:10%;
+  content: attr(data-count);
+  font-size:60%;
+  padding:.6em;
+  border-radius:999px;
+  line-height:.75em;
+  color: white;
+  background:rgba(255,0,0,.85);
+  text-align:center;
+  min-width:2em;
+  font-weight:bold;
+}
+#sidebar.active .fa-stack.has-badge[data-count]:after{
+  position:absolute;
+  right:-40%;
+  top:-15%;
+  content: attr(data-count);
+  font-size:60%;
+  padding:.6em;
+  border-radius:999px;
+  line-height:.75em;
+  color: white;
+  background:rgba(255,0,0,.85);
+  text-align:center;
+  min-width:2em;
+  font-weight:bold;
+}
+/* end badge  */
+
+/* 
+ * --------------------------------------------------------
+ * Fancy dropdown toggle
+ * --------------------------------------------------------
+ */
+.dropdown-toggle::after {
+    display: block;
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+}
+ .sidebarCollapse {
+    width: 120px;
+    height: 120px;
+    background: inherit;
+    border: 0;
+    outline: none;
+}
+.sidebarCollapse.active{
+	float:right;
+  }
+  .sidebarCollapse span {
+    width: 80%;
+    height: 10px;
+    margin: 0 auto;
+    display: block;
+    background: #eee;
+
+    transition: all 0.8s cubic-bezier(0.810, -0.330, 0.345, 1.375);
+  }
+  .sidebarCollapse span:first-of-type,
+    .sidebarCollapse span:nth-of-type(2),
+    .sidebarCollapse span:last-of-type {
+        transform: none;
+        opacity: 1;
+        margin: 20px auto;
+ }
+ /* Removing the vertical margin and make the first and last bars rotate again when the sidebar is open, hiding the second bar */
+ .sidebarCollapse.active span {
+        margin: 0 auto;
+ }
+ .sidebarCollapse.active span:first-of-type {
+        transform: rotate(45deg) translate(8px, 8px);
+ }
+ .sidebarCollapse.active span:nth-of-type(2) {
+        opacity: 0;
+ }
+ .sidebarCollapse.active span:last-of-type {
+        transform: rotate(-45deg) translate(4px, -4px);
+ }
+/* 
+ * --------------------------------------------------------
+ * End Fancy dropdown toggle
+ * --------------------------------------------------------
+ */
+
+/* ---------------------------------------------------
+    CONTENT STYLE
+----------------------------------------------------- */
+
+#content {
+    width: 100%;
+    padding: 20px;
+    min-height: 100vh;
+    transition: all 0.3s;
+}
+
+/* SIDEBAR ON MOBILE */
+
+/* I put myself into a bit of a hole. Default state is 'active' */
+#topbar.active {
+	display: block;
+	height: 150px;
+	width: 100vw;
+	background: #0c1178;
+	border-bottom: 1px solid #333;
+-webkit-transition: height 0.3s ease-in-out;
+    -moz-transition: height 0.3s ease-in-out;
+    -o-transition: height 0.3s ease-in-out;
+    transition: height 0.3s ease-in-out;
+}
+#topbar{
+	height: 0;
+	overflow: hidden;
+}
+#topbar .sidebarCollapse{
+	height:150px;
+	width:150px;
+}
+#topbar .sidebarCollapse span{
+	    height: 10px;
+}
+#topbar .sidebarCollapse span:first-of-type,
+#topbar .sidebarCollapse span:nth-of-type(2),
+#topbar .sidebarCollapse span:last-of-type {
+        margin: 20px auto;
+ }
+ #topbar .pagetitle{
+ 	height:100%;
+ 	float: right;
+ 	font-size: 6.1em;
+ 	padding-right: 10%;
+ 	color: white;
+ }
+ .desktop_title{
+ 	display: none;
+ }
+#sidebar {
+	width:100%;
+    display: block;
+    overflow-y: scroll;
+    /*background: #7386D5;*/
+    background: #0c1178;
+    color: #fff;
+    height: 100vh;
+	-webkit-transition: height 0.3s ease-in-out;
+    -moz-transition: height 0.3s ease-in-out;
+    -o-transition: height 0.3s ease-in-out;
+    transition: height 0.3s ease-in-out;
+}
+#sidebar.active{
+	/*display: none;*/
+	height: 0px !important;
+	overflow: hidden;
+}
+#sidebar ul li a {
+	color: #fff;
+    padding: 10px;
+    font-size: 3.1em;
+    display: block;
+    -webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s;
+	}
+	#sidebar ul li a:hover {
+    	color: #7386D5;
+    	background: #fff;
+	}
+#sidebar.active ul ul a {
+    padding: 10px !important;
+}
+#sidebar ul li a i {
+    	margin-right: 10px;
+    }
+#sidebar .logo{
+	display: none;
+}
+#sidebar .second_logo{
+	display: none;
+}
+
+
+/* DESKTOP LARGER SCALE */
+@media only screen and (min-width: 1024px) {
+    .wrapper {
+    display: flex;
+    align-items: stretch;
+	}
+	 .desktop_title{
+ 	display: block;
+ }
+	 .sidebarCollapse {
+    width: 40px;
+    height: 40px;
+	}
+ .sidebarCollapse span {
+    width: 80%;
+    height: 2px;
+	}
+	.sidebarCollapse span:first-of-type,
+    .sidebarCollapse span:nth-of-type(2),
+    .sidebarCollapse span:last-of-type {
+
+        margin: 5px auto;
+	 }
+
+    /* Main styling. It's 250 px by default but 80px 'active' */
+   #topbar {
+   	 	display: none;
+	}
+	#topbar.active{
+		display: none;
+	}
+    #sidebar {
+    margin-top: 0px;
+    min-width: 250px;
+    display: block;
+    max-width: 250px;
+    /*background: #7386D5;*/
+    background: #0c1178;
+    color: #fff;
+    transition: all 0.3s;
+        height: 100vh !important;
+	}
+    #sidebar.active {
+    	display: block;
+    min-width: 80px;
+    max-width: 80px;
+    text-align: center;
+    margin-left: 0 !important;
+    height: 100vh !important;
+	}
+	/* end main styling */
+	
+    
+    /* Sidebar logo only appears when 'active'*/
+	#sidebar.active .logo{
+	display: block;
+	-webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s;
+	width:80px;
+	height:80px;
+	margin-left:0px !important;
+	}
+	/* End sidebar logo
+	
+	/* Sidebar links are white and centered and colored when active */
+	
+	#sidebar ul li a {
+    font-size: 1.15em;
+    }
+
+	#sidebar ul li.active>a, a[aria-expanded="true"] {
+    	color: #333;
+    	background: #fff;
+	}
+	#sidebar.active ul li a {
+    padding: 20px 10px;
+    text-align: center;
+    font-size: 0.85em;
+	}
+
+#sidebar.active ul li a i {
+    margin-right: 0;
+    display: block;
+    -webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s;
+    font-size: 1.8em;
+    margin-bottom: 5px;
+}
+
+
+	/* CTAs are things that only appear when expanded */
+	ul.CTAs {
+    padding: 20px;
+	}
+	ul.CTAs a {
+    text-align: center;
+    font-size: 0.9em !important;
+    display: block;
+    border-radius: 5px;
+    margin-bottom: 5px;
+	}
+	#sidebar.active .sidebar-header h3,
+	#sidebar.active .CTAs {
+    display: none;
+    -webkit-animation: fadeOut 1s;
+    animation: fadeOut 1s;
+ 	}
+	#sidebar.active .sidebar-header strong {
+    display: block;
+    -webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s;
+	}
+	#sidebar .CTAs{
+		display: block;
+	}
+	.CTAs {
+	-webkit-animation: fadeIn 2s;
+    animation: fadeIn 2s;
+	}
+	 .sidebarCollapse.active span {
+        margin: 0 auto;
+ }
+ .sidebarCollapse.active span:first-of-type {
+        transform: rotate(45deg) translate(2px, 2px);
+ }
+ .sidebarCollapse.active span:nth-of-type(2) {
+        opacity: 0;
+ }
+ .sidebarCollapse.active span:last-of-type {
+        transform: rotate(-45deg) translate(1px, -1px);
+ }
+}
+
+
+/*
+ * 
+ * NON-SIDEBAR PAGE STYLING
+ * 
+ * 
+ */
+.host_detail{
+    width: 100%;
+    margin-top: 5px;
+    border: 1px solid #cccccc;
+}
+.reader_detail{
+    width: 100%;
+    min-height: 200px;
+    margin-top: 5px;
+    border: 1px solid #cccccc;    
+}
+.detector_detail{
+    width: 100%;
+    height: 40px;
+    margin-top: 5px;
+    border: 1px solid #cccccc;
+}
+.reader_header{
+    width:calc(100% + 2px);
+    height: 30px;
+    margin: -1px;
+    margin-bottom:1px;
+    padding: 0;
+    padding-left:5px;
+    padding-right:5px;
+    border: 1px solid #cccccc;
+    border-top: 0px;
+    overflow-x: clip;
+}
+
+.reader_chartdiv{
+    width: 100%;
+    height: 168px;
+    padding: 0;
+    margin: 0;
+}
+
+.two-panel-div{
+    height: calc(100vh - 52px);
+    width: 100%;
+    /*margin-left: 1px;
+    margin-right:1px;*/
+    border: 1px solid #cccccc;
+    padding: 3px;
+    background-color: white;
+}
+
+.json_detail{
+	height: calc(100vh - 25%);
+	width: calc(100vh - 30%);
+}
+
+.form-label{
+    color: #5992c2;
+}
+
+table.dataTable tbody tr.selected {
+    color: white !important;
+    background-color: #06d6a0 !important;
+}
