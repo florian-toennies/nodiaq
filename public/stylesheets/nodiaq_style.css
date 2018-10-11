@@ -36,6 +36,15 @@
   font-weight:bold;
 }
 /* end badge  */
+.fontscale_header{
+ 	font-size: 4.0em;
+ }
+ .fontscale_status{
+ 	font-size: 2.0em;
+ }
+.fontscale{
+ 	font-size: 2.0em;
+ }
 
 /* 
  * --------------------------------------------------------
@@ -52,12 +61,17 @@
  .sidebarCollapse {
     width: 120px;
     height: 120px;
-    background: inherit;
+    /*background: inherit;*/
+    background-color:rgba(0, 0, 0, 0.0);
     border: 0;
     outline: none;
 }
 .sidebarCollapse.active{
 	float:right;
+	outline: none;
+  }
+  .sidebarCollapse.active:hover{
+	background-color:rgba(150,150,150,1.0);
   }
   .sidebarCollapse span {
     width: 80%;
@@ -197,6 +211,15 @@
 	}
 	 .desktop_title{
  	display: block;
+ }
+ .fontscale{
+ 	font-size: 1.0em;
+ }
+ .fontscale_header{
+ 	font-size: 2.0em;
+ }
+ .fontscale_status{
+ 	font-size: 1.5em;
  }
 	 .sidebarCollapse {
     width: 40px;

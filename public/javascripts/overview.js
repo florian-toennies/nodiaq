@@ -10,9 +10,9 @@ function UpdateOverviewPage(){
     ];
     
     var detectors = ['tpc', 'muon_veto', 'neutron_veto'];
-    var hrdetectors = ["TPC  ", "Muon Veto  ", "Neutron Veto  "];
+    var hrdetectors = {"tpc": "TPC  ", "muon_veto": "Muon Veto  ", "neutron_veto": "Neutron Veto  "};
 
-    for(var i=0; i<detectors.length; i+=1){
+   /* for(var i=0; i<detectors.length; i+=1){
 	var detector = detectors[i];
 	document.getElementById("det_name_"+detector).innerHTML = hrdetectors[i];
 	$.getJSON("/status/get_detector_status?detector="+detector, (function(det){
@@ -53,8 +53,54 @@ function UpdateOverviewPage(){
 		}
 	    }
 	}(detector)));
-    }
-    setTimeout(UpdateOverviewPage, 5000);
+    }*/
+   $.getJSON("/status/get_broker_status", function(data){
+   		for(var i in data){
+   			var doc = data[i];
+   			var det = doc['detector'];
+   			document.getElementById("det_name_"+det).innerHTML = hrdetectors[det];
+   			
+   			// Set Status
+   			var status;
+			if(typeof doc['status'] === "undefined" || doc['status'] === -1)
+		    	status = statuses[5];
+			else
+		    	status = statuses[doc['status']];
+			document.getElementById("status_"+det).innerHTML = status;
+			
+			// Set attributes
+			var atts = ["number", "mode", "rate", "buff", "readers", "time"];
+			for(j in atts){
+		    	if( typeof doc[atts[j]] !== "undefined"){
+					if(atts[j]==="time")
+			    		document.getElementById(det+"_"+atts[j]).innerHTML =
+			    			moment(doc[atts[j]]).format('DD. MMM. hh:mm');
+					else if(atts[j] === "rate")
+			    		document.getElementById(det+"_"+atts[j]).innerHTML = doc[atts[j]].toFixed(2) + " MB/s";
+					else if(atts[j] === "buff")
+						document.getElementById(det+"_"+atts[j]).innerHTML = doc[atts[j]].toFixed(2) + " MB";
+		 			else
+		 				document.getElementById(det+"_"+atts[j]).innerHTML = doc[atts[j]];
+		   		 }
+		   		 else
+					document.getElementById(det+"_"+atts[j]).innerHTML = '-';
+			}
+			
+			// Update charts if needed
+			var ts = new Date(doc['update_time']).getTime();
+			console.log(doc);
+			console.log(document.last_time_charts[det]);
+			if(typeof document.last_time_charts !== "undefined" &&
+		   			det in document.last_time_charts &&
+		   			!isNaN(ts) && document.last_time_charts[det] !== ts){
+					    document.last_time_charts[det] = ts;
+		    			UpdateOverviewChart(det, ts, doc['rate'], doc['buff']);
+   			}
+   			
+   		} // End for
+    	setTimeout(UpdateOverviewPage, 5000);
+	});
+
 }
 
 function UpdateOverviewChart(detector, ts, rate, buff){

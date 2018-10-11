@@ -5,24 +5,25 @@ block extrahead
   script(src="javascripts/overview.js", type="text/javascript")
 
 block content     
-  div.main-container Welcome #{user.first_name} #{user.last_name}
+  div.main-container
+    span.fontscale Welcome #{user.first_name} #{user.last_name}
     hr
     - detectors = ['tpc', 'muon_veto', 'neutron_veto']
     each detector in detectors    
       div.reader_detail
         div.row(style="width:100%;height:100%;margin:0")
-          div.col-sm-12.col-md-4.col-lg-3(style="padding:5px;")
+          div.col-sm-12.col-md-12.col-lg-3(style="padding:5px;")
             div.row(style="margin:0;padding:0")
               div.col-12
-                span(id="det_name_#{detector}" style="font-size:24px;font-weight:bold")
-                span(id="status_#{detector}" style="padding-left:5px")
+                span.fontscale_header(id="det_name_#{detector}" style="font-weight:bold")
+                span.fontscale_status(id="status_#{detector}" style="padding-left:5px")
               - atts = [['number', "Number: "], ['mode', "Mode: "], ['rate', 'Rate: '], ['buff', 'Buffer: '], ['readers', 'Readers: '], ['time', "Updated: "]]
               each att in atts
                 div.col-4(style="font-size:14px")
-                  strong #{att[1]}
+                  strong.fontscale #{att[1]}
                 div.col-8(style="font-size:14px")
-                  span(id="#{detector}_#{att[0]}")
-          div.col-sm-12.col-md-8.col-lg-9(style="height:200px;width:100%;padding-right:0px")
+                  span.fontscale(id="#{detector}_#{att[0]}")
+          div.col-sm-12.col-md-12.col-lg-9(style="height:200px;width:100%;padding-right:0px")
             div(id="#{detector}_chartdiv", style="width:100%;height:100%")
 
 

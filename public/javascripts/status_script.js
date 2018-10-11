@@ -14,7 +14,7 @@ function GetStatus(i){
 function UpdateStatusPage(){
     var readers = ["fdaq00_reader_0", "fdaq00_reader_1"];
     var controllers = ['fdaq00_controller_0'];
-    var brokers = ["fdaq00_broker_0"];
+    var brokers = []; //["fdaq00_broker_0"];
     
     for(i in readers){
 	var reader = readers[i];
@@ -49,10 +49,14 @@ function UpdateStatusPage(){
 	
 	for(i in brokers){
 		var broker = brokers[i];
+		console.log(broker);
 		$.getJSON("/status/get_broker_status?broker="+broker, (function(b){return function(data){
+			console.log(data);
 			for(var i in data){
 				doc = data[i];
+				console.log(doc);
 				var idstart = b + '_' + doc['detector'] + '_';
+				console.log(idstart);
 				atts = ['active', 'comment', 'detector', 'hosts', 'crate_controller', 'diagnosis', 'mode', 'number', 'started_at', 'status', 'stop_after', 'user'];
 				//state ishas
 				document.getElementById(idstart+"detector").innerHTML = "<strong>"+doc['detector']+"</strong>";
@@ -114,7 +118,7 @@ function DrawInitialCharts(){
     document.charts = {};
     document.last_time_charts = {};
     var readers = ["fdaq00_reader_0", "fdaq00_reader_1"];
-
+	var colors = {"rate": "#1c0877", "buff": "#df3470", "third": "#3dd89f"}
     for(i in readers){
 	var reader = readers[i];
 	$.getJSON("/status/get_reader_history?limit=1000&reader="+reader, function(data){
@@ -124,8 +128,8 @@ function DrawInitialCharts(){
 	    var host = Object.keys(data)[0];
 	    document.last_time_charts[host] = data[host]['rates'][data[host]['rates'].length-1];
 	    var series = [
-		{"type": "area", "name": "transfer rate", "data": data[host]['rates']},
-		{"type": "area", "name": "buffered data", "data": data[host]['buffs']}
+		{"type": "area", "name": "transfer rate", "data": data[host]['rates'], 'color': colors['rate']},
+		{"type": "area", "name": "buffered data", "data": data[host]['buffs'], 'color': colors['buff']}
 	    ];
 
 	    var div = host+"_chartdiv";
@@ -134,6 +138,12 @@ function DrawInitialCharts(){
 		    chart: {
 			zoomType: 'x',
 		    },
+		    plotOptions: {
+            	series: {
+               	 	fillOpacity: 0.3,
+               	 	lineWidth: 1
+            	}	
+        	},
 		    credits: {
 			enabled: false,
 		    },

@@ -7,14 +7,14 @@ block extrahead
 block content
   - var readers = ["fdaq00_reader_0", "fdaq00_reader_1"];
   - var controllers = ["fdaq00_controller_0"];
-  - var brokers = ["fdaq00_broker_0_tpc"];
+  - var brokers = [];  // ["fdaq00_broker_0_tpc", "fdaq00_broker_0_muon_veto", "fdaq00_broker_0_neutron_veto"];
 
   div.main-container
     div.container(style="width:100%;margin:0;max-width:100%")
       div.row(style="width:100%;margin:0")
         - atts = ['active', 'comment', 'detector', 'hosts', 'crate_controller', 'diagnosis', 'mode', 'number', 'started_at', 'status', 'stop_after', 'user'];
         each broker in brokers
-          div.row.col-sm-12.col-md-6.col-lg-6(style="margin-bottom:10px;padding:5px;border:1px solid #ccc")
+          div.row.col-sm-12.col-md-6.col-lg-6(style="margin:0;margin-bottom:10px;padding:5px;border:1px solid #ccc")
             div.col-xs-12.col-sm-6
               table.table.table-condensed(style="width:100%;height:100%;margin:0")
                 tr
@@ -65,7 +65,7 @@ block content
                 h6 Readers
                 span(id="#{broker}_readers" style="font-size:12px")
       each controller in controllers
-        div.row.col-sm-12.col-md-6.col-lg-6(style="padding:5px;border:1px solid #ccc")
+        div.row.col-sm-12.col-md-12.col-lg-6.fontscale(style="padding:5px;border:1px solid #ccc")
           h5 Crate Controller 
           table.table.table-condensed(style="width:100%;height:100%;margin:0")
             tr
@@ -82,8 +82,8 @@ block content
     each reader in readers
       div.container(style="width:100%;margin:0;max-width:100%")
         div.row.reader_detail
-          div.col-sm-12.col-md-4.col-lg-3(style="padding:5px;")
-            table.table.table-condensed(style="width:100%;height:100%;margin:0")
+          div.col-sm-12.col-md-12.col-lg-3(style="padding:5px;")
+            table.table.table-condensed.fontscale(style="width:100%;height:100%;margin:0")
               tr
                 td(style="padding:0")
                   strong Node:
@@ -119,7 +119,7 @@ block content
                   strong Check-in:  
                 td(style="padding:0")
                   span(id="#{reader}_check-in")
-          div.col-sm-12.col-md-8.col-lg.9
+          div.col-sm-12.col-md-12.col-lg.9
             div.reader_chartdiv(id="#{reader}_chartdiv")
   script.
     var readers = ["fdaq00_reader_0", "fdaq00_reader_1"];

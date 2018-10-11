@@ -8,7 +8,7 @@ block extrahead
 
 block content
   div.main-container
-    div#confirm_div(style="width:100%;border:1px solid #ccc;margin:0;display:none")
+    div.fontscale#confirm_div(style="width:100%;border:1px solid #ccc;margin:0;display:none")
         div.row(style="padding:5px;")
           div.col-12
             strong DAQ control. &nbsp;
@@ -22,10 +22,10 @@ block content
       //div.reader_detail
       div(style="width:100%;border:1px solid #ccc;margin-top:10px")
         div.row(style="padding-left:5px;padding-top:5px;")
-          div.col-xs-12.col-sm-2.col-md-3.col-lg-3.col-xl-3
-            h3 #{det[1]}
+          div.col-xs-12.col-sm-12.col-md-12.col-lg-3.col-xl-3
+            h3.fontscale_header #{det[1]}
           if det[0] == 'tpc'
-            div.col-xs-12.col-sm-10.col-md-9.col-lg-9.col-xl-9
+            div.col-xs-12.col-sm-12.col-md-12.col-lg-9.col-xl-9.fontscale
               div.float-right
                 div.form-check-inline 
                   label.form-check-label
@@ -48,18 +48,18 @@ block content
                     input(id="#{det[0]}_active" type="checkbox" checked data-toggle="toggle" style="height:25px" data-onstyle="success" data-offstyle="danger" data-on="on" data-off="off")
         hr(style="margin-top:8px;margin-bottom:8px")
         div.row(style="padding:5px")  
-          div.col-sm-12.col-md-6.form-group
+          div.col-sm-12.col-md-12.col-lg-6.form-group.fontscale
             div.row
-              div.col-sm-12.col-md-6.form-group
+              div.col-sm-12.col-md-12.col-lg-6.form-group
                 label.form-label(for="user") Controller
-                input.form-control.my_name_is(id="#{det[0]}_user" type="text" value="#{user.last_name}" name="user" readonly required)   
-              div.col-sm-12.col-md-6.form-group
+                input.form-control.my_name_is.fontscale(id="#{det[0]}_user" type="text" value="#{user.last_name}" name="user" readonly required)   
+              div.col-sm-12.col-md-12.col-lg-6.form-group
                 label.form-label(for="stopafter") Length (minutes)
                 input.form-control(id="#{det[0]}_stop_after" type="number" name="stop_after" min=0 max=1440 value=60)
               div.col-sm-12.form-group
                 label.form-label(for="comment") Comment
                 textarea.form-control(id="#{det[0]}_comment" rows="2" name="comment" type='text')
-          div.col-sm-12.col-md-6.form-group
+          div.col-sm-12.col-md-12.col-lg-6.form-group.fontscale
             label.form-label(for="mode") Run Mode
             select.form-control(id="#{det[0]}_mode" size="6" name="run_mode" type="text" required)
         
