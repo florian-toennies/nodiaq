@@ -43,20 +43,12 @@ function PullServerData(callback){
 				if(att === 'mode'){
 					$("#"+detector+"_mode option").filter(function() {
 						console.log(this);
-						console.log("WTF");
-    					return this.value == doc['mode']
+    					return this.value === doc['mode']
   					}).prop('selected', true);
 				}
 				else
 					$("#"+detector+"_"+att).val(doc[att]);
 			}
-			console.log("#"+detector+"_active");
-
-			if(doc['active'] === "true")
-				$("#"+detector+"_active").bootstrapToggle('on');
-			else
-				$("#"+detector+"_active").bootstrapToggle('off');
-			
 			if(detector === "tpc"){
 				if(doc['link_mv'] === 'true')
 					$("#link_mv").bootstrapToggle('on');
@@ -68,9 +60,16 @@ function PullServerData(callback){
 					$("#link_nv").bootstrapToggle('off');
 			}
 			
+			if(doc['active'] === "true")
+				$("#"+detector+"_active").bootstrapToggle('on');
+			else
+				$("#"+detector+"_active").bootstrapToggle('off');
+			
+			
+			
 			console.log(doc);
 		}
-		if(found != 3)
+		if(found !== 3)
 			alert("Didn't find data for all detectors! Must be you have a clean slate.")
 		document.page_ready = true;
 		callback;
