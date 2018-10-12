@@ -138,4 +138,25 @@ router.get('/get_reader_history', ensureAuthenticated, function(req,res){
 });
 				
 
+router.get('/get_command_queue', ensureAuthenticated, function(req,res){
+	var db = req.db;
+	var collection = db.get("control");
+	
+	var q = url.parse(req.url, true).query;
+	var limit = q.limit;
+	if(typeof limit === 'undefined')
+		limit = 20;
+	var findstr = {};
+	var last_id = q.id;
+	if(typeof last_id !== 'undefined' && last_id != '0'){
+		var oid = new req.ObjectID(last_id);
+		findstr = {"_id": {"$gt": oid}};
+	}
+
+	collection.find(findstr, {"sort": {"_id": -1},"limit": parseInt(limit, 10)}, 
+	function(e, docs){
+		return res.send(JSON.stringify(docs));
+	});
+});
+
 module.exports = router;

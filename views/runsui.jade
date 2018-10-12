@@ -3,7 +3,7 @@ extends layout
 block extrahead
   link(rel="stylesheet", href="stylesheets/jquery.dataTables.min.css")
   script(src="javascripts/jquery.dataTables.min.js", type="text/javascript")
-  script(src="https://cdn.datatables.net/plug-ins/1.10.19/dataRender/datetime.js", type="text/javascript")
+  script(src="javascripts/datatables_datetime.js", type="text/javascript")
   script(src="javascripts/moment.min.js", type="text/javascript")
   script(src="javascripts/runs_table.js", type="text/javascript")
   link(rel="stylesheet" href="https://rawgithub.com/yesmeck/jquery-jsonview/master/dist/jquery.jsonview.css")
@@ -29,6 +29,13 @@ block content
           input#commentinput(type="text")
           span &nbsp;
           button.btn.btn-default#add_comment_button Add Comments
+    div.col-12
+      div.form-group(style="width:100%")
+        label MongoDB Query: &nbsp;
+        input#mongoquery(type="text")
+        span &nbsp;
+        button.btn.btn-default(onclick="CheckMongoQuery()") Apply
+        
     br
     table#runs_table
       thead

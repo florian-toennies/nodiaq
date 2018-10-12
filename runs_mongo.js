@@ -8,7 +8,7 @@ var runsdb = mongoose.connection;
 var runs;
 var runsTableSchema;
 
-DataTable.configure({ verbose: true, debug : true });
+DataTable.configure({ verbose: false, debug : false });
 mongoose.plugin(DataTable.init);
 mongoose.connect(dbURI, {dbName: 'run'});
 
@@ -21,7 +21,7 @@ runsdb.once('open', function callback ()
 	    var Schema = mongoose.Schema;
 	    runsTableSchema = new Schema(
 		{
-		    number : String,
+		    number : Number,
 		    detector: [String],
 		    start : Date,
 		    end : Date,
@@ -38,8 +38,8 @@ runsdb.once('open', function callback ()
 
 exports.getDataForDataTable = function getData (request, response) {
     //"type.typeName" : "Trolley"
-    //console.log("Get Request for Data Table made with data: ", request.query);
-    runsModel.dataTable(request.query, function (err, data) {
+    console.log("Get Request for Data Table made with data: ", request.query);
+    runsModel.dataTable(request.query,  {"conditions": request.query['conditions']},function (err, data) {
 	response.send(data);
     });
 };

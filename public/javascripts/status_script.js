@@ -34,6 +34,84 @@ function UpdateStatusPage(){
 	});
     }
 
+	// Fill command panel
+	var recent = 0;
+	var command_length = 20;
+	if(typeof document.local_command_queue === "undefined")
+		document.local_command_queue = [];
+	if(document.local_command_queue.length !== 0){
+		// Fetch all ID's newer than the first ID that hasn't been fully acknowledged
+		recent = document.local_command_queue[0]['_id'];
+		for(var k in document.local_command_queue){
+			if('acknowledged' in document.local_command_queue[k] && 'host' in document.local_command_queue[k] &&
+				document.local_command_queue[k]['acknowledged'].length !== document.local_command_queue[k]['host'].length)
+				recent = document.local_command_queue[k]['_id'];
+		}
+
+	}
+
+	$.getJSON("/status/get_command_queue?limit=20&id="+recent, function(data){
+		var fillHTML="";
+		for(var i in data){
+			doc = data[i];
+			var timestamp = parseInt(doc['_id'].substr(0,8), 16)*1000
+			var date = new Date(timestamp);
+			//document.local_command_queue.push(doc);
+			fillHTML += '<div class="panel panel-default" id="'+doc['_id']+'"><div class="panel-heading panel-hover" data-toggle="collapse" href="#collapse'+doc['_id'];
+			fillHTML += '" style="padding:5px;border-bottom:1px solid #ccc"><div class="panel-title"><span data-toggle="collapse" style="color:black" ';
+			fillHTML += 'href="#collapse'+doc['_id']+'">';
+			fillHTML += moment(date).utc().format('DD. MMM. HH:mm') + ' UTC: ';
+			var tcol = "green";
+			if(doc['command'] === 'stop')
+				tcol = 'red';
+			else if(doc['command'] === 'arm')
+				tcol = 'orange';
+			fillHTML += '<strong style="color:'+tcol+'">' + doc['command'] + '</strong> for detector <strong>' + doc['detector'] + '</strong> from <strong>' + doc['user'] + '</strong>';
+			
+			// See which hosts responded
+			var col = "green";
+			var nhosts =  '-';
+			var nack = '-';
+			if('host' in doc && 'acknowledged' in doc){
+				if(doc['host'].length > doc['acknowledged'].length)
+					col = 'red';
+				nhosts = doc['host'].length.toString();
+				nack = doc['acknowledged'].length.toString();
+			}
+			else if('host' in doc && doc['host'].length>0 && doc['host'][0]!== null)
+				nhosts = doc['host'].length.toString();
+			fillHTML += "<strong style='color:"+col+"'>("+nack+"/"+nhosts+")</strong>";
+			fillHTML += '</span></div></div>';
+    		fillHTML += '<div id="collapse'+doc['_id']+'" class="panel-collapse collapse"><div class="panel-body" style="background-color:#ccc;font-size:.75em">';
+    		fillHTML += JSON.stringify(doc, undefined, 4);;
+    		fillHTML += '</div><div class="panel-footer">';
+//    		fillHTML += 'Panel Footer';
+			fillHTML += '</div></div></div></div>';
+			
+			try{
+				$("#"+document.local_command_queue[document.local_command_queue.length-1]).remove();
+				document.local_command_queue.splice(document.local_command_queue.length-1, 1);
+			}
+			catch(E){
+				//
+			}
+		}
+		console.log(data);
+		$("#command_panel").prepend(fillHTML);
+		
+		if(document.local_command_queue.length === 0)
+			document.local_command_queue = data;
+		else{
+			for(var j in data)
+				document.local_command_queue.unshift(data[j]);
+		}
+		
+		while(document.local_command_queue.length > command_length){
+			$("#"+document.local_command_queue[document.local_command_queue.length-1]['_id']).remove();
+			document.local_command_queue.splice(document.local_command_queue.length-1, 1);
+		}
+		
+	});
     
     for(i in controllers){
     	var controller = controllers[i];

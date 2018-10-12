@@ -1,5 +1,21 @@
+function CheckMongoQuery(){
+	var query = $("#mongoquery").val();
+	try{
+		JSON.parse(query);
+	}
+	catch(e){
+		alert("Your mongo query is not valid JSON!");
+		console.log(e);
+		return;
+	}
+console.log(document.datatable_div);
+	document.datatable_options['ajax']['data'] = {"conditions": JSON.parse(query)};
+	console.log(document.datatable_options);
+	$(document.datatable_div).DataTable().destroy()
+  	$(document.datatable_div).DataTable(document.datatable_options);
+}
 function InitializeRunsTable(divname){
-    var table = $(divname).DataTable({                                                                   
+    var table_options = {                                                                   
         processing : true,
         serverSide : true,
         //pageResize: true,
@@ -11,8 +27,10 @@ function InitializeRunsTable(divname){
         ajax : {
             url: '/runtable/getDatatable',
             beforeSend: function ( jqXHR,  settings) {
-                      console.log(settings);
-                  },
+                      console.log(jqXHR);
+            },
+            data: {}
+            
         },
         columns : [
         	{ data : "number", "render": function(data, type, row){
@@ -52,8 +70,10 @@ function InitializeRunsTable(divname){
 		}
 	    }
 	]
-    });
-    
+    };
+    var table = $(divname).DataTable(table_options);
+    document.datatable_options = table_options;
+    document.datatable_div = divname;
    
     $(divname + ' tbody').on( 'click', 'td', function () {
     	console.log($(this));
