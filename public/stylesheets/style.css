@@ -55,7 +55,9 @@
 }
 
 .main-container{
-    /*margin-left: 150px;
+/*	height: 100vh !important;
+	overflow-y: scroll;
+    margin-left: 150px;
     margin-right: 0;
     top: 0px;
     width: calc(100% - 150px);

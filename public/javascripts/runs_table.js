@@ -1,5 +1,7 @@
 function CheckMongoQuery(){
 	var query = $("#mongoquery").val();
+	if(query === "")
+		query = "{}";
 	try{
 		JSON.parse(query);
 	}

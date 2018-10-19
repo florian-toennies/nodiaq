@@ -70,23 +70,55 @@ block content
       document.page_ready = false;
       DrawActiveLink("#lcontrol");
       PopulateRunsList(PullServerData);
-      $("input").change(function(){console.log("!");if(document.page_ready==true){$("#confirm_div").fadeIn("fast"); $(".my_name_is").val("#{user.last_name}");}});
+      $("input").change(function(){if(document.page_ready==true){$("#confirm_div").fadeIn("fast"); $(".my_name_is").val("#{user.last_name}");}});
       $("select").change(function(){if(document.page_ready==true){$("#confirm_div").fadeIn("fast"); $(".my_name_is").val("#{user.last_name}");}});
       $("#tpc_active").change(function(){
-        var val = 'off';
-        if($("#tpc_active").is(":checked")) val = 'on';
-        if($("#link_mv").is(":checked")) $("#muon_veto_active").bootstrapToggle(val);
-        if($("#link_nv").is(":checked")) $("#neutron_veto_active").bootstrapToggle(val);
+        if(document.page_ready){
+      	  document.page_ready = false;
+          var val = 'off';
+          if($("#tpc_active").is(":checked")) val = 'on';
+          if($("#link_mv").is(":checked")) $("#muon_veto_active").bootstrapToggle(val);
+          if($("#link_nv").is(":checked")) $("#neutron_veto_active").bootstrapToggle(val);
+          document.page_ready = true;
+        }
+      });
+      $("#muon_veto_active").change(function(){
+      	if(document.page_ready){
+      	  document.page_ready = false;
+          var val = 'off';
+          if($("#muon_veto_active").is(":checked")) val = 'on';
+          if($("#link_mv").is(":checked")) {$("#tpc_active").bootstrapToggle(val);
+          if($("#link_nv").is(":checked")) $("#neutron_veto_active").bootstrapToggle(val); }
+          document.page_ready = true;
+        }
+      });
+      $("#neutron_veto_active").change(function(){
+      if(document.page_ready){
+      	  document.page_ready = false;
+          var val = 'off';
+          if($("#neutron_veto_active").is(":checked")) val = 'on';
+          if($("#link_nv").is(":checked")) {$("#tpc_active").bootstrapToggle(val);
+          if($("#link_mv").is(":checked")) $("#muon_veto_active").bootstrapToggle(val); }
+          document.page_ready = true;
+        }
       });
       $("#link_nv").change(function(){
-        var val = 'off';
-        if($("#tpc_active").is(":checked")) val = 'on';
-        if($("#link_nv").is(":checked")) $("#neutron_veto_active").bootstrapToggle(val);
+      	if(document.page_ready){
+      	  document.page_ready = false;
+          var val = 'off';
+          if($("#tpc_active").is(":checked")) val = 'on';
+          if($("#link_nv").is(":checked")) $("#neutron_veto_active").bootstrapToggle(val);
+          document.page_ready = true;
+        }
       });
       $("#link_mv").change(function(){
-        var val = 'off';
-        if($("#tpc_active").is(":checked")) val = 'on';
-        if($("#link_mv").is(":checked")) $("#muon_veto_active").bootstrapToggle(val);
+      	if(document.page_ready){
+      	  document.page_ready = false;
+          var val = 'off';
+          if($("#tpc_active").is(":checked")) val = 'on';
+          if($("#link_mv").is(":checked")) $("#muon_veto_active").bootstrapToggle(val);
+          document.page_ready = true;
+        }
       });
       //function PageUpdate(callback){
       //  PopulatePlaylist("playlist_div");

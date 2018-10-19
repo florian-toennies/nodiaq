@@ -11,7 +11,7 @@ block extrahead
 
 block content     
   div.main-container
-    div.row#addtagrow(style="display:none;padding-left:20px")
+    div.row#addtagrow(style="display:none;padding-left:20px;")
       div.col-md-12.col-lg-6
         div.form-group.row
           label(for="taginput") Add tags to selected: &nbsp;
@@ -32,7 +32,7 @@ block content
     div.col-12
       div.form-group(style="width:100%")
         label MongoDB Query: &nbsp;
-        input#mongoquery(type="text")
+        input#mongoquery(type="text" placeholder="{}")
         span &nbsp;
         button.btn.btn-default(onclick="CheckMongoQuery()") Apply
         
