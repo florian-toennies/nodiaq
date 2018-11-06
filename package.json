@@ -8,7 +8,6 @@
 	"dependencies": {
 		"apikeygen": "^1.1.0",
 		"bcrypt-nodejs": "0.0.3",
-		"bootstrap": "^3.0.0",
 		"connect-mongodb-session": "^2.0.3",
 		"constantinople": "^3.1.2",
 		"cookie-parser": "~1.4.3",

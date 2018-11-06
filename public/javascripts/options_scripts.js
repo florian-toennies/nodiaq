@@ -2,8 +2,8 @@ function PopulateModeList(div){
     $.getJSON("/options/options_list", function(data){
 		var html = "";
 		console.log(data);
-		var detectors = ['tpc', 'muon_veto', 'neutron_veto'];
-		var detector_names = ["TPC", "Muon Veto", "Neutron Veto"];
+		var detectors = ['tpc', 'muon_veto', 'neutron_veto', 'include'];
+		var detector_names = ["TPC", "Muon Veto", "Neutron Veto", 'Includes'];
 		for(var j in detectors){
 			var detector = detectors[j];
 		  	html+="<optgroup label='"+detector_names[j]+"'>";
