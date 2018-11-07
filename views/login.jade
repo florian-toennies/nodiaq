@@ -20,7 +20,6 @@ html
         strong Option 1: Login with Github. 
         span(style="font-color:#bbbbbb") Only works if you've linked your github account!
         br
-        br
         div(style='width:100%;text-align:center')
           a.btn.btn-block.btn-social.btn-large.btn-github(style="max-width:300px" href="/auth/github")
             i.fab.fa-github
@@ -48,7 +47,7 @@ html
         br
         br
         div(style='width:100%;text-align:center')
-          a.btn.btn-block.btn-social.btn-large.btn-facebook(style="max-width:300px;color:white;" onclick="alert('LNGS Credentials only work inside LNGS')")
+          a.btn.btn-block.btn-social.btn-large.btn-facebook(type="button" data-toggle="modal" data-target="#LNGSmodal" style="max-width:300px;color:white;")
             i.fa.fa-hand-spock
             span Login via LNGS
         br
@@ -69,3 +68,24 @@ html
         br
         br
       div.col-sm-3.col-xs-1
+    div.modal.fade#LNGSmodal(tabindex="-1" role="dialog")
+      div.modal-dialog(role="document")
+        div.modal-content
+          div.modal-body
+            br
+            form(method='post' action='/auth/password')
+              div.row
+                div.col-md-6.col-xs-12.form-group
+                  label.form-label(for='email') LNGS ID
+                  input.form-control(type='text' name='email')
+                div.col-md-6.col-xs-12.form-group
+                  label.form-label(for='password') LNGS Password
+                  input.form-control(type='password' name='password')
+              
+                br 
+              h6 Are you a robot? Please complete captcha:
+              iframe(src="https://crapcha.com/embed/" frameborder="0" scrolling="0" width="300" height="150")
+              br
+              span (note that the LNGS LDAP server is internal only so you can't login if this is remote-hosted... which it is so use GitHub)
+              br
+              button.btn.btn-info(type='submit') Submit
