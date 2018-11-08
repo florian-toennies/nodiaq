@@ -8,7 +8,8 @@ html
     link(rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous")
     link(rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous")
     link(rel="stylesheet" href="/stylesheets/bootstrap-social.css")
-
+    link(rel="stylesheet" href="/stylesheets/crapcha.css")
+    
   body(style="background-color:#5992c2")
 
     div.row(style="padding-top:5%")
@@ -84,8 +85,10 @@ html
               
                 br 
               h6 Are you a robot? Please complete captcha:
-              iframe(src="https://crapcha.com/embed/" frameborder="0" scrolling="0" width="300" height="150")
+              div.crapcha
+              //iframe(src="https://crapcha.com/embed/" frameborder="0" scrolling="0" width="300" height="150")
               br
               span (note that the LNGS LDAP server is internal only so you can't login if this is remote-hosted... which it is so use GitHub)
               br
               button.btn.btn-info(type='submit') Submit
+        script(src="/javascripts/crapcha.js" type="text/javascript")
