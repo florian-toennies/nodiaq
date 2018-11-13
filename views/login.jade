@@ -78,17 +78,16 @@ html
               div.row
                 div.col-md-6.col-xs-12.form-group
                   label.form-label(for='email') LNGS ID
-                  input.form-control(type='text' name='email')
+                  input.form-control(type='text' name='email' required)
                 div.col-md-6.col-xs-12.form-group
                   label.form-label(for='password') LNGS Password
-                  input.form-control(type='password' name='password')
+                  input.form-control(type='password' name='password' required)
               
                 br 
               h6 Are you a robot? Please complete captcha:
               div.crapcha
               //iframe(src="https://crapcha.com/embed/" frameborder="0" scrolling="0" width="300" height="150")
               br
-              span (note that the LNGS LDAP server is internal only so you can't login if this is remote-hosted... which it is so use GitHub)
               br
               button.btn.btn-info(type='submit') Submit
         script(src="/javascripts/crapcha.js" type="text/javascript")

@@ -2,7 +2,7 @@ var crapcha = {
 
   init: function($el) {
 
-    var html = '<div class="code"></div><div class="control"><input type="text" maxlength="20" placeholder="Type the text above"></input><label><span class="fa fa-sync reload btn"></span><a class="fa fa-info info btn" href="https://captcha.net" target="_blank" tabindex="-1"></a> <span class="logo">C A P T C H A<sup>&trade;</sup></span></label></div>';
+    var html = '<div class="code"></div><div class="control"><input required type="text" maxlength="20" placeholder="Type the text above"></input><label><span class="fa fa-sync reload btn"></span><a class="fa fa-info info btn" href="https://captcha.net" target="_blank" tabindex="-1"></a> <span class="logo">C A P T C H A<sup>&trade;</sup></span></label></div>';
 
     $el.append(html)
       .children('.control')
