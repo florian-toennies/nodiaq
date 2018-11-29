@@ -1,0 +1,13 @@
+#command_panel{
+  max-height: 30vh;
+  overflow-y: scroll;
+  width: 100%;
+  cursor: pointer;
+}
+#command_panel a{
+  font-color: black;
+}
+
+.panel-hover:hover{
+  background-color: #eee;
+}
