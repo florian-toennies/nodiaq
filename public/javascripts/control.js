@@ -3,7 +3,7 @@ function PopulateRunsList(callback){
     var fetched = 0;
     for(var i in detectors){
     	var detector = detectors[i];
-    	$.getJSON("/control/modes?detector="+detector, (function(d){ return function(data){
+    	$.getJSON("control/modes?detector="+detector, (function(d){ return function(data){
     		var html = "";
     		for(var j=0; j<data.length; j+=1)
 	    		html+="<option value='"+data[j][0]+"'><strong>"+data[j][0]+":</strong> "+data[j][1]+"</option>";
@@ -24,7 +24,7 @@ function PopulateRunsList(callback){
 
 function PullServerData(callback){
 
-	$.getJSON("/control/get_control_docs", function(data){
+	$.getJSON("control/get_control_docs", function(data){
 		var found = 0;
 		for(var i in data){
 			var doc = data[i];
@@ -105,7 +105,7 @@ function PostServerData(){
 	if(!failed){
 		$.ajax({
 		    type: "POST",
-	   		url: "/control/set_control_docs",
+	   		url: "control/set_control_docs",
 	  		data: {"data": post},		   
 	    	success: function(){
 		   		location.reload();

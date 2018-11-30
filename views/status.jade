@@ -10,6 +10,8 @@ block content
   - var controllers = ["fdaq00_controller_0"];
   - var brokers = [];  // ["fdaq00_broker_0_tpc", "fdaq00_broker_0_muon_veto", "fdaq00_broker_0_neutron_veto"];
   - var atts = ['active', 'comment', 'detector', 'hosts', 'crate_controller', 'diagnosis', 'mode', 'number', 'started_at', 'status', 'stop_after', 'user'];
+  - var controller_atts = ['host', 'checkin'];
+  - var controller_labels = ['Host', 'Check-in'];
   div.main-container
     div.container(style="width:100%;max-width:100%")
       div.row(style="width:100%;")
@@ -18,19 +20,18 @@ block content
             h5 Recent Dispatcher Commands
           div.panel-group#command_panel
         each controller in controllers
-          div.col-sm-12.col-md-12.col-lg-6.command_panel.fontscale(style="padding:5px;border:1px solid #ccc")
+          div.col-sm-12.col-md-12.col-lg-3.command_panel.fontscale(style="padding:5px;border:1px solid #ccc")
             h5 Crate Controller
-            table.table.table-condensed(style="width:100%;height:100%;margin:0")
-              tr
-                td(style="padding:0")
-                  strong Host:
-                td(style="padding:0")
-                  strong(id="#{controller}_host")
-              tr
-                td(style="padding:0")
-                  strong Checkin:
-                td(style="padding:0")
-                  strong(id="#{controller}_checkin")
+            table.table.table-condensed(style="width:100%;margin:0")
+              each value, index in controller_atts
+                tr
+                  td(style="padding:0")
+                    strong #{controller_labels[index]}:
+                  td(style="padding:0")
+                    span(id="#{controller}_#{value}")
+            br
+            strong Devices:
+            ul(id="#{controller}_devices")
           
     each reader in readers
       div.container(style="width:100%;margin:0;max-width:100%")

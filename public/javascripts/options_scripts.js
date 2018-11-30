@@ -1,5 +1,5 @@
 function PopulateModeList(div){
-    $.getJSON("/options/options_list", function(data){
+    $.getJSON("options/options_list", function(data){
 		var html = "";
 		console.log(data);
 		var detectors = ['tpc', 'muon_veto', 'neutron_veto', 'include'];
@@ -24,7 +24,7 @@ function FetchMode(select_div){
     mode = $('#'+select_div).val();
     console.log(mode);
     console.log("FETCH");
-    $.getJSON('/options/options_json?name='+mode,
+    $.getJSON('options/options_json?name='+mode,
 	      function(data){
 		  document.jsoneditor.set(data);
 	      });
@@ -32,12 +32,12 @@ function FetchMode(select_div){
 
 function SubmitMode(){
     console.log(document.jsoneditor.get());
-    $.post("/options/set_run_mode",
+    $.post("options/set_run_mode",
 	   {"doc": (JSON.stringify(document.jsoneditor.get()))});
     location.reload(true);
 };
 
 function RemoveMode(select_div){
-    $.get("/options/remove_run_mode?name="+$("#"+select_div).val());
+    $.get("options/remove_run_mode?name="+$("#"+select_div).val());
     location.reload(true);
 }

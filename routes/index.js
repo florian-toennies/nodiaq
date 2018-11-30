@@ -1,10 +1,11 @@
 var express = require('express');
 var url = require('url');
 var router = express.Router();
+var gp="/xenonnt";
 
 function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) { return next(); }
-    return res.redirect('/login');
+    return res.redirect(gp+'/login');
 }  
 function GetNextRunIdentifier(req, res, callback){
     var db = req.runs_db;
@@ -95,7 +96,7 @@ router.get('/arm', ensureAuthenticated, function(req,res){
 		}
 	    };    
 	    collection.insert(idoc);
-	    return res.redirect('/status');
+	    return res.redirect(gp+'/status');
 	}
     );
 });
@@ -120,7 +121,7 @@ router.get('/start', ensureAuthenticated, function(req, res){
 	    user: 'web'
 	};
 	collection.insert(idoc);
-	return res.redirect('/status');
+	return res.redirect(gp+'/status');
     });
 });
 
@@ -156,7 +157,7 @@ router.get('/stop', ensureAuthenticated, function(req, res){
 		user: 'web'
 	    };
 	    collection.insert(idoc);
-	    return res.redirect('/status');
+	    return res.redirect(gp+'/status');
 	});
 });
 
@@ -338,7 +339,7 @@ router.get('/account/request_api_key', ensureAuthenticated, function(req, res){
 	      "api_key": hash}});
 	req.user.api_key = key;
 	req.user.api_username = api_username;
-	return res.redirect("/account");
+	return res.redirect(gp+"/account");
 });
 
 router.post('/updateContactInfo', ensureAuthenticated, (req, res) => {
@@ -366,7 +367,7 @@ router.post('/updateContactInfo', ensureAuthenticated, (req, res) => {
 		      {"$set": idoc});
     console.log(req.user);
     console.log(idoc);    
-    return(res.redirect('/account'));
+    return(res.redirect(gp+'/account'));
 }); 
 
 router.get('/login', function(req, res){
@@ -375,7 +376,7 @@ router.get('/login', function(req, res){
 
 router.get('/logout', function(req, res){
     req.logout();
-    res.redirect('/');
+    res.redirect(gp);
 });
 
 
@@ -428,7 +429,7 @@ router.post("/linkGithub", (req, res) => {
 				    from: process.env.DAQ_CONFIRMATION_ACCOUNT,
 				    to: req.body.email,
 				    subject: 'XENONnT Account Confirmation',
-				    html: '<p>Please click <a href="http://daq-page.appspot.com/verify?code='+random_hash+'">here</a> to verify your email.</p><p>If you did not request this email please delete.</p>'
+				    html: '<p>Please click <a href="https://xenon1t-daq.lngs.infn.it/xenonnt/verify?code='+random_hash+'">here</a> to verify your email.</p><p>If you did not request this email please delete.</p>'
 				};
 				
 				transporter.sendMail(mailOptions, function(error, info){

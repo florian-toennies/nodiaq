@@ -2,7 +2,7 @@ var express = require("express");
 var url = require("url");
 var passport = require("passport");
 var router = express.Router(); 
-
+var gp='/xenonnt';
 
 // GET /auth/github
 //   Use passport.authenticate() as route middleware to authenticate the
@@ -17,9 +17,9 @@ router.get('/github',
 	});
 
 router.post('/password', 
-  passport.authenticate('local', { failureRedirect: '/login' }),
+  passport.authenticate('local', { failureRedirect: gp+'/login' }),
   function(req, res) {
-    res.redirect('/');
+    res.redirect(gp);
  });
 // GET /auth/github/callback
 //   Use passport.authenticate() as route middleware to authenticate the
@@ -27,15 +27,15 @@ router.post('/password',
 //   login page.  Otherwise, the primary route function will be called,
 //   which, in this example, will redirect the user to the home page.
 router.get('/github/callback',
-	passport.authenticate('github', { failureRedirect: '/login' }),
+	passport.authenticate('github', { failureRedirect: gp+'/login' }),
 	   function(req, res) {	   
-	       res.redirect('/');
+	       res.redirect(gp);
 	   });
 
 
 /*router.get("/github/callback", function(req, res, next){
     console.log("Github authenticate");
-    passport.authenticate('github', { failureRedirect: '/login' }, 
+    passport.authenticate('github', { failureRedirect: gp+'/login' }, 
 			  function(err, user, info) {
 			      console.log("Calling DB");
 			      var db = req.runs_db;
@@ -45,11 +45,11 @@ router.get('/github/callback',
 						  console.log("DB returned");
 						  if(docs.length == 0)
 						      return res.redirect(
-							  "/login",
+							  gp+"/login",
 							  {"message": "User not found"});
 						  req.logIn(user, function(err) {
 						      if (err) { return next(err); }
-						      return res.redirect('/');
+						      return res.redirect(gp+'/');
 						  });
 					      });
 			      //return(res.redirect('/login'));

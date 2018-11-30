@@ -71,13 +71,13 @@ block content
     br
     a(href="/") back to home page
     div.float-right
-      a.btn.btn-info#request_api_button(href="/account/request_api_key", style="display:block") Request (new) API Key
+      a.btn.btn-info#request_api_button(href="account/request_api_key", style="display:block") Request (new) API Key
 
     div.modal.fade#updateModal(tabindex="-1" role="dialog")
       div.modal-dialog(role="document")
         div.modal-content
           div.modal-body
-            form(method="post" action="/updateContactInfo")
+            form(method="post" action="updateContactInfo")
               div.form-group
                 label.form-label(for="email") Email
                 input.form-control(type="email" value="#{user.email}" name="email")

@@ -1,3 +1,4 @@
+var gp='/xenonnt';
 function UpdateOverviewPage(){
 
     var statuses = [
@@ -54,7 +55,7 @@ function UpdateOverviewPage(){
 	    }
 	}(detector)));
     }*/
-   $.getJSON("/status/get_broker_status", function(data){
+   $.getJSON(gp+"/status/get_broker_status", function(data){
    		for(var i in data){
    			var doc = data[i];
    			var det = doc['detector'];
@@ -118,7 +119,7 @@ function DrawOverviewCharts(){
 	var colors = {"tpc": "#1c0877", "muon_veto": "#df3470", "neutron_veto": "#3dd89f"}
     for(i in detectors){
 	var detector = detectors[i];
-	$.getJSON("/detector_history?limit=1000&detector="+detector, (function(det){
+	$.getJSON(gp+"/detector_history?limit=1000&detector="+detector, (function(det){
 	    return function(data){
 		console.log(data);
 		// No data no chart

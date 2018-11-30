@@ -2,7 +2,7 @@ function UpdateMonitorPage(){
     var hosts = ['fdaq00'];
     for(i in hosts){
 	var host = hosts[i];
-	$.getJSON("/hosts/get_host_status?host="+host, (function(h){
+	$.getJSON("hosts/get_host_status?host="+host, (function(h){
 	    return function(data){
 		console.log(data);
 		// Set attributes
@@ -82,7 +82,7 @@ function DrawMonitorCharts(){
 
     for(i in hosts){
 	var host = hosts[i];
-	$.getJSON("/hosts/get_host_history?limit=1000&host="+host, (function(h){
+	$.getJSON("hosts/get_host_history?limit=1000&host="+host, (function(h){
 	    return function(data){
 		console.log(data);
 

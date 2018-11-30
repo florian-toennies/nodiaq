@@ -1,5 +1,6 @@
+var gp = "/xenonnt";
 function CheckForErrors(callback){
-	$.getJSON("/status/get_broker_status", function(data){
+	$.getJSON(gp+"/status/get_broker_status", function(data){
 		console.log(data);
 		var detectors = ["tpc", "muon_veto", "neutron_veto"];
 		var detector_names = ["TPC", "Muon Veto", "Neutron Veto"];

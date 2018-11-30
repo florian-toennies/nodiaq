@@ -10,7 +10,7 @@ var runsTableSchema;
 
 DataTable.configure({ verbose: false, debug : false });
 mongoose.plugin(DataTable.init);
-mongoose.connect(dbURI, {dbName: 'run'});
+mongoose.connect(dbURI, {dbName: process.env.RUN_MONGO_DB});//'xenonnt'});
 
 console.log(dbURI);
 

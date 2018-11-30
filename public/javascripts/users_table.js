@@ -10,7 +10,7 @@ function InitializeUsersTable(divname){
 	    pageResize: true,
         //iDisplayLength: 25,
         ajax : {
-            url: '/users/getDirectory',
+            url: 'users/getDirectory',
 	    type: "POST",
         },
         columns : [	    

@@ -1,3 +1,4 @@
+
 function CheckMongoQuery(){
 	var query = $("#mongoquery").val();
 	if(query === "")
@@ -27,7 +28,7 @@ function InitializeRunsTable(divname){
         order: [[0, "desc"]],
         iDisplayLength: 25,
         ajax : {
-            url: '/runtable/getDatatable',
+            url: 'runtable/getDatatable',
             beforeSend: function ( jqXHR,  settings) {
                       console.log(jqXHR);
             },
@@ -103,7 +104,7 @@ function InitializeRunsTable(divname){
 	    console.log(runs);
 			$.ajax({
 		    	type: "POST",
-		    	url: "/runsui/addcomment",
+		    	url: "runsui/addcomment",
 		    	data: {"runs": runs, "comment": comment, "user": "web user"},		   
 		    	success: function(){ console.log("Redraw"); table.draw();},
 		    	error:   function(jqXHR, textStatus, errorThrown) {
@@ -126,7 +127,7 @@ function InitializeRunsTable(divname){
 	    if(runs.length>0)
 		$.ajax({
 		    type: "POST",
-		    url: "/runsui/addtags",
+		    url: "runsui/addtags",
 		    data: {"runs": runs, "tag": tag, "user": "web user"},		   
 		    success: function(){ console.log("Redraw"); table.draw();},
 		    error:   function(jqXHR, textStatus, errorThrown) {
@@ -150,7 +151,7 @@ function InitializeRunsTable(divname){
 	    	if(runs.length>0 && typeof runs[0] !== "undefined")
 				$.ajax({
 		    		type: "POST",
-		    		url: "/runsui/addtags",
+		    		url: "runsui/addtags",
 		    		data: {"runs": runs, "tag": tag, "user": "web user"},		   
 		    success: function(){ $("#newtag").val(""); ShowDetail(runs[0])},
 		    error:   function(jqXHR, textStatus, errorThrown) {
@@ -173,7 +174,7 @@ function InitializeRunsTable(divname){
 	    	if(runs.length>0 && typeof runs[0] !== "undefined")
 				$.ajax({
 		    		type: "POST",
-		    		url: "/runsui/addcomment",
+		    		url: "runsui/addcomment",
 		    		data: {"runs": runs, "comment": comment, "user": "web user"},		   
 		    		success: function(){ console.log("ADDED COMMENT"); $("#newcomment").val(""); ShowDetail(runs[0])},
 		    		error:   function(jqXHR, textStatus, errorThrown) {
@@ -194,7 +195,7 @@ function RemoveTag(run, user, tag){
 		return;
 	$.ajax({
 		type: "POST",
-		url: "/runsui/removetag",
+		url: "runsui/removetag",
 		data: {"run": run, "user": user, "tag": tag},
 		success: function(){ ShowDetail(run);},
 		error: function(jqXHR, textStatus, errorThrown){
@@ -205,7 +206,7 @@ function RemoveTag(run, user, tag){
 
 function ShowDetail(run){
 	//var namefield =  [['Number', 'number'], ['Detectors', 'detectors'], ['Start', 'start']End', 'User', 'Mode', 'Source'];
-	$.getJSON("/runsui/get_run_doc?run="+run, function(data){
+	$.getJSON("runsui/get_run_doc?run="+run, function(data){
 			console.log(window['user']);
 		// Set base data
 		document.getElementById("detail_Number").innerHTML = data['number'];

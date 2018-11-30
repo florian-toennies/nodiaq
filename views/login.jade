@@ -2,13 +2,13 @@ doctype html
 html
   head
     title XENONnT DAQ
-    script(src="/jq/jquery.min.js" type="text/javascript")
+    script(src="/xenonnt/jq/jquery.min.js" type="text/javascript")
     script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous") 
     script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous")
     link(rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous")
     link(rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous")
-    link(rel="stylesheet" href="/stylesheets/bootstrap-social.css")
-    link(rel="stylesheet" href="/stylesheets/crapcha.css")
+    link(rel="stylesheet" href="/xenonnt/stylesheets/bootstrap-social.css")
+    link(rel="stylesheet" href="/xenonnt/stylesheets/crapcha.css")
     
   body(style="background-color:#5992c2")
 
@@ -22,7 +22,8 @@ html
         span(style="font-color:#bbbbbb") Only works if you've linked your github account!
         br
         div(style='width:100%;text-align:center')
-          a.btn.btn-block.btn-social.btn-large.btn-github(style="max-width:300px" href="/auth/github")
+          a.btn.btn-block.btn-social.btn-large.btn-github(style="max-width:300px"
+href="/xenonnt/auth/github")
             i.fab.fa-github
             span Login with GitHub
         br
@@ -35,7 +36,7 @@ html
             div.collapse.hide#linkCollapse(data-parent="#accordion")
               div.card-body
                 p Please add your github account login and the email associated with your XENON account. You will receive a mail with an activation link, which you must click to link the accounts. If you need to change the email associated with your XENON account, login with your LNGS credentials and change it in the account page.		
-                form(method="post" action="/linkGithub")
+                form(method="post" action="/xenonnt/linkGithub")
                   div.form-group
                     label.form-label(for="email") Email associated with your XENON membership
                     input.form-control(type="email" name="email")
@@ -57,7 +58,7 @@ html
         br
         br
         div(style='width:100%;text-align:left')
-          form(method='post' action='/auth/password')
+          form(method='post' action='/xenonnt/auth/password')
             div.row
               div.col-md-6.col-xs-12.form-group
                 label.form-label(for='email') XENON Email
@@ -74,7 +75,7 @@ html
         div.modal-content
           div.modal-body
             br
-            form(method='post' action='/auth/password')
+            form(method='post' action='/xenonnt/auth/password')
               div.row
                 div.col-md-6.col-xs-12.form-group
                   label.form-label(for='email') LNGS ID
@@ -90,4 +91,4 @@ html
               br
               br
               button.btn.btn-info(type='submit') Submit
-        script(src="/javascripts/crapcha.js" type="text/javascript")
+        script(src="/xenonnt/javascripts/crapcha.js" type="text/javascript")

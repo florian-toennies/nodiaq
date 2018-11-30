@@ -4,7 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var bodyParser = require("body-parser");
-
+var gp="/xenonnt";
 
 // General MongoDB Access via monk
 var mongo = require('mongodb');
@@ -77,6 +77,7 @@ store.on('connected', function() {
 });
 
 // Catch errors
+var assert = require("assert");
 store.on('error', function(error) {
   assert.ifError(error);
   assert.ok(false);
@@ -112,7 +113,7 @@ passport.deserializeUser(function(obj, done) {
 passport.use(new GitHubStrategy({
     clientID: GITHUB_CLIENT_ID,
     clientSecret: GITHUB_CLIENT_SECRET,
-    callbackURL: "https://daq-page.appspot.com/auth/github/callback",
+    callbackURL: "https://xenon1t-daq.lngs.infn.it/xenonnt/auth/github/callback",
     scope: ['user:email', 'user:name', 'user:login', 'user:id', 'user:avatar_url'],
   },
   function(accessToken, refreshToken, profile, done) {
