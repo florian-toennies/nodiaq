@@ -21,12 +21,17 @@ function InitializeRunsTable(divname){
     var table_options = {                                                                   
         processing : true,
         serverSide : true,
-        //pageResize: true,
-        //paging: true,
-        //lengthChange: true,
+	//scrollCollapse: true,
+        pageResize: true,
+	//scrollY: 100, 
+	//scrollX: false,
+	//scrollResize: true,
+        paging: true,
+        lengthChange: true,
+	//responsive: true,
         
-        order: [[0, "desc"]],
-        iDisplayLength: 25,
+        order: [[1, "desc"]],
+        iDisplayLength: 15,
         ajax : {
             url: 'runtable/getDatatable',
             beforeSend: function ( jqXHR,  settings) {
@@ -41,7 +46,15 @@ function InitializeRunsTable(divname){
             { data : "number" , searchable: true},
             { data : "detector" },
             { data : "mode", searchable: true },
-            { data : "source", searchable: true },
+            { data : "bootstrax", searchable: true,
+	      "render": function(data, type, row){
+		  ret = "";
+		  if(typeof(data) != "undefined"){
+		      ret+=data["host"]+":"+data["state"];
+		  }
+		  return ret;
+	      }
+	    },
             { data : "user"},
             { data : "start", format: 'DD.MM.YYYY HH:mm', type: 'datetime'},
             { data : "end", "defaultContent": "<i>Not set</i>"},
@@ -237,7 +250,14 @@ function ShowDetail(run){
 			comment_html += moment(row['date']).format("DD.MM.YYYY HH:mm") + "</td></tr>";
 		}
 		$("#detail_Comments").html(comment_html);
-		$("#detail_JSON").JSONView(data);
+	    
+	    // Locations
+	    var location_html = "";
+	    for(var i in data['data']){
+		location_html+="<table style='width:100%;border-bottom:1px solid #eee'><tr><td>Type</td><td>"+data['data'][i]['type']+"</td></tr><tr><td>Host</td><td>"+data['data'][i]['host']+"</td></tr><tr><td>Path</td><td>"+data['data'][i]['location']+"</td></tr></table>";
+	    }
+	    document.getElementById("location_div").innerHTML=location_html;
+	    $("#detail_JSON").JSONView(data, {"collapsed": true});
 		$("#runsModal").modal();
 	});
 	

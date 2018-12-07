@@ -6,7 +6,7 @@ block extrahead
 
 block content     
   div.main-container
-    span.fontscale Welcome #{user.first_name} #{user.last_name}
+    span.fontscale Welcome #{user.first_name}, feel free to look around but careful touching anything! This is an alpha-level preview
     hr
     - detectors = ['tpc', 'muon_veto', 'neutron_veto']
     each detector in detectors    

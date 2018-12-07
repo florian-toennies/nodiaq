@@ -4,6 +4,9 @@
 	color: #ddd;
 }
 
+div.dataTables_length {
+    display: none;
+}
 /* CSS for the badge on sidebar buttons */
 #sidebar:not(:active) .fa-stack.has-badge[data-count]:after{
   position:absolute;
@@ -358,7 +361,7 @@
     border: 1px solid #cccccc;
 }
 .reader_detail{
-    width: 100%;
+    /*width: 100%;*/
     min-height: 200px;
     margin-top: 5px;
     border: 1px solid #cccccc;    

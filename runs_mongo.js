@@ -28,6 +28,7 @@ runsdb.once('open', function callback ()
 		    user: String,
 		    mode: String,
 		    source: String,
+		    bootstrax: [{state: String, host: String, time: Date, started_processing: Date}],
 		    tags: [ {user: String, date: Date, text: String} ],
 		    comments: [{user: String, date: Date, text: String}],
 		},

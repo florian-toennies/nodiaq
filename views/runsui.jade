@@ -4,13 +4,14 @@ block extrahead
   link(rel="stylesheet", href="stylesheets/jquery.dataTables.min.css")
   script(src="javascripts/jquery.dataTables.min.js", type="text/javascript")
   script(src="javascripts/datatables_datetime.js", type="text/javascript")
+  script(src="javascripts/datatables.pageResize.min.js", type="text/javascript")
   script(src="javascripts/moment.min.js", type="text/javascript")
   script(src="javascripts/runs_table.js", type="text/javascript")
   link(rel="stylesheet" href="https://rawgithub.com/yesmeck/jquery-jsonview/master/dist/jquery.jsonview.css")
   script(type="text/javascript" src="https://rawgithub.com/yesmeck/jquery-jsonview/master/dist/jquery.jsonview.js")
 
 block content     
-  div.main-container
+  div.main-container(style="height:100%")
     div.row#addtagrow(style="display:none;padding-left:20px;")
       div.col-md-12.col-lg-6
         div.form-group.row
@@ -37,21 +38,22 @@ block content
         button.btn.btn-default(onclick="CheckMongoQuery()") Apply
         
     br
-    table#runs_table
-      thead
-        tr
-          th Detail
-          th Number
-          th Detectors
-          th Mode
-          th Source
-          th User
-          th Start
-          th End
-          th Tags
-          th Top Comment
+    div#resize_wrapper(style="height:90%")
+      table.nowrap#runs_table
+        thead
+          tr
+            th Detail
+            th Number
+            th Detectors
+            th Mode
+            th Strax
+            th User
+            th Start
+            th End
+            th Tags
+            th Top Comment
   div.modal.fade#runsModal(tabindex="-1" role="dialog")
-      div.modal-dialog(role="document")
+      div.modal-dialog.modal-lg(role="document")
         div.modal-content
           div.modal-body
             ul.nav.nav-tabs#runTab(role="tablist")
@@ -102,9 +104,12 @@ block content
                   button.btn.btn-default#add_comment_detail_button Add Comment
                   br
               div.tab-pane.fade#tab_locations(role="tabpanel" aria-labelledby="locations-tab")
-                h5(style="padding:10px") no location data
+                br
+                h5 Data Locations
+                hr
+                div(style="width:100%")#location_div
               div.tab-pane.fade#tab_json(role="tabpanel" aria-labelledby="json-tab")
-                div.json_detail#detail_JSON
+                div.json_detail#detail_JSON(style="width:100%")
             br
             button.btn.btn-error(type='button' data-dismiss='modal') Close         
   script.

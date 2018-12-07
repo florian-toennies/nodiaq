@@ -12,8 +12,8 @@ function GetStatus(i){
 }
 
 function UpdateStatusPage(){
-    var readers = ["fdaq00_reader_0", "fdaq00_reader_1"];
-    var controllers = ['fdaq00_controller_0'];
+    var readers = ["reader0_reader_0", "reader1_reader_1", 'reader2_reader_2', 'reader3_reader_3', 'reader4_reader_4', 'reader6_reader_6', 'reader7_reader_7'];
+    var controllers = ['reader0_controller_0'];
     var brokers = []; //["fdaq00_broker_0"];
     
     for(i in readers){
@@ -96,7 +96,7 @@ function UpdateStatusPage(){
 			//
 		    }
 		}
-		console.log(data);
+
 		$("#command_panel").prepend(fillHTML);
 		
 		if(document.local_command_queue.length === 0)
@@ -116,42 +116,42 @@ function UpdateStatusPage(){
     for(i in controllers){
     	var controller = controllers[i];
     	$.getJSON("status/get_controller_status?controller="+controller, (function(c){ return function(data) {
-console.log("BOOOOO");
-console.log(data);
-	    atts = ['checkin', 'host'];
+	    atts = ['checkin', 'host', 'status'];
 	    list_atts = ['type', 'run_number', 'pulser_freq'];
 	    bool_atts = ['s_in', 'muon_veto', 'neutron_veto', 'led_trigger'];
 	    for (var i in atts){
 		att = atts[i];
-		console.log(c+"_"+att);
-		document.getElementById(c+"_"+att).innerHTML = data[att];
+
+		if(att!='status')
+		    document.getElementById(c+"_"+att).innerHTML = data[att];
+		else
+		    document.getElementById(c+"_"+att).innerHTML = STATUSES[data[att]];
 	    }
 	   var html = "";
 	   for(var i in data['active']){
 	       html += "<li><strong>"+data['active'][i]['type']+': </strong> ';
 	       for(var j in bool_atts){
 		   if(data['active'][i][bool_atts[j]]==0)
-		       html += '<i data-toggle="tooltip" title="'+bool_atts[j]+' inactive" style="color:red" class="fas fa-times-circle"></i>';
+		       html += '<i data-toggle="tooltip" title="'+bool_atts[j]+' inactive" style="color:red" class="fas fa-times-circle"></i> ';
 		   else if(data['active'][i][bool_atts[j]] == 1)
-		       html += '<i data-toggle="tooltip" title="'+bool_atts[j]+' active" style="color:green" class="fas fa-check-circle"></i>';
+		       html += '<i data-toggle="tooltip" title="'+bool_atts[j]+' active" style="color:green" class="fas fa-check-circle"></i> ';
 		   else
 		       html += " ? ";
 	       }
 	       html += "<strong>(" + data['active'][i]['pulser_freq'] + "Hz)</strong></li>";
 	   }
+	    if(html=="") html="no devices active";
 	    document.getElementById(c+"_devices").innerHTML=html;
 	};}(controller)));
 	
 	for(i in brokers){
 		var broker = brokers[i];
-		console.log(broker);
+
 		$.getJSON("status/get_broker_status?broker="+broker, (function(b){return function(data){
-			console.log(data);
+
 			for(var i in data){
 			    doc = data[i];
-			    console.log(doc);
 			    var idstart = b + '_' + doc['detector'] + '_';
-			    console.log(idstart);
 			    atts = ['active', 'comment', 'detector', 'hosts', 'crate_controller', 'diagnosis', 'mode', 'number', 'started_at', 'status', 'stop_after', 'user'];
 			    //state ishas
 			    document.getElementById(idstart+"detector").innerHTML = "<strong>"+doc['detector']+"</strong>";
@@ -212,8 +212,10 @@ function UpdateChart(host, ts, rate, buff){
 function DrawInitialCharts(){
     document.charts = {};
     document.last_time_charts = {};
-    var readers = ["fdaq00_reader_0", "fdaq00_reader_1"];
-	var colors = {"rate": "#1c0877", "buff": "#df3470", "third": "#3dd89f"}
+    var readers = ["reader0_reader_0", "reader1_reader_1", 'reader2_reader_2', 'reader3_reader_3', 'reader4_reader_4', 'reader6_reader_6', 'reader7_reader_7'];
+    var controllers = ['reader0_controller_0'];
+
+    var colors = {"rate": "#1c0877", "buff": "#df3470", "third": "#3dd89f"}
     for(i in readers){
 	var reader = readers[i];
 	$.getJSON("status/get_reader_history?limit=1000&reader="+reader, function(data){
