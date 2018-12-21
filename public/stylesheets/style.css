@@ -73,7 +73,7 @@
 .sidebar {
   display: none;
 }
-@media (min-width: 768px) {
+@media (min-width: 540px), (min-width: 1080px and min-resolution: 2dppx) {
   .sbar {
     position: fixed;
     top: 41px;
@@ -403,7 +403,7 @@ a.article:hover {
     MEDIAQUERIES
 ----------------------------------------------------- */
 
-@media (max-width: 768px) {
+@media (max-width: 540px), (max-width: 1080px and min-resolution: 2dppx) {
     #sidebar {
         min-width: 80px;
         max-width: 80px;

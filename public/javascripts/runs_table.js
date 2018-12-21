@@ -75,7 +75,7 @@ function InitializeRunsTable(divname){
             { data : "comments", "defaultContent": "",
 	      "render": function(data, type, row){
 		  if(typeof(data) != "undefined" && data.length>0)
-		      return data[0]["comment"]; return "";}}
+		      return data[data.length-1]["comment"]; return "";}}
         ],
 	columnDefs: [
 	 { className: "not-selectable", "targets": [ 0 ] },

@@ -61,80 +61,81 @@ html
             span.anticolored(style="background-color:white")
             span.anticolored(style="background-color:white")
           span.pagetitle XENONnT DAQ
-      nav#sidebar.colored.active
-        button.navbar-btn.colored.sidebarCollapse(type="button")
-          span.anticolored
-          span.anticolored
-          span.anticolored
-        div.sidebar-header.colored(style="padding-bottom:5px")
-          div.CTAs.desktop_title(style="height:100px;width:100%")
-            div(style="width:100%;float:left")
-              div(style="float:left;width:100px")
-                img.second_logo(src="/xenonnt/images/dumpster_fire.png", style="width:100px;margin-left:-20px")
-              div
-                h4 XENONnT
-                h4 DAQ
+      div#sidebar_wrapper.active
+        nav#sidebar.colored.active
+          button.navbar-btn.colored.sidebarCollapse(type="button")
+            span.anticolored
+            span.anticolored
+            span.anticolored
+          div.sidebar-header.colored(style="padding-bottom:5px")
+            div.CTAs.desktop_title(style="height:100px;width:100%")
+              div(style="width:100%;float:left")
+                div(style="float:left;width:100px")
+                  img.second_logo(src="/xenonnt/images/dumpster_fire.png", style="width:100px;margin-left:-20px")
+                div
+                  h4 XENONnT
+                  h4 DAQ
 
-            //h3(style="margin-left:25px;") XENONnT
-            //img(src="/xenonnt/images/dumpster_fire.png", style="margin-left:35px;width:100px;")
-            //h3(style="margin-left:55px;") DAQ
-          img.logo(src="/xenonnt/images/mstile-310x310.png")
-          //strong nT
-          // hr(style="border-top:1px solid #ccc")
-        ul.list-unstyled.components(style="padding-top:5px")
-          li.colored#lindex
-             a(href="/xenonnt")
-               span.fa-stack.has-badge#errorIcon
-                 i.fa.fa-binoculars
-               span(style="margin-left:-10px") Overview
-          //li.colored#lplaylist
-          //  a(href='/playlist') 
-          //    span Playlist
-          li.colored#lcontrol
-            a(href='/xenonnt/control') 
-              i.fa.fa-wrench 
-              span Control          
-          li.colored#lstatus
-            a(href='/xenonnt/status')
-              i.fa.fa-tasks
-              span Processes
-          li.colored.CTAs#lhosts
-            a(href='/xenonnt/hosts') 
-              i.fa.fa-desktop
-              span Hosts
-          li.colored.CTAs#loptions
-            a(href='/xenonnt/options') 
-              i.fa.fa-cogs
-              span Config
-          li.colored#lruns
-            a(href='/xenonnt/runsui')
-              i.fab.fa-accessible-icon
-              span Runs
-          li.colored.CTAs#llog
-            a(href='/xenonnt/logui')
-              i.fa.fa-book-open
-              span Log
-          li.colored#lhelp
-            a(href='/xenonnt/help')
-              i.fa.fa-question
-              span Help
-          br
-          li.colored#lshifts
-            a(href='/xenonnt/shifts') 
-              i.fa.fa-id-badge
-              span Shifts
-          li.colored.CTAs#lusers
-            a(href='/xenonnt/users') 
-              i.fa.fa-kiwi-bird
-              span Users
-          li.colored.CTAs#laccount
-            a(href="/xenonnt/account") 
-              i.fa.fa-user-astronaut
-              span Profile
-          br
-          li.colored(style="background-color:#06d6a0")
-            a(href="/xenonnt/logout") Sign Out
-      div#content(style="padding:5px")
+              //h3(style="margin-left:25px;") XENONnT
+              //img(src="/xenonnt/images/dumpster_fire.png", style="margin-left:35px;width:100px;")
+              //h3(style="margin-left:55px;") DAQ
+            img.logo(src="/xenonnt/images/mstile-310x310.png")
+            //strong nT
+            // hr(style="border-top:1px solid #ccc")
+          ul.list-unstyled.components(style="padding-top:5px")
+            li.colored#lindex
+               a(href="/xenonnt")
+                 span.fa-stack.has-badge#errorIcon
+                   i.fa.fa-binoculars
+                 span(style="margin-left:-10px") Overview
+            //li.colored#lplaylist
+            //  a(href='/playlist') 
+            //    span Playlist
+            li.colored#lcontrol
+              a(href='/xenonnt/control') 
+                i.fa.fa-wrench 
+                span Control          
+            li.colored#lstatus
+              a(href='/xenonnt/status')
+                i.fa.fa-tasks
+                span Processes
+            li.colored.CTAs#lhosts
+              a(href='/xenonnt/hosts') 
+                i.fa.fa-desktop
+                span Hosts
+            li.colored.CTAs#loptions
+              a(href='/xenonnt/options') 
+                i.fa.fa-cogs
+                span Config
+            li.colored#lruns
+              a(href='/xenonnt/runsui')
+                i.fab.fa-accessible-icon
+                span Runs
+            li.colored.CTAs#llog
+              a(href='/xenonnt/logui')
+                i.fa.fa-book-open
+                span Log
+            li.colored#lhelp
+              a(href='/xenonnt/help')
+                i.fa.fa-question
+                span Help
+            br
+            li.colored#lshifts
+              a(href='/xenonnt/shifts') 
+                i.fa.fa-id-badge
+                span Shifts
+            li.colored.CTAs#lusers
+              a(href='/xenonnt/users') 
+                i.fa.fa-kiwi-bird
+                span Users
+            li.colored.CTAs#laccount
+              a(href="/xenonnt/account") 
+                i.fa.fa-user-astronaut
+                span Profile
+            br
+            li.colored(style="background-color:#06d6a0")
+              a(href="/xenonnt/logout") Sign Out
+      div#content(style="padding-left:5px;padding-right:5px;padding-top:0px;padding-bottom:0px")
         //nav.navbar.navbar-expand-lg.navbar-light.bg-light
         // div.container-fluid
         block content
@@ -142,12 +143,14 @@ html
     script.
       console.log('#{user.favorite_color}');
       //SetNavbar("#{user.favorite_color}");
-      $(document).ready(function(){
+      $(document).ready(function(){      
 
         CheckForErrors(setTimeout(CheckForErrors, 5000));
         $('.sidebarCollapse').on('click', function () {
           $('#sidebar').toggleClass('active');
+          $('#sidebar_wrapper').toggleClass('active');
                     $('.sidebarCollapse').toggleClass('active');
           $('#topbar').toggleClass('active');
+
         });
       });

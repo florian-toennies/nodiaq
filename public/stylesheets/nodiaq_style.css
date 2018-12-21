@@ -162,6 +162,7 @@ div.dataTables_length {
  .desktop_title{
  	display: none;
  }
+
 #sidebar {
 	width:100%;
     display: block;
@@ -207,7 +208,17 @@ div.dataTables_length {
 
 
 /* DESKTOP LARGER SCALE */
-@media only screen and (min-width: 1024px) {
+@media 
+only screen and (min-width: 541px) and (max-resolution: 120dpi),
+only screen and (min-width: 1080px) and (min-resolution: 120dpi),
+only screen and (min-width: 1081px) 
+{
+ 
+  .main-container{
+      height: 100vh;
+      overflow-y: auto;
+      overflow-x: hidden;
+  }
     .wrapper {
     display: flex;
     align-items: stretch;
@@ -246,8 +257,25 @@ div.dataTables_length {
 	#topbar.active{
 		display: none;
 	}
+
+#sidebar_wrapper{
+  width: 250px;
+min-width:250px;
+max-width:250px;
+  height:100%;
+  overflow: hidden;
+margin:0;
+}
+#sidebar_wrapper.active{
+  width:80px;
+  min-width:80px;
+max-width:80px;
+overflow: hidden;
+}
+
     #sidebar {
     margin-top: 0px;
+    width:100%;
     min-width: 250px;
     display: block;
     max-width: 250px;
@@ -255,17 +283,20 @@ div.dataTables_length {
     background: #0c1178;
     color: #fff;
     transition: all 0.3s;
-        height: 100vh !important;
-	}
-    #sidebar.active {
-    	display: block;
-    min-width: 80px;
-    max-width: 80px;
-    text-align: center;
-    margin-left: 0 !important;
     height: 100vh !important;
+    overflow-y: hidden;
 	}
-	/* end main styling */
+    #sidebar.active {	
+    	display: block;
+	width:100%;
+	min-width: 80px;
+	max-width: 80px;
+	text-align: center;
+	margin-left: 0 !important;
+	height: 100vh !important;
+	overflow-y: hidden;
+    }
+    /* end main styling */
 	
     
     /* Sidebar logo only appears when 'active'*/
