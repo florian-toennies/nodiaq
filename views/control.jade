@@ -15,7 +15,7 @@ block content
             span Once you're done, submit your changes with this button. And, you know, take care.
           div.col-12
             div.float-right
-              button.btn.btn-warning.btn-xl(onclick="PostServerData()") Submit Changes
+              button.btn.btn-warning.btn-xl#submit_changes(onclick="PostServerData()") Submit Changes
           
     - var detectors = [["tpc", "TPC"], ["muon_veto", "Muon Veto"], ["neutron_veto", "Neutron Veto"]];
     each det in detectors
@@ -67,6 +67,7 @@ block content
      
   script.
     $(document).ready(function(){
+      //FYouButton("submit_changes");
       document.page_ready = false;
       DrawActiveLink("#lcontrol");
       PopulateRunsList(PullServerData);

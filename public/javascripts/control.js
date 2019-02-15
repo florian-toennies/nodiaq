@@ -1,3 +1,13 @@
+function FYouButton(buttonid){
+    $("#"+buttonid).mouseover(function(){
+        var t = $(window).height()*Math.random();
+        var l = $(window).width()*Math.random();
+        console.log(t);
+        $("#"+buttonid).css({'z-index': 10, 'height': '31px',
+                             'top': t, 'left': l, 'position':'absolute'});
+    });
+}
+
 function PopulateRunsList(callback){
     var detectors = ['tpc', 'muon_veto', 'neutron_veto'];
     var fetched = 0;

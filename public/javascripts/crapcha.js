@@ -29,7 +29,8 @@ var crapcha = {
         $code.append('<span>&#x' + captcha[i] + ';</span>');
       } else if (captcha[i].length === 3) {
         // font-awesome
-        $code.append('<span class="icon-' + captcha[i] + '"></span>');
+          $code.append('<i class="fa">&#xf' + captcha[i] + ';</i>');
+
       }
     }
 
@@ -49,6 +50,10 @@ var crapcha = {
       if (r > 0.4) {
         // unicode
         t = this.randomize(382).toString(16);
+	if( (t>=83 && t<=159) || (t<=24 && t!=8)){
+	    i--;
+	    continue;
+	}
         t = this.pad([t, 5]);
       } else if (r > 0.2) {
         // unicode
@@ -59,7 +64,8 @@ var crapcha = {
         t = this.randomize(270).toString(15);
         t = this.pad([t, 3]);
       }
-
+	console.log(r);
+	console.log(t);
       captcha.push(t);
     }
 

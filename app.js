@@ -52,6 +52,7 @@ var helpRouter = require('./routes/help');
 var statusRouter = require('./routes/status');
 var authRouter = require('./routes/auth');
 var controlRouter = require('./routes/control');
+var scopeRouter = require('./routes/scope');
 var shiftRouter = require('./routes/shifts');
 
 // Using express!
@@ -265,6 +266,7 @@ app.use('/users', userRouter);
 app.use('/status', statusRouter);
 app.use('/auth', authRouter);
 app.use('/control', controlRouter);
+app.use('/scope', scopeRouter);
 app.use('/shifts', shiftRouter);
 
 // catch 404 and forward to error handler

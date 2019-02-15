@@ -39,21 +39,6 @@ html
     block extrahead
   body
     
-    //nav.navbar.navbar-expand-sm.navbar-light.bg-light.py-0#navbar(style="border-bottom:1px solid #888888")
-    //
-    //  a.navbar-brand(href='/' style="padding-left:5px") XENONnT DAQ
-    //  button.navbar-toggler(type="button" data-toggle="collapse" data-target="#navbarNavDropdown")
-    //    span.navbar-toggler-icon
-
-    //  div.collapse.navbar-collapse#navbarNavDropdown
-    //    ul.navbar-nav.ml-auto
-    //      li.nav-item
-    //        a.nav-link.py-0(href="#" onclick='alert("1 Month free trial. After that just 3999 EUR/month without support contract. Support contracts start at 999 EUR/month for the basic plan where I just yell at you when you call me.")') Pricing
-    //      li.nav-item.dropdown(style='align-right')
-    //        a.nav-link.dropdown-toggle#navbarDropdownMenuLink.py-0(href="#" data-toggle="dropdown") User: #{user.first_name} #{user.last_name}
-    //        div.dropdown-menu
-    //          a.dropdown-item(href="/account") Profile              
-    //          a.dropdown-item(href="/logout") Sign Out
     div.wrapper
       nav#topbar.colored.active
           button.navbar-btn.colored.sidebarCollapse(type="button")
@@ -76,29 +61,21 @@ html
                   h4 XENONnT
                   h4 DAQ
 
-              //h3(style="margin-left:25px;") XENONnT
-              //img(src="/xenonnt/images/dumpster_fire.png", style="margin-left:35px;width:100px;")
-              //h3(style="margin-left:55px;") DAQ
             img.logo(src="/xenonnt/images/mstile-310x310.png")
-            //strong nT
-            // hr(style="border-top:1px solid #ccc")
           ul.list-unstyled.components(style="padding-top:5px")
             li.colored#lindex
                a(href="/xenonnt")
                  span.fa-stack.has-badge#errorIcon
                    i.fa.fa-binoculars
                  span(style="margin-left:-10px") Overview
-            //li.colored#lplaylist
-            //  a(href='/playlist') 
-            //    span Playlist
             li.colored#lcontrol
               a(href='/xenonnt/control') 
                 i.fa.fa-wrench 
-                span Control          
+                span Control
             li.colored#lstatus
               a(href='/xenonnt/status')
                 i.fa.fa-tasks
-                span Processes
+                span Status
             li.colored.CTAs#lhosts
               a(href='/xenonnt/hosts') 
                 i.fa.fa-desktop
@@ -111,6 +88,10 @@ html
               a(href='/xenonnt/runsui')
                 i.fab.fa-accessible-icon
                 span Runs
+            li.colored.CTAs#lscope
+             a(href='/xenonnt/scope')
+               i.fa.fa-heartbeat
+               span Pulse Viewer
             li.colored.CTAs#llog
               a(href='/xenonnt/logui')
                 i.fa.fa-book-open

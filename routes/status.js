@@ -1,6 +1,8 @@
 var express = require('express');
 var url = require('url');
+var ObjectId = require('mongodb').ObjectID;
 var router = express.Router();
+
 
 function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) { return next(); }
@@ -101,6 +103,19 @@ router.get('/get_reader_status', ensureAuthenticated, function(req, res){
 	});
 });
 
+function objectIdWithTimestamp(timestamp) {
+    //https://stackoverflow.com/questions/8749971/can-i-query-mongodb-objectid-by-date
+    // Convert string date to Date object (otherwise assume timestamp is a date)
+    if (typeof(timestamp) == 'string') {
+        timestamp = new Date(timestamp);
+    }
+    // Convert date object to hex seconds since Unix epoch
+    var hexSeconds = Math.floor(timestamp/1000).toString(16);
+    // Create an ObjectId with that hex timestamp
+    var constructedObjectId = ObjectId(hexSeconds + "0000000000000000");
+    return constructedObjectId;
+}
+
 router.get('/get_reader_history', ensureAuthenticated, function(req,res){
     var db = req.db;
     var collection = db.get('status');
@@ -108,13 +123,75 @@ router.get('/get_reader_history', ensureAuthenticated, function(req,res){
     var q = url.parse(req.url, true).query;
     var reader = q.reader;
     var limit  = q.limit;
+    var resolution = parseInt(q.res);
 
     if(typeof limit == 'undefined')
 	limit = 100;
     if(typeof reader == 'undefined')
 	return res.send(JSON.stringify({}));
+    if(typeof res == 'undefined')
+	resolution = 60; //1m
 
-    collection.find({"host": reader},
+    var t = (new Date()).getTime() - parseInt(limit)*1000;
+    var id = objectIdWithTimestamp(t);
+
+    // Fancy-pants aggregation to take binning into account
+    var query = {"host": reader, "_id": {"$gt": id}};
+    collection.aggregate([
+	{'$match': query},
+	{'$project': {
+	    'time_bin': {
+		"$trunc": {
+		    "$divide" : [
+			{ 
+			    "$convert": { 'input': {"$subtract": [ {"$toDate": "$_id"}, t ]},
+					 'to': 19
+					}
+			},
+			1000*resolution
+		    ]
+		}
+	    },
+	    'insertion_time': {"$toDate": "$_id"}, "_id": 1, "rate": 1, "buffer_length": 1,
+	    "host": 1
+	}},
+	{'$group': {
+	    '_id': '$time_bin',	   
+	    'rate': { '$avg': '$rate'},
+	    'buff': { '$avg': '$buffer_length'},
+	    'host': { '$first': '$host'}
+	}},
+	{'$project': {
+	    '_id': 1,
+	    'time': { "$convert": { 'input': {'$add': [{'$multiply': ['$_id', resolution, 1000]}, t]},
+				    'to': 18 // long int
+				  }},
+	    'rate': 1,
+	    'buff': 1,
+	    'host': 1,
+	}},
+	{'$group': {
+	    '_id': '$host',
+	    'rates': {'$push': '$rate'},
+	    'buffs': {'$push': '$buff'},
+	    'times': {'$push': '$time'},
+	}},
+    ], function(err, result){	
+	retval = result[0];
+	ret = {};
+	ret[retval['_id']] =  {'rates': [], 'buffs': []};
+	for(var i in retval['rates']){
+	    ret[retval['_id']]['rates'].push([retval['times'][i],
+					      retval['rates'][i]]);
+	    ret[retval['_id']]['buffs'].push([retval['times'][i],
+					      retval['buffs'][i]]);
+	};
+	
+	return res.send(JSON.stringify(ret));
+    });
+	
+
+    /*collection.find({"host": reader, "_id": {"$gt": id}},
 		    {"sort": {"_id": -1}, "limit": parseInt(limit, 10)},
 		    function(e, docs){
 			rates = [];
@@ -135,6 +212,7 @@ router.get('/get_reader_history', ensureAuthenticated, function(req,res){
 			ret[host] = {"rates": rates, "buffs": buffs};
 			return res.send(JSON.stringify(ret));
 		    });
+    */
 });
 				
 
