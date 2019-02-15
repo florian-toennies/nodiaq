@@ -16,6 +16,14 @@ router.get('/github',
 	    // function will not be called.
 	});
 
+router.post('/ldap',
+	    passport.authenticate('ldapauth', {
+		successRedirect: gp+'/',
+		failureRedirect: gp+'/login'}), 
+	    function(req, res){
+		res.redirect(gp);
+	    });
+
 router.post('/password', 
   passport.authenticate('local', { failureRedirect: gp+'/login' }),
   function(req, res) {

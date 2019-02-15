@@ -20,14 +20,13 @@ html
         h5 Welcome to the DAQ, please log in
         hr
         strong Option 1: Login with Github. 
-        span(style="font-color:#bbbbbb") Only works if you've linked your github account!
+        span(style="font-color:#bbbbbb") 
         br
         div(style='width:100%;text-align:center')
           a.btn.btn-block.btn-social.btn-large.btn-github(style="max-width:300px"
 href="/xenonnt/auth/github")
             i.fab.fa-github
             span Login with GitHub
-        br
         br
         div.accordion#accordion
           div.card
@@ -36,7 +35,7 @@ href="/xenonnt/auth/github")
               button.btn.btn-link(type="button" data-toggle="collapse" data-target="#linkCollapse" aria-expanded="true" aria-controls="linkCollapse") To link your GitHub, click here
             div.collapse.hide#linkCollapse(data-parent="#accordion")
               div.card-body
-                p Please add your github account login and the email associated with your XENON account. You will receive a mail with an activation link, which you must click to link the accounts. If you need to change the email associated with your XENON account, login with your LNGS credentials and change it in the account page.		
+                p Please add your github account login and the email associated with your XENON account. You will receive a mail with an activation link, which you must click to link the accounts.
                 form(method="post" action="/xenonnt/linkGithub")
                   div.form-group
                     label.form-label(for="email") Email associated with your XENON membership
@@ -48,12 +47,26 @@ href="/xenonnt/auth/github")
         hr
         strong Option 2: Login with LNGS Credentials.
         br
-        br
         div(style='width:100%;text-align:center')
           a.btn.btn-block.btn-social.btn-large.btn-facebook(type="button" data-toggle="modal" data-target="#LNGSmodal" style="max-width:300px;color:white;")
             i.fa.fa-hand-spock
             span Login via LNGS
         br
+        div.accordion#accordion
+          div.card
+            div.card-header#heading(style="padding:5px")	  
+              button.btn.btn-link(type="button" data-toggle="collapse" data-target="#llinkCollapse" aria-expanded="true" aria-controls="llinkCollapse") To link your LNGS ID, click here
+            div.collapse.hide#llinkCollapse(data-parent="#accordion")
+              div.card-body
+                p Please add your LNGS account login and the email associated with your XENON account. You will receive a mail with an activation link, which you must click to link the accounts. 
+                form(method="post" action="/xenonnt/linkLDAP")
+                  div.form-group
+                    label.form-label(for="email") Email associated with your XENON membership
+                    input.form-control(type="email" name="email")
+                  div.form-group
+                    label.form-label(for="lngs_id") LNGS ID
+                    input.form-control(type="text" name="lngs_id")
+                  button.btn.btn-basic(type="submit") Request Activation Email
         br
         //strong Option 3: Login with password
         //br
@@ -76,11 +89,11 @@ href="/xenonnt/auth/github")
         div.modal-content
           div.modal-body
             br
-            form(method='post' action='/xenonnt/auth/password')
+            form(method='post' action='/xenonnt/auth/ldap')
               div.row
                 div.col-md-6.col-xs-12.form-group
                   label.form-label(for='email') LNGS ID
-                  input.form-control(type='text' name='email' required)
+                  input.form-control(type='text' name='user' required)
                 div.col-md-6.col-xs-12.form-group
                   label.form-label(for='password') LNGS Password
                   input.form-control(type='password' name='password' required)

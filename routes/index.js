@@ -21,7 +21,7 @@ function GetNextRunIdentifier(req, res, callback){
     );
 };
 
-function InsertRunDoc(req, res, host, callback){
+/*function InsertRunDoc(req, res, host, callback){
     var db = req.runs_db;
     var collection = db.get('run');
     
@@ -61,13 +61,14 @@ function InsertRunDoc(req, res, host, callback){
 		});
 	});
 }
+*/
 
 /* GET home page. */
 router.get('/', ensureAuthenticated, function(req, res) {
     res.render('index', { title: 'Express', user: req.user });
 });
 
-router.get('/arm', ensureAuthenticated, function(req,res){
+/*router.get('/arm', ensureAuthenticated, function(req,res){
     // Arm the DAQ with a specific settings doc
     
     // Get argument if there is one
@@ -160,7 +161,7 @@ router.get('/stop', ensureAuthenticated, function(req, res){
 	    return res.redirect(gp+'/status');
 	});
 });
-
+*/
 router.get('/log', ensureAuthenticated, function(req, res){
     var db = req.db;
     var collection = db.get('log');
@@ -183,6 +184,7 @@ router.get('/log', ensureAuthenticated, function(req, res){
 			});
 });
 
+/*
 router.get('/runs', ensureAuthenticated, function(req, res){
     var db = req.runs_db;
     var collection = db.get("run");
@@ -252,6 +254,7 @@ router.get('/status_history', ensureAuthenticated, function(req, res){
 			return res.send(JSON.stringify(ret));
 		    });
 });
+*/
 router.get('/status_update', ensureAuthenticated, function(req, res){
     var db = req.db;
     var statuses = {
@@ -292,6 +295,7 @@ router.get('/status_update', ensureAuthenticated, function(req, res){
     //    res.render('index', { clients: clients });
 });
 
+/*
 router.get('/modes', ensureAuthenticated, function(req,res){
     var db = req.db;
     var collection = db.get("options");
@@ -305,12 +309,13 @@ router.get("/detectors", ensureAuthenticated, function(req, res){
     var dets = req.detectors;    
     return res.send(JSON.stringify(Object.keys(dets)));
 });
-    
+*/  
 
+/*
 router.get('/helloworld', ensureAuthenticated, function(req, res){
     res.render('helloworld', {title: 'Hello, World!'});
 });
-
+*/
 
 router.get('/account', ensureAuthenticated, function(req, res){
     res.render('account', { user: req.user });
@@ -392,29 +397,101 @@ router.get("/verify", function(req, res){
 					      {"$set": {"github": docs[0]['github_temp']},
 					       "$unset": {"github_temp": 1, "github_hash": 1}});
 			    return res.render("confirmationLander",
-					      {message: "Account linked, you can now login with GitHub"});
+					      {message: "Account linked, you can now login"});
 			}
 			else
 			    res.render("confirmationLander",
 				       {message: "Couldn't find an account to link"});
 		    });
+
+});
+
+router.get("/verify_ldap", function(req, res){
+    var db = req.runs_db;
+    var collection = db.get("users");
+    var q = url.parse(req.url, true).query;
+    var code = q.code;
+    collection.find({"ldap_hash": code},
+                    function(e, docs){
+                        if(docs.length == 1){
+                            collection.update({'_id': docs[0]['_id']},
+                                              {"$set": {"lngs_ldap_uid": docs[0]['ldap_temp']},
+                                               "$unset": {"ldap_temp": 1, "ldap_hash": 1}});
+                            return res.render("confirmationLander",
+                                              {message: "Account linked, you can now login"});
+                        }
+                        else
+                            res.render("confirmationLander",
+                                       {message: "Couldn't find an account to link"});
+                    });
+
+});
+
+function SendConfirmationMail(req, random_hash, link, callback){
+    // send mail
+    var transporter = req.transporter;
+    var mailOptions = {
+        from: process.env.DAQ_CONFIRMATION_ACCOUNT,
+        to: req.body.email,
+        subject: 'XENONnT Account Confirmation',
+        html: '<p>Please click <a href="https://xenon1t-daq.lngs.infn.it/xenonnt/'+link+'?code='+random_hash+'">here</a> to verify your email.</p><p>If you did not request this email please delete.</p>'
+    };
+    
+    transporter.sendMail(mailOptions, function(error, info){
+	if (error) {
+            console.log(error);
+	    callback(false);
+	}
+	callback(true);
+    });
+}
+
+router.post("/linkLDAP", (req, res) => {
+    var db = req.runs_db;
+    var collection = db.get("users");
+    if(req.body.lngs_id != "" && req.body.email != ""){
+	collection.find({"email": req.body.email},
+			function(e, docs){
+			    if(docs.length != 1)
+				return res.render("confirmationLander",
+						  {message: "You don't seem to be in our database"});
+			    else{
+				// Synchronous
+                                const cryptoRandomString = require('crypto-random-string');
+                                const random_hash = cryptoRandomString(128);
+                                collection.update({"email": req.body.email},
+                                                  {"$set": {"ldap_temp": req.body.lngs_id,
+                                                            "ldap_hash": random_hash}});
+				// Send Mail
+				SendConfirmationMail(req, random_hash, 'verify_ldap', function(success){
+				    if(success)
+					return res.render("confirmationLander",
+                                                          {message: "Check your email"});
+				    else
+					return res.render("confirmationLander",
+							  {message: "Failed to send email confirmation"});
+				});
+			    }
+			});
+	}
+    else
+        return res.render("confirmationLander", 
+			  {message: "You must provide a valid email and LDAP ID"});
 });
 
 router.post("/linkGithub", (req, res) => {
     var db = req.runs_db;
     var collection = db.get("users");
-    console.log(req.body.email);
-    console.log(req.body.github);
     if(req.body.github != "" && req.body.email != ""){
 	// set github ID to github_temp and send mail
 	collection.find({"email": req.body.email},
 			function(e, docs){
-			    if(docs.length!=1)
+			    if(docs.length!=1){
 				return (res.render("confirmationLander",
 						   {message:"You don't seem to be in our database"}));
-			    else if(typeof(docs[0]['github']) != "undefined"){
-				return (res.render("confirmationLander",
-						   {message: "That account already has a github ID"}));
+			    //else if(typeof(docs[0]['github']) != "undefined"){
+			    //return (res.render("confirmationLander",
+			    //{message: "That account already has a github ID"}));
 			    }
 			    else{
 				// Synchronous
@@ -423,32 +500,21 @@ router.post("/linkGithub", (req, res) => {
 				collection.update({"email": req.body.email},
 						  {"$set": {"github_temp": req.body.github,
 							    "github_hash": random_hash}});
-				// send mail
-				var transporter = req.transporter;
-				var mailOptions = {
-				    from: process.env.DAQ_CONFIRMATION_ACCOUNT,
-				    to: req.body.email,
-				    subject: 'XENONnT Account Confirmation',
-				    html: '<p>Please click <a href="https://xenon1t-daq.lngs.infn.it/xenonnt/verify?code='+random_hash+'">here</a> to verify your email.</p><p>If you did not request this email please delete.</p>'
-				};
-				
-				transporter.sendMail(mailOptions, function(error, info){
-				    if (error) {
-					console.log(error);
-					return res.render("confirmationLander",
-							  {message: "Failed to send email confirmation"});
-				    } else {
-					console.log('Email sent: ' + info.response);
+				// Send Mail
+                                SendConfirmationMail(req, random_hash, 'verify', function(success){
+                                    if(success)
 					return res.render("confirmationLander",
 							  {message: "Check your email"});
-				    }
+                                    else
+					return res.render("confirmationLander",
+							  {message: "Failed to send email confirmation"});
 				});
-			    
 			    }
-			});
+			});			
     }
     else
-	return res.render("confirmationLander", {message: "You must provide a valid email and GitHub account ID"});
+	return res.render("confirmationLander", 
+			  {message: "You must provide a valid email and GitHub account ID"});
 });
 
 

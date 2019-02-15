@@ -96,124 +96,14 @@ app.use(session({
   resave: true,
   saveUninitialized: false
 }));
-// Passport github strategy
-var passport = require('passport');
-var GitHubStrategy = require('passport-github2').Strategy;
-var GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID;
-var GITHUB_CLIENT_SECRET = process.env.GITHUB_SECRET_KEY;
+
+// Passport Auth
+var passport = require("passport");
+require("./config/passport");
 app.use(passport.initialize());
-app.use(passport.session());    
+app.use(passport.session());
 
-passport.serializeUser(function(user, done) { 
-    done(null, user);
-});
-passport.deserializeUser(function(obj, done) {
-    done(null, obj);
-});
 
-passport.use(new GitHubStrategy({
-    clientID: GITHUB_CLIENT_ID,
-    clientSecret: GITHUB_CLIENT_SECRET,
-    callbackURL: "https://xenon1t-daq.lngs.infn.it/xenonnt/auth/github/callback",
-    scope: ['user:email', 'user:name', 'user:login', 'user:id', 'user:avatar_url'],
-  },
-  function(accessToken, refreshToken, profile, done) {
-      // asynchronous verification, for effect...
-      process.nextTick(function () {
-      	
-	  var collection = runs_db.get("users");
-	  collection.find({"github": profile._json.login},
-			  function(e, docs){
-
-			      console.log("MongoP");
-			      console.log(e);
-			      
-			      if(docs.length===0){
-				  console.log("Couldn't find user in run DB");
-				  console.log(profile._json.login);
-				  return done(null, false, "Couldn't find user in DB");
-			      }
-			      var doc = docs[0];
-			      var ret_profile = {};
-			      var extra_fields = ['skype', 'github_id', 'cell', 'favorite_color', 'email',
-					      'last_name', 'first_name', 'institute', 'position',
-					      'percent_xenon', 'start_date', 'LNGS', 'github',
-					      'picture_url', 'github_home', 'api_username'];
-			      for(var i in extra_fields){
-				  if(typeof doc[extra_fields[i]]==='undefined')
-				      ret_profile[extra_fields[i]] = "not set";
-				  else
-				      ret_profile[extra_fields[i]] = doc[extra_fields[i]];
-			      }
-			      ret_profile['github_info'] = profile;
-			      
-			      // This field has a bunch of funny characters that serialize poorly
-			      ret_profile['github_info']['_raw'] = '';
-			      
-			      // Save a couple things from the github profile
-			      collection.update({"github": profile._json.login},
-						{"$set": { "picture_url": profile._json.avatar_url,
-							   "github_home": profile.html_url}
-						});
-			      ret_profile['picture_url'] = profile._json.avatar_url;
-			      ret_profile['github_home'] = profile._json.html_url;
-			      
-			      // display API key set or not
-			      if(typeof doc['api_username'] !== 'undefined')
-						ret_profile['api_key'] = "SET";
-			      console.log("Login success");
-			      return done(null, ret_profile);
-			  });
-      });
-  }));
- 
-//For testing it's pretty useful to have local auth as well. We'll use email/pw and ensure the email is in our DB
-var auth = require('passport-local-authenticate');
-var LocalStrategy = require('passport-local').Strategy;
-passport.use(new LocalStrategy({
-		usernameField: 'email',
-	},
-  function(username, password, done) {
-  	var collection = runs_db.get("users");
-  	collection.find({"email": username},
-  	function(e, docs){     
-			  
-		
-		if(docs.length===0){
-			console.log("Password auth failed, no user");
-			console.log(username);
-			return done(null, false, "Couldn't find user in DB");
-		}
-		
-		// For now we're using a general password since this is just a workaround
-		auth.hash(process.env.GENERAL_PASSWORD, function(err, hashed) {
-			auth.verify(password, hashed, function(err, verified) {
-				if(verified){
-					var doc = docs[0];
-					var ret_profile = {};
-					var extra_fields = ['skype', 'github_id', 'cell', 'favorite_color', 'email',
-					      'last_name', 'first_name', 'institute', 'position',
-					      'percent_xenon', 'start_date', 'LNGS', 'github',
-					      'picture_url', 'github_home', 'api_username'];
-					for(var i in extra_fields){
-		  				if(typeof doc[extra_fields[i]]==='undefined')
-		      				ret_profile[extra_fields[i]] = "not set";
-						else
-			  				ret_profile[extra_fields[i]] = doc[extra_fields[i]];
-					}
-					ret_profile['github_info'] = {};
-					if(typeof doc['api_username'] !== 'undefined')
-						ret_profile['api_key'] = "SET";
-	    			console.log("Login success");
-	    			return done(null, ret_profile);
-  				}
-  				return done(null, false);
-	  		});
-  		});
-
-    });
-  }
-));
 
 
 // End auth
