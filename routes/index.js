@@ -21,147 +21,11 @@ function GetNextRunIdentifier(req, res, callback){
     );
 };
 
-/*function InsertRunDoc(req, res, host, callback){
-    var db = req.runs_db;
-    var collection = db.get('run');
-    
-   // Get most recent run doc and get it's number (we'll increment)
-    collection.find(
-	{},  { "sort": {"_id": -1}, "limit" : 1 },
-	function(e, docs){
-	    var run_identifier = 0;
-	    if(docs.length>0)
-		run_identifier = parseInt(docs[0]['run_identifier']) + 1;
-	    // Nested callback time. Now we want the current run mode
-	    // Gotta fail if we can't find it
-	    var daxdb = req.db;
-	    var daxcoll = daxdb.get('status');
-	    daxcoll.find(
-		{"host": host}, { "sort": {"_id": -1}, "limit" : 1 },
-		function(e, sdoc){
-		    run_mode = sdoc[0]['run_mode'];
-
-		    // OK now that we have the run mode have to query the
-		    // options collection to pull that mode and place into
-		    // the run doc
-		    var options_coll = daxdb.get('options');
-		    options_coll.find(
-			{"name": run_mode},
-			function(e, odoc){
-			    		    
-			    run_doc = {
-				"run_identifier": run_identifier,
-				"user": "web",
-				"start": new Date(),
-				"readout": odoc[0]
-			    }
-			    collection.insert(run_doc);
-			    callback(req, res, run_identifier);
-			});
-		});
-	});
-}
-*/
-
 /* GET home page. */
 router.get('/', ensureAuthenticated, function(req, res) {
     res.render('index', { title: 'Express', user: req.user });
 });
 
-/*router.get('/arm', ensureAuthenticated, function(req,res){
-    // Arm the DAQ with a specific settings doc
-    
-    // Get argument if there is one
-    var q = url.parse(req.url, true).query;
-    var mode = q.mode;
-    var det = q.detector;
-    var adet = req.detectors[det];
-    
-    if (typeof mode == 'undefined')
-	mode = "test";
-
-    GetNextRunIdentifier(req, res, 
-	function(run_identifier){
-    
-	    var db = req.db;
-	    var collection = db.get('control');
-	    
-	    var idoc = {
-		mode: mode,
-		command: 'arm',
-		host: adet, //'fdaq00_reader_0',
-		user: 'web',
-		options_override: {
-		    run_identifier: run_identifier.toString(),
-		    mongo_collection: "run_" + run_identifier + "_daq_out"
-		}
-	    };    
-	    collection.insert(idoc);
-	    return res.redirect(gp+'/status');
-	}
-    );
-});
-
-router.get('/start', ensureAuthenticated, function(req, res){
-    // Start an armed DAQ. This requires creation of a
-    // unique run identifier and will insert a run document
-    // into the runs database
-    
-    var q = url.parse(req.url, true).query;
-    var det = q.detector;
-    var adet = req.detectors[det];
-
-    host = 'fdaq00_reader_0';
-    InsertRunDoc(req, res, host, function(req, res, run_identifier){
-	var db = req.db;
-	var collection = db.get('control');
-	var idoc = {
-	    run_identifier: run_identifier,
-	    command: 'start',
-	    host: adet, //host,
-	    user: 'web'
-	};
-	collection.insert(idoc);
-	return res.redirect(gp+'/status');
-    });
-});
-
-router.get('/stop', ensureAuthenticated, function(req, res){
-
-    // First get most recent status to see if DAQ running
-    var daxdb = req.db;
-    var daxcoll = daxdb.get('status');
-    //host = "fdaq00_reader_0";
-
-    var q = url.parse(req.url, true).query;
-    var det = q.detector;
-    var adet = req.detectors[det];
-
-    daxcoll.find(
-	{"host": host}, { "sort": {"_id": -1}, "limit" : 1 },
-	function(e, sdoc){
-	    s = sdoc[0]['status'];
-
-	    // If running update run doc
-	    if(s==3){
-		var rdb = req.runs_db;
-		var rcoll = rdb.get("run");
-		rcoll.update({"run_identifier": parseInt(sdoc[0]['current_run_id'])},
-			     {"$set": {"stop": new Date()}});
-	    }
-	    
-	    var db = req.db;
-	    var collection = db.get('control');
-	    var idoc = {
-		command: 'stop',
-		host: adet, //'fdaq00_reader_0',
-		user: 'web'
-	    };
-	    collection.insert(idoc);
-	    return res.redirect(gp+'/status');
-	});
-});
-*/
 router.get('/log', ensureAuthenticated, function(req, res){
     var db = req.db;
     var collection = db.get('log');
@@ -184,19 +48,6 @@ router.get('/log', ensureAuthenticated, function(req, res){
 			});
 });
 
-/*
-router.get('/runs', ensureAuthenticated, function(req, res){
-    var db = req.runs_db;
-    var collection = db.get("run");
-    var q = url.parse(req.url, true).query;
-    var limit = q.limit;
-    if(typeof limit == 'undefined')
-	limit=5;
-    collection.find({}, {"sort": {"_id": -1}, "limit": parseInt(limit)},
-		    function(e, docs){
-			return res.send(JSON.stringify(docs));
-		    });
-});
 		   
 router.get('/detector_history', ensureAuthenticated, function(req, res){
     var db = req.db;
@@ -224,7 +75,7 @@ router.get('/detector_history', ensureAuthenticated, function(req, res){
 			return res.send(JSON.stringify(ret));
 		    });
 });
-    
+/*    
 router.get('/status_history', ensureAuthenticated, function(req, res){
     var db = req.db;
     var collection = db.get('status');
@@ -254,7 +105,7 @@ router.get('/status_history', ensureAuthenticated, function(req, res){
 			return res.send(JSON.stringify(ret));
 		    });
 });
-*/
+
 router.get('/status_update', ensureAuthenticated, function(req, res){
     var db = req.db;
     var statuses = {
@@ -293,27 +144,6 @@ router.get('/status_update', ensureAuthenticated, function(req, res){
     //}
 
     //    res.render('index', { clients: clients });
-});
-
-/*
-router.get('/modes', ensureAuthenticated, function(req,res){
-    var db = req.db;
-    var collection = db.get("options");
-    var spromise = collection.distinct("name");
-    spromise.then(function(doc){
-	return res.send(JSON.stringify(doc));
-    });
-});
-
-router.get("/detectors", ensureAuthenticated, function(req, res){
-    var dets = req.detectors;    
-    return res.send(JSON.stringify(Object.keys(dets)));
-});
-*/  
-
-/*
-router.get('/helloworld', ensureAuthenticated, function(req, res){
-    res.render('helloworld', {title: 'Hello, World!'});
 });
 */
 
@@ -370,8 +200,8 @@ router.post('/updateContactInfo', ensureAuthenticated, (req, res) => {
     collection.update({"first_name": req.user.first_name,
 		       "last_name": req.user.last_name},
 		      {"$set": idoc});
-    console.log(req.user);
-    console.log(idoc);    
+    //console.log(req.user);
+    //console.log(idoc);    
     return(res.redirect(gp+'/account'));
 }); 
 
@@ -446,34 +276,133 @@ function SendConfirmationMail(req, random_hash, link, callback){
     });
 }
 
+function ConvertToDate(value){
+// The member sheet contains a lot of different date formats. 
+// We will try here to convert the string to a date object.
+var moment = require('moment');
+
+// wtf
+var allowedDateFormats = ['YYYY', 'MMM. YYYY', 'MMM.YYYY', 'MMM-YY', 'MMM. YY', 'MMM.YY',
+			 'MMM YYYY'];
+if(moment(value, allowedDateFormats, true).isValid())
+    return moment(value, allowedDateFormats, true).toDate();
+
+// Return some dummy date if you fail to make it easier to manually correct
+return moment("1999-01-01").toDate();
+
+
+}
+
+
+// Use Google APIs to search our membership spreadsheet
+const {google} = require('googleapis');
+let privatekey = require("../config/googleapikey.json");
+
+function TryToFindUser(cursor, email, collection, callback){
+
+    // If we have the user in DB just return callback without hitting API
+    if(cursor.length == 1)
+	callback(true);
+
+    // Authenticate and set up google API
+    let spreadsheetId = process.env.USER_SPREADSHEET_ID;
+    let sheetName = 'Members'
+    let sheets = google.sheets('v4');
+    let jwtClient = new google.auth.JWT(
+       privatekey.client_email,
+       null,
+       privatekey.private_key,
+       ['https://www.googleapis.com/auth/spreadsheets']);
+    //authenticate request                                                                                   
+    jwtClient.authorize(function (err, tokens) {
+	if (err) {
+	    console.log(err);
+	    callback(false);
+	    return;
+	} else {
+	    console.log("Successfully connected!");
+	}
+    });
+
+    sheets.spreadsheets.values.get({
+	auth: jwtClient,
+	spreadsheetId: spreadsheetId,
+	range: sheetName
+    }, function (err, response) {
+	if (err) {
+	    console.log('The API returned an error: ' + err);
+	    callback(false);
+	} else {
+	    //console.log('Member list:');
+	    var institute = '';
+	    for (let row of response.data.values) {
+
+		// We've reached the end of our new users
+		if(row[0] == 'People that left the collaboration')
+		    break;
+		if(row[0] != '')
+		    institute = row[0];
+		if(row[3] == email){
+		    //console.log(row);
+		    // New collaboration member! Put in DB
+		    var pct_xe = row[5];
+		    pct_xe = pct_xe.substring(0, pct_xe.length - 1);
+		    
+		    var doc = {
+			"last_name": row[1],
+			"first_name": row[2],
+			"institute": institute,
+			"email": email,
+			"start_date": ConvertToDate(row[6]),
+			"percent_xenon": parseInt(pct_xe),
+			"position": row[4]
+		    };
+		    //console.log(doc);
+		    collection.insert(doc);
+
+		    callback(true);
+		    return;
+		}		
+	    }
+
+	    // Can't find our person
+	    callback(false);
+	}
+	
+    });
+}
+
 router.post("/linkLDAP", (req, res) => {
     var db = req.runs_db;
     var collection = db.get("users");
     if(req.body.lngs_id != "" && req.body.email != ""){
 	collection.find({"email": req.body.email},
 			function(e, docs){
-			    if(docs.length != 1)
-				return res.render("confirmationLander",
-						  {message: "You don't seem to be in our database"});
-			    else{
+			    TryToFindUser(docs, req.body.email, collection, function(haveUser){
+				if(!haveUser)
+				    return res.render(
+					"confirmationLander",
+					{message: "You don't seem to be in our database"});
+				
 				// Synchronous
-                                const cryptoRandomString = require('crypto-random-string');
-                                const random_hash = cryptoRandomString(128);
-                                collection.update({"email": req.body.email},
-                                                  {"$set": {"ldap_temp": req.body.lngs_id,
+				const cryptoRandomString = require('crypto-random-string');
+				const random_hash = cryptoRandomString(128);
+				collection.update({"email": req.body.email},
+						  {"$set": {"ldap_temp": req.body.lngs_id,
                                                             "ldap_hash": random_hash}});
 				// Send Mail
 				SendConfirmationMail(req, random_hash, 'verify_ldap', function(success){
 				    if(success)
 					return res.render("confirmationLander",
-                                                          {message: "Check your email"});
+							  {message: "Check your email"});
 				    else
-					return res.render("confirmationLander",
-							  {message: "Failed to send email confirmation"});
-				});
-			    }
-			});
-	}
+					return res.render(
+					    "confirmationLander",
+					    {message: "Failed to send email confirmation"});
+				    }); // end confirmation mail callback
+			}); // end try to find user callback
+			}); // end mongo query callback
+    }
     else
         return res.render("confirmationLander", 
 			  {message: "You must provide a valid email and LDAP ID"});
@@ -486,14 +415,12 @@ router.post("/linkGithub", (req, res) => {
 	// set github ID to github_temp and send mail
 	collection.find({"email": req.body.email},
 			function(e, docs){
-			    if(docs.length!=1){
-				return (res.render("confirmationLander",
-						   {message:"You don't seem to be in our database"}));
-			    //else if(typeof(docs[0]['github']) != "undefined"){
-			    //return (res.render("confirmationLander",
-			    //{message: "That account already has a github ID"}));
-			    }
-			    else{
+			    TryToFindUser(docs, req.body.email, collection, function(haveUser){
+                                if(!haveUser)
+                                    return res.render(
+                                        "confirmationLander",
+                                        {message: "You don't seem to be in our database"});
+
 				// Synchronous
 				const cryptoRandomString = require('crypto-random-string');
 				const random_hash = cryptoRandomString(128);
@@ -508,9 +435,9 @@ router.post("/linkGithub", (req, res) => {
                                     else
 					return res.render("confirmationLander",
 							  {message: "Failed to send email confirmation"});
-				});
-			    }
-			});			
+				}); // End email callback
+			    }); // End user callback
+			});	// End mongo callback
     }
     else
 	return res.render("confirmationLander", 
