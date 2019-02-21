@@ -122,17 +122,17 @@ router.get('/get_reader_history', ensureAuthenticated, function(req,res){
 
     var q = url.parse(req.url, true).query;
     var reader = q.reader;
-    var limit  = q.limit;
+    var limit  = parseInt(q.limit);
     var resolution = parseInt(q.res);
 
     if(typeof limit == 'undefined')
-	limit = 100;
+	limit = (new Date()).getTime() - 100*1000; // 100 s into past
     if(typeof reader == 'undefined')
 	return res.send(JSON.stringify({}));
     if(typeof res == 'undefined')
 	resolution = 60; //1m
 
-    var t = (new Date()).getTime() - parseInt(limit)*1000;
+    var t = limit;
     var id = objectIdWithTimestamp(t);
 
     // Fancy-pants aggregation to take binning into account
@@ -170,6 +170,7 @@ router.get('/get_reader_history', ensureAuthenticated, function(req,res){
 	    'buff': 1,
 	    'host': 1,
 	}},
+	{'$sort': {"time": 1}},
 	{'$group': {
 	    '_id': '$host',
 	    'rates': {'$push': '$rate'},
@@ -190,29 +191,6 @@ router.get('/get_reader_history', ensureAuthenticated, function(req,res){
 	return res.send(JSON.stringify(ret));
     });
 	
-
-    /*collection.find({"host": reader, "_id": {"$gt": id}},
-		    {"sort": {"_id": -1}, "limit": parseInt(limit, 10)},
-		    function(e, docs){
-			rates = [];
-			buffs = [];
-			var host = null;
-			for(var i = docs.length-1; i>=0; i-=1){
-			    var oid = new req.ObjectID(docs[i]['_id']);
-			    var dt = Date.parse(oid.getTimestamp());
-			    if(host == null)
-				host = docs[i]['host'];			    
-			    rates.push([dt, docs[i]['rate']]);
-			    buffs.push([dt, docs[i]['buffer_length']]);
-			}
-			if(host==null){
-			    return res.send(JSON.stringify({}));
-			}
-			var ret = {};
-			ret[host] = {"rates": rates, "buffs": buffs};
-			return res.send(JSON.stringify(ret));
-		    });
-    */
 });
 				
 

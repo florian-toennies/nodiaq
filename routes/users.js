@@ -20,4 +20,40 @@ router.post('/getDirectory', ensureAuthenticated, function(req, res){
 		    });
 });
 
+router.post('/addUserGroup', ensureAuthenticated, function(req, res){
+    var db = req.runs_db;
+    var collection = db.get("users");
+    var user_id = req.body.the_user;
+    var group = req.body.the_group;
+
+    // Just quietly fail if you didn't get the required info
+    if(typeof(user_id) == 'undefined' || typeof(group) == 'undefined')
+	return res.send(JSON.stringify({"res": "bad_input"}));
+    console.log(req.user.groups);
+    if(typeof(req.user.groups) == "undefined" || !req.user.groups.includes("admin"))
+	return res.send(JSON.stringify({"res": "not_allowed"}));
+
+    // Update the doc
+    collection.update({"_id": user_id}, {"$push": {"groups": group}});
+    return res.send(JSON.stringify({"res": "success", "group": group}));
+});
+
+router.post('/removeUserGroup', ensureAuthenticated, function(req, res){
+    var db = req.runs_db;
+    var collection = db.get("users");
+    var user_id= req.body.the_user;
+    var group =req.body.the_group;
+
+    // Just quietly fail if you didn't get the required info
+    if(typeof(user_id) == 'undefined' || typeof(group) == 'undefined')
+        return res.send(JSON.stringify({"res": "bad_input"}));
+    if(typeof(req.user.groups) == "undefined" || !req.user.groups.includes("admin"))
+	return res.send(JSON.stringify({"res": "not_allowed"}));
+
+
+    // Update the doc
+    collection.update({"_id": user_id}, {"$pull": {"groups": group}});
+    return res.send(JSON.stringify({"res": "success", "group": group}));
+});
+
 module.exports = router;

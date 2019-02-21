@@ -33,7 +33,7 @@ function PopulateProfile(mongo_doc, github_profile, ldap_profile){
                         'favorite_color', 'email', 'lngs_ldap_uid',
                         'last_name', 'first_name', 'institute', 'position',
                         'percent_xenon', 'start_date', 'LNGS', 'github',
-                        'picture_url', 'github_home', 'api_username'];
+                        'picture_url', 'github_home', 'api_username', 'groups'];
     for(var i in extra_fields){
         if(typeof mongo_doc[extra_fields[i]]==='undefined')
             ret_profile[extra_fields[i]] = "not set";

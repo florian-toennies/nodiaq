@@ -41,7 +41,7 @@ function InitializeUsersTable(divname){
 	    }
 	],
 	"createdRow": function( row, data, dataIndex){
-		console.log(data);
+	    //console.log(data);
                 if( data['end_date'] !==  "" && typeof data['end_date'] !== "undefined"){
                     $(row).addClass('leaver_row');
                 }
@@ -78,10 +78,76 @@ function InitializeUsersTable(divname){
 	    " " + data['last_name'];
 	document.getElementById("headerInstitute").innerHTML = data['institute'];
 	document.getElementById("info_table").innerHTML=html;
+	$("#user_id").val(data['_id']);
+	$("#groups_div").html("");
+	for(var i in data['groups']){
+	    AddGroupHTML(data['groups'][i]);
+	}
 	$("#detailModal").modal();
 	  console.log(table.row(this).data());
+
 	//$(this).toggleClass('selected');
     } );
- 
+    console.log(window);
 
 }
+
+function AddGroupHTML(group){
+    html = "<span id='badge_"+group+"' class='badge badge-secondary'>" + group + "</span>&nbsp;";
+    $("#groups_div").append(html);
+}
+
+function AddGroup(){
+    var user = $("#user_id").val();
+    var group = $("#newgroupinput").val();
+    if(group.indexOf(' ') >=0){
+	alert("You can only add single-word groups, one at a time.");
+	return;
+    }
+
+    $.ajax({
+	type: "POST",
+        url: "users/addUserGroup",
+        data: {"the_user": user, "the_group": group},
+        success: function(dat){ 	    
+	    if(JSON.parse(dat)['res'] == 'success')
+		AddGroupHTML(JSON.parse(dat)['group']);
+	    else
+		alert("Permissions returned: "+JSON.parse(dat)['res']);
+	},
+        error:   function(jqXHR, textStatus, errorThrown) {
+            alert("Error, status = " + textStatus + ", " +
+                  "error thrown: " + errorThrown
+                 );
+        }
+    });
+}
+
+function RemoveGroup(){
+    var user = $("#user_id").val();
+    var group = $("#newgroupinput").val();
+    if(group.indexOf(' ') >=0){
+        alert("You can only add single-word groups, one at a time.");
+        return;
+    }
+
+    $.ajax({
+        type: "POST",
+        url: "users/removeUserGroup",
+        data: {"the_user": user, "the_group": group},
+        success: function(dat){
+            if(JSON.parse(dat)['res'] == 'success')
+                $("#badge_"+JSON.parse(dat)['group']).remove();
+	    else
+		alert("Permissions returned: "+JSON.parse(dat)['res']);
+        },
+        error:   function(jqXHR, textStatus, errorThrown) {
+            alert("Error, status = " + textStatus + ", " +
+                  "error thrown: " + errorThrown
+                 );
+        }
+    });
+}
+
+// addUserGroup user_id, group
+// removeUserGroup

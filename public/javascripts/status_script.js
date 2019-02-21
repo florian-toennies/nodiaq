@@ -31,9 +31,10 @@ function RedrawRatePlot(){
     document.reader_data = {};
     var colors = {"rate": "#1c0877", "buff": "#df3470", "third": "#3dd89f"}
     DrawProgressRate(0);
+    var limit = (new Date()).getTime() - parseInt(history)*1000;
     for(i in readers){
 	var reader = readers[i];
-	$.getJSON("status/get_reader_history?limit="+history+"&res="+resolution+"&reader="+reader, 
+	$.getJSON("status/get_reader_history?limit="+limit+"&res="+resolution+"&reader="+reader, 
 		  function(data){
 		      for (var key in data) {
 			  // check if the property/key is defined in the object itself, not in parent
@@ -71,11 +72,17 @@ function DrawInitialRatePlot(){
     for(var key in document.reader_data){
 	if(!document.reader_data.hasOwnProperty(key))
 	    continue;
-	var rates = {"type": "line", "name": key+" rate", "data": document.reader_data[key]['rates']};
+	var rates = {};
+	if($("#menu_variable_s").val() == "rate")
+	    rates = {"type": "line", 
+		     "name": key+" rate", 
+		     "data": document.reader_data[key]['rates']};
+	else if($("#menu_variable_s").val() == "buff")
+	    rates = {"type": "area", 
+		      "name": key+" buffer", 
+		      "data": document.reader_data[key]['buffs']};
 	series.push(rates);
 
-	//var buffer = {"type": "area", "name": key+" buffer", "data": document.reader_data[key]['buff']};
-	//series.push(buffer);
     }
     //{"type": "area", "name": "transfer rate", "data": data[host]['rates'], 'color': colors['rate']},
     //{"type": "area", "name": "buffered data", "data": data[host]['buffs'], 'color': colors['buff']}
@@ -92,9 +99,9 @@ function DrawInitialRatePlot(){
                 fillOpacity: 0.3,
 		lineWidth: 1
 	    },
-	    line: {
-		marker: false
-	    },
+	    //line: {
+	//	marker: false
+	 //   },
         },
         credits: {
 	    enabled: false,
@@ -167,8 +174,24 @@ function UpdateFromReaders(readers){
 
             if(document.last_time_charts[rd] != data['ts']){
                 document.last_time_charts[rd] = data['ts'];
-		//UpdateChart(rd, data['ts'], data['rate'], data['buffer_length']);
-		    }
+		
+		// Chart auto update
+		var update_name = "";
+		var val = null;
+		if($("#menu_variable_s").val() == "rate"){
+		    update_name = data['host'] + " rate";
+		    val = data['rate'];
+		}
+		else if($("#menu_variable_s").val() == "buff"){
+		    update_name = data['host'] + " buff";
+		    val = data['buffer_length'];
+		}
+		// Trick to only update drawing once per seven readers (careful it doesn't bite you)
+		var update = false;
+		if(data['host'] == 'reader0_reader_0') 
+		    update=true;
+		UpdateMultiChart(data['ts'], val, update_name, update);
+	    }
         });
     }
 }
@@ -202,7 +225,7 @@ function UpdateCrateControllers(controllers){
 			      else
 				  html += " ? ";
 			  }
-			  html += "<strong>(" + data['active'][i]['pulser_freq'] + "Hz)</strong>";
+			  html += "<strong>(" + data['active'][i]['pulser_freq'] + "Hz Trigger)</strong>";
 		      }
 		      if(html=="") html="no devices active";
 		      document.getElementById(c+"_devices").innerHTML=html;
@@ -493,6 +516,15 @@ function UpdateStatusPageOld(){
     setTimeout(UpdateStatusPage, 5000);	   
 }
 
+function UpdateMultiChart(ts, val, host, update){
+    var tss = (new Date(ts)).getTime();
+    if(typeof(document.RatePlot)=='undefined')
+	return;
+    for(var i in document.RatePlot.series){
+	if(document.RatePlot.series[i].name == host)
+	    document.RatePlot.series[i].addPoint([tss, val], true, update);
+    }
+}
 function UpdateChart(host, ts, rate, buff){
     if(host in (document.charts) && document.charts[host] != null){
 	var tss = (new Date(ts)).getTime();
