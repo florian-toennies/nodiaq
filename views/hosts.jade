@@ -4,7 +4,7 @@ block extrahead
 
 block content     
   div.main-container
-    - hosts = ['reader0', 'reader1', 'reader2', 'reader3', 'reader4', 'reader6', 'reader7', 'eb0', 'eb1']
+    - hosts = ['reader0','reader2', 'reader3', 'reader4', 'reader6', 'reader7', 'eb0', 'eb1']
     each host in hosts
       div.host_detail
         div.row(style="width:100%;height:100%;margin:0")

@@ -1,4 +1,4 @@
-var prefix = 'xenonnt/';
+var prefix = '/xenonnt/';
 
 function GetStatus(i){
     var STATUSES = [
@@ -88,7 +88,7 @@ function ParseOptions(callback){
 	key+=1;
     }
     document.reader_keys = tpc_readers;
-    //console.log(tpc_boards);
+    
     // Second pass through board list to get digitizers
     var boards = {};
     for(var i in tpc_boards){
@@ -118,9 +118,9 @@ function DrawTree(){
               allowCopy: false,
               layout:  // create a TreeLayout for the family tree
               $(go.TreeLayout,
-                { angle: 90, nodeSpacing: 20, 
-		  layerSpacing: 40, 
-		  layerStyle: go.TreeLayout.LayerUniform,
+                { //angle: 90, //nodeSpacing: 20, 
+		  //layerSpacing: 40, 
+		  //layerStyle: go.TreeLayout.LayerUniform,
 		  alignment: go.TreeLayout.AlignmentBusBranching,
 		})
           });
@@ -130,7 +130,7 @@ function DrawTree(){
 	"ObjectSingleClicked",
 	function(e){
 	    var dat = document.goDiagram.model.findNodeDataForKey(e.subject.part.data.key);
-	    PlotThingOnDiv(dat['type'], dat['name']);	    
+	    PlotThingOnDiv(dat);	    
 	});
     var bluegrad = '#151675';
     var pinkgrad = '#f64870';
@@ -283,10 +283,10 @@ function DrawTree(){
           $(go.Shape, { strokeWidth: 3, stroke: '#424242' }));  // the gray link shape
     // create the model for the family tree
     myDiagram.model = new go.TreeModel(document.tree_node_list);
-    
-    document.getElementById('zoom_to_fit').addEventListener('click', function() {
-	myDiagram.zoomToFit();
-    });
+
+    //document.getElementById('zoom_to_fit').addEventListener('click', function() {
+//	myDiagram.zoomToFit();
+  //  });
 
     document.goDiagram = myDiagram;
     //document.getElementById('centerRoot').addEventListener('click', function() {
@@ -296,232 +296,158 @@ function DrawTree(){
 }
 
 function UpdateFromReaders(){
-    var readers = ["reader0_reader_0", "reader1_reader_1", 'reader2_reader_2',
+    var readers = ["reader0_reader_0", 'reader2_reader_2',
                    'reader3_reader_3', 'reader4_reader_4', 'reader6_reader_6',
                    'reader7_reader_7'];
     var controllers = ['reader0_controller_0'];
-    for(i in readers){
-        var reader = readers[i];
-        $.getJSON(prefix+"status/get_reader_status?reader="+reader, function(data){
-	    var rd = data['host'];
-
-	    // Get key for this node
-	    var key = document.reader_keys[rd];
-	    var dat = document.goDiagram.model.findNodeDataForKey(key);
-	    document.goDiagram.model.setDataProperty(dat, "rate", data['rate'].toFixed(2) + " MB/s");
-	    document.goDiagram.model.setDataProperty(dat, "status", (data['status']));
-	    document.goDiagram.model.setDataProperty(dat, "buffer", data['buffer_length'].toFixed(2) + " MB/s");
-	    Object.keys(data['boards']).forEach(function(digi) {				
-		var key = document.board_key_list[digi.toString()];		
+    if(typeof(document.goDiagram)!='undefined'){
+	for(i in readers){
+            var reader = readers[i];
+            $.getJSON(prefix+"status/get_reader_status?reader="+reader, function(data){
+		var rd = data['host'];
+		
+		// Get key for this node
+		var key = document.reader_keys[rd];
 		var dat = document.goDiagram.model.findNodeDataForKey(key);
-		document.goDiagram.model.setDataProperty(dat, "rate", 
-							 data['boards'][digi].toFixed(2) + " MB/s");
-	    });
-        });
-    }
-    for(i in controllers){
-        var controller = controllers[i];
-	$.getJSON(prefix+"status/get_controller_status?controller="+controller, function(data){
-	    var rd = data['host'];
-
-            // Get key for this node                                                                    
-            var key = document.reader_keys[rd];
+		document.goDiagram.model.setDataProperty(dat, "rate", data['rate'].toFixed(2) + " MB/s");
+		document.goDiagram.model.setDataProperty(dat, "status", (data['status']));
+		document.goDiagram.model.setDataProperty(dat, "buffer", data['buffer_length'].toFixed(2) + " MB/s");
+		Object.keys(data['boards']).forEach(function(digi) {				
+		    var key = document.board_key_list[digi.toString()];		
+		    var dat = document.goDiagram.model.findNodeDataForKey(key);
+		    document.goDiagram.model.setDataProperty(dat, "rate", 
+							     data['boards'][digi].toFixed(2) + " MB/s");
+		});
+            });
+	}
+	for(i in controllers){
+            var controller = controllers[i];
+	    $.getJSON(prefix+"status/get_controller_status?controller="+controller, function(data){
+		var rd = data['host'];
+		
+		// Get key for this node                                                                    
+		var key = document.reader_keys[rd];
             var dat = document.goDiagram.model.findNodeDataForKey(key);
-            //document.goDiagram.model.setDataProperty(dat, "rate", data['rate'].toFixed(2) + " MB/s");
-            document.goDiagram.model.setDataProperty(dat, "status", (data['status']));
-            //document.goDiagram.model.setDataProperty(dat, "buffer", data['buffer_length'].toFixed(2) + " MB/s");
-	});
+		//document.goDiagram.model.setDataProperty(dat, "rate", data['rate'].toFixed(2) + " MB/s");
+		document.goDiagram.model.setDataProperty(dat, "status", (data['status']));
+		//document.goDiagram.model.setDataProperty(dat, "buffer", data['buffer_length'].toFixed(2) + " MB/s");
+	    });
+	}
+	document.goDiagram.zoomToFit();
     }
+
     UpdateDetectors(function(){setTimeout(UpdateFromReaders, 5000)});
 }
 
 function UpdateDetectors(callback){
     $.getJSON(gp+"/status/get_broker_status", function(data){
-	for(var i in data){
-            var doc = data[i];
-            var det = doc['detector'];
-	    console.log(doc);
-
-	    var key = document.detector_keys[det];
-	    if(typeof(key) === 'undefined')
-		continue;
-            var dat = document.goDiagram.model.findNodeDataForKey(key);
-	    console.log(dat);
-            document.goDiagram.model.setDataProperty(dat, "rate",
-                                                     doc['rate'].toFixed(2) + " MB/s");
-	    document.goDiagram.model.setDataProperty(dat, 'status', doc['status']);
-	    document.goDiagram.model.setDataProperty(dat, 'mode',doc['mode']);
-	    document.goDiagram.model.setDataProperty(dat, 'number',doc['number']);	    
+	if(typeof(document.goDiagram) != 'undefined'){
+	    for(var i in data){
+		var doc = data[i];
+		var det = doc['detector'];
+		console.log(doc);
 		
+		var key = document.detector_keys[det];
+		if(typeof(key) === 'undefined')
+		    continue;
+		var dat = document.goDiagram.model.findNodeDataForKey(key);
+		console.log(dat);
+		document.goDiagram.model.setDataProperty(dat, "rate",
+							 doc['rate'].toFixed(2) + " MB/s");
+		document.goDiagram.model.setDataProperty(dat, 'status', doc['status']);
+		document.goDiagram.model.setDataProperty(dat, 'mode',doc['mode']);
+		document.goDiagram.model.setDataProperty(dat, 'number',doc['number']);	    
+		
+	    }
 	}
 	callback();
     });
 }
-/*
-function doUpdate(){
-    
-    document.d3_graph.updateReaderText("reader0_reader_0", "balls");
-    setTimeout(doUpdate, 1000);
+
+function PlotThingOnDiv(node){
+    var type = node['type'];
+    var name = node['name'];
+    var dets = {"TPC": 'tpc', "Muon Veto": 'muon_veto', "Neutron Veto": "neutron_veto"};
+    if(type === 'detector'){
+	$.getJSON(gp+"/detector_history?limit=1000&detector="+dets[name], (function(name){
+            return function(data){
+		console.log(data);
+		DrawHistoryPlot(name, 'detector', data['rates']);
+	    }
+	}(name)));
+    }
+    else if(type === 'reader'){
+	var reader = node['name'];
+	var limit = (new Date()).getTime() - parseInt(3600*24)*1000;
+	$.getJSON(gp+"/status/get_reader_history_dumb?limit=3600&res=60&reader="+reader,
+		  (function(name, type, reader){
+		      return function(data){
+			  console.log(data);
+			  DrawHistoryPlot(name, type, data['rates']);
+		      }
+		  }(name, type, reader)));    
+    }
+    else if(type === "V1724"){
+	var parent_dat = document.goDiagram.model.findNodeDataForKey(node['parent']);
+        reader = parent_dat['name'];
+	var limit = (new Date()).getTime() - parseInt(3600*24)*1000;
+	$.getJSON(gp+"/status/get_digitizer_history?limit="+3600+"&res=60&reader="+reader+"&digitizer="+name.toString(),
+                  (function(name, type, reader){
+                      return function(data){
+                          console.log(data);
+                          DrawHistoryPlot(name, type, data['rates']);
+                      }
+                  }(name, type, reader)));
+    }
 }
 
-
-function DrawMap(){
-    var objects = [];
-    var config = [];
-    var digitizer_radius = 15;
-    var reader_radius = 110;
-    var dispatcher_radius = 110;
-    var digitizer_distance = 50;
-    var reader_distance = 20;
-    var colors = {
-	"V1724": d3.color("#f64870"),
-	"reader": d3.color("#151675"),
-	"channel": d3.color("#f2f1f0"),
-	"dispatcher": d3.color("#00d5a0"),
-	"V2718": d3.color("#3d3c38")
-    };
-    var nodes = [];
-    var reader_links = [];
-    var digi_links = [];
-    var readers = [];
-    var current_id = 0;
-    var tpc_boards = document.cabling_json_data['tpc_boards'];
-    // First pass: get readers
-    for(var i=0; i<tpc_boards['boards'].length; i+=1){
-	var breakout = false;
-	for(var j=0; j<readers.length; j+=1){
-	    if(readers[j] == tpc_boards['boards'][i]['host'])
-		breakout = true;
-	}
-	if(breakout)
-	    continue;
-	readers.push(tpc_boards['boards'][i]['host']);
-	nodes.push({
-	    "id": current_id,
-	    "name": tpc_boards['boards'][i]['host'],
-	    "text": tpc_boards['boards'][i]['host'],
-	    "color": colors['reader'],
-	    "type": 'reader',
-	    "detector": "TPC",
-	    "radius": reader_radius,
-	});
-	current_id +=1;
-    }
-
-    // Already need canvas dimensions
-    var canvas = document.getElementById("d3_canvas");
-    var width = Math.max(800, window.innerWidth-30);
-    var height = Math.max(600, window.innerHeight-30);
-    canvas.width=width;
-    canvas.height=height; //,width=1300,height=600;    
-
-    // Set Initial position for nodes
-    var host_positions = [];
-    for(var i=0; i<nodes.length; i+=1){
-	var phi = i*((2*3.14159)/nodes.length);
-	//var ri = Math.max(width/2, height/2, Math.sqrt(Math.pow(width/2, 2) + Math.pow(height/2,2)));
-	var ri = .3*Math.sqrt(Math.pow(width/2, 2) + Math.pow(height/2,2));
-	var rx = ri*Math.sin(phi);
-	var ry = ri*Math.cos(phi);
-	nodes[i]['x'] = rx;
-	nodes[i]['y'] = ry;
-	host_positions[nodes[i]['name']] = {
-	    'x': rx*1.4,
-	    'y': ry*1.4
-	}
-    }
-
-    var last_reader = current_id-1;
-    // Second pass: get boards
-    for(var i=0; i<tpc_boards['boards'].length; i+=1){
-	nodes.push({
-	    "id": current_id,
-	    "name": tpc_boards['boards'][i]['board'].toString(),
-	    "text": tpc_boards['boards'][i]['board'].toString(),
-	    "type": tpc_boards['boards'][i]['type'],
-	    "color": colors[tpc_boards['boards'][i]['type']],
-	    "reader": tpc_boards['boards'][i]['host'],
-	    "radius": digitizer_radius,
-	    'x': host_positions[tpc_boards['boards'][i]['host']]['x'],
-	    'y': host_positions[tpc_boards['boards'][i]['host']]['y'],
-	});
-	current_id += 1;
-    }
-    last_digitizer = current_id-1;
-    // Third pass: get channels
-
-    // Dispatcher: do canvas first to fix position
-    nodes.push({
-        "id": current_id,
-        "name": "Dispatcher",
-	"text": "Dispatcher",
-        "type": "dispatcher",
-        "color": colors["dispatcher"],        
-        "radius": dispatcher_radius,
-	"fx": canvas.width/2,
-	"fy": canvas.height/2
-    });
-    var dispatcher_id = current_id;
-    current_id+=1;
-    // Fourth pass: define links
-    for(var i=0; i<=last_reader; i+=1){
-	var reader = nodes[i]['name'];
-	reader_links.push({"source": i, "target": dispatcher_id, "distance": reader_distance})
-	for(var j=last_reader+1; j<=last_digitizer; j+=1){
-	    var host = nodes[j]['reader'];
-	    if(host == reader)
-		digi_links.push({"source": j, "target": i, "distance": digitizer_distance})
-	}
-    }
-
-    var s = new relation;
-    document.d3_graph =  s;
-    s.setNodes(nodes);
-    s.setReaderLinks(reader_links, reader_distance);    
-    s.setDigiLinks(digi_links, digitizer_distance);
-    s.setCanvas(canvas);
-    s.setSize(width, height);
-    console.log($("#d3_canvas").width());
-    console.log($("#d3_canvas").height());
-    //s.setRadius(12);
-    //var link_length = Math.max($("#d3_canvas").innerWidth()/8,
-    //$("#d3_canvas").innerHeight()/8,
-    //150);
-    //s.setLinkLength(link_length);
-    s.setCharge(-.5);
-    console.log(s);
-    s.init();
-    s.run();
-    console.log("RUN");
+function DrawHistoryPlot(name, type, data){
+    var series = [
+        {"type": "area", "name": "transfer rate", "data": data, "color": "#151675"},
+    ];
+    console.log("SERIES");
+    console.log(series);
+    var div = "plot_div";
+    document.chart = Highcharts.chart(
+        div, {
+            chart: {
+                zoomType: 'x',
+                //marginLeft: 100,
+                //marginTop: 50,
+                //marginBottom: 50,
+                //marginRight:10
+            },
+            plotOptions: {
+                series: {
+                    fillOpacity: 0.3,
+                    lineWidth: 1
+                }
+            },
+	    credits: {
+                enabled: false,
+            },
+            title: {
+                text: 'Transfer rate for '+type+' '+name,
+            },
+            xAxis: {
+                type: 'datetime',
+		title: {text: "Time"}
+            },
+            yAxis: {
+                title: {
+		    text: "MB/s",
+                },
+                min: 0,
+	    },
+            legend: {
+                enabled: false,
+            },
+            series: series
+        });
+};
 
 
-//    doUpdate();
-    /*
-    function initColor(r)
-    {
-	r[0].color="#007FFF",r[1].color="#A142FF",r[2].color="#FF85C2",r[3].color="#FFA142",r[4].color="#FF4242";
-	for(var o=5;o<r.length;o++){
-	    var t=d3.color(r[o%4+1].color);
-	    r[o].color=t.brighter(1.5).toString()
-	}
-    }
-    function initRadius(r){
-	r[0].radius=18,r[1].radius=14,r[2].radius=14,r[3].radius=14,r[4].radius=14;
-	for(var o=5;o<r.length;o++)
-	    r[o].radius=10
-    }
-    var canvas=document.querySelector("canvas"),width=1300,height=600;
-    d3.csv("./nodes.csv",function(r,o){
-	for(var t=(o.length,4),i=[],e=1;e<=t;e++)
-	    i.push({source:0,target:e});
-	for(var e=t+1;e<o.length;e++)
-	    i.push({source:e%t+1,target:e});
-	initColor(o),initRadius(o);
-	var s=new relation;
-	s.setNodes(o),s.setLinks(i),s.setCanvas(canvas),s.setSize(width,height),s.setRadius(12),s.setLinkLength(90),s.setCharge(-60),s.init(),s.run()
-    })
-*/
-//}
+
 var gp='/xenonnt';
 function UpdateOverviewPage(){
 

@@ -39,7 +39,7 @@ function InitializeTable(DOM){
 
 function UpdateLogTable(DOM){
 
-    $.getJSON('log?limit=500', function(data){
+    $.getJSON('logui/getMessages?limit=500', function(data){
 	$(DOM).tabulator("setData", data);
     });
 

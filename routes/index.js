@@ -26,28 +26,6 @@ router.get('/', ensureAuthenticated, function(req, res) {
     res.render('index', { title: 'Express', user: req.user });
 });
 
-router.get('/log', ensureAuthenticated, function(req, res){
-    var db = req.db;
-    var collection = db.get('log');
-    var q = url.parse(req.url, true).query;
-    var limit = q.limit;
-    if (typeof limit == 'undefined')
-	limit = 10; //sure, why not
-    collection.find({},  { "sort": {"_id": -1}, "limit" : parseInt(limit) },
-		    function(e,docs){
-			var ret = [];
-			for(var i in docs){			    
-			    var oid = new req.ObjectID(docs[i]['_id']);
-			    var rd = {"time": oid.getTimestamp()};
-			    for(var key in docs[i]){
-				rd[key] = docs[i][key];
-			    }			    
-			    ret.push(rd);
-			}			 
-			return res.send(JSON.stringify(ret));
-			});
-});
-
 		   
 router.get('/detector_history', ensureAuthenticated, function(req, res){
     var db = req.db;

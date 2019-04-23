@@ -1,10 +1,19 @@
 function FYouButton(buttonid){
     $("#"+buttonid).mouseover(function(){
         var t = $(window).height()*Math.random();
-        var l = $(window).width()*Math.random();
+        var l = ($(window).width()-40)*Math.random();
         console.log(t);
-        $("#"+buttonid).css({'z-index': 10, 'height': '31px',
+        $("#"+buttonid).css({'z-index': 10, //'height': '31px',
                              'top': t, 'left': l, 'position':'absolute'});
+	
+	var rand = Math.random() * 30;
+	if(rand<1){
+	    var ahahah = document.getElementById("ahahah");
+	    ahahah.pause();
+	    ahahah.currentTime = 0;
+	    ahahah.play();
+	}
+	
     });
 }
 

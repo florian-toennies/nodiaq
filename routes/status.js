@@ -116,7 +116,29 @@ function objectIdWithTimestamp(timestamp) {
     return constructedObjectId;
 }
 
-router.get('/get_reader_history', ensureAuthenticated, function(req,res){
+router.get('/get_digitizer_history', ensureAuthenticated, function(req, res){
+    var db = req.db;
+    var collection = db.get('status');
+
+    var q = url.parse(req.url, true).query;
+    var reader = q.reader;
+    var limit  = parseInt(q.limit);
+    var resolution = parseInt(q.res);
+    var digitizer = (q.digitizer);
+
+    var query = {"host": reader};
+    collection.find(query, {'sort': {'_id': -1}, 'limit': limit},
+		    function(e, docs){
+			ret = {"rates": []};
+			for(i in docs){
+			    var oid = new req.ObjectID(docs[i]['_id']);
+                            var dt = Date.parse(oid.getTimestamp());
+			    ret['rates'].unshift([dt, docs[i]['boards'][digitizer]]);
+			}
+			return res.send(JSON.stringify(ret));
+                    });
+});
+router.get('/get_reader_history_dumb', ensureAuthenticated, function(req, res){
     var db = req.db;
     var collection = db.get('status');
 
@@ -125,6 +147,30 @@ router.get('/get_reader_history', ensureAuthenticated, function(req,res){
     var limit  = parseInt(q.limit);
     var resolution = parseInt(q.res);
 
+    var query = {"host": reader};
+    collection.find(query, {'sort': {'_id': -1}, 'limit': limit},
+                    function(e, docs){
+                        ret = {"rates": []};
+                        for(i in docs){
+                            var oid = new req.ObjectID(docs[i]['_id']);
+                            var dt = Date.parse(oid.getTimestamp());
+                            ret['rates'].unshift([dt, docs[i]['rate']]);
+                        }
+                        return res.send(JSON.stringify(ret));
+                    });
+});
+router.get('/get_reader_history', ensureAuthenticated, function(req,res){
+    var db = req.db;
+    var collection = db.get('status');
+
+    var q = url.parse(req.url, true).query;
+    var reader = q.reader;
+    var limit  = parseInt(q.limit);
+    var resolution = parseInt(q.res);
+    var digitizer = parseInt(q.digitizer);
+
+    if(typeof digitizer == 'undefined')
+	digitizer = -1;
     if(typeof limit == 'undefined')
 	limit = (new Date()).getTime() - 100*1000; // 100 s into past
     if(typeof reader == 'undefined')
