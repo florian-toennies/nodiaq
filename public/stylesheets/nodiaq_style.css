@@ -116,10 +116,16 @@ div.dataTables_length {
 ----------------------------------------------------- */
 
 #content {
-    width: 100%;
+    width: calc(100% - 50px);
     padding: 20px;
     min-height: 100vh;
     transition: all 0.3s;
+left: 50px;
+position: absolute;
+overflow-y: auto;
+}
+#content.active{
+    left: 250px;
 }
 
 /* SIDEBAR ON MOBILE */
@@ -209,13 +215,13 @@ div.dataTables_length {
 
 /* DESKTOP LARGER SCALE */
 @media 
-only screen and (min-width: 541px) and (max-resolution: 120dpi),
-only screen and (min-width: 1080px) and (min-resolution: 120dpi),
+only screen and (min-width: 540px) and (max-resolution: 120dpi),
+only screen and (min-width: 540px) and (min-resolution: 120dpi),
 only screen and (min-width: 1081px) 
 {
  
   .main-container{
-      height: 100vh;
+      /*height: 100vh;*/
       overflow-y: auto;
       overflow-x: hidden;
   }
@@ -267,10 +273,12 @@ max-width:250px;
 margin:0;
 }
 #sidebar_wrapper.active{
-  width:60px;
-  min-width:60px;
-max-width:60px;
+  width:50px;
+  min-width:50px;
+max-width:50px;
 overflow: hidden;
+top: 0;
+position: fixed;
 }
 
     #sidebar {
@@ -289,8 +297,8 @@ overflow: hidden;
     #sidebar.active {	
     	display: block;
 	width:100%;
-	min-width: 60px;
-	max-width: 60px;
+	min-width: 50px;
+	max-width: 50px;
 	text-align: center;
 	margin-left: 0 !important;
 	height: 100vh !important;
@@ -304,8 +312,8 @@ overflow: hidden;
 	display: block;
 	-webkit-animation: fadeIn 1s;
     animation: fadeIn 1s;
-	width:60px;
-	height:60px;
+	width:50px;
+	height:50px;
 	margin-left:0px !important;
 	}
 	/* End sidebar logo
@@ -321,9 +329,9 @@ overflow: hidden;
     	background: #fff;
 	}
 	#sidebar.active ul li a {
-	    padding: 10px 10px;
+	    padding: 10px 2px;
 	    text-align: center;
-	    font-size: 0.85em;
+	    font-size: 0.65em;
 	}
 
 #sidebar.active ul li a i {

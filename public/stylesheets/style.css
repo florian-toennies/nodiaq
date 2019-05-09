@@ -238,14 +238,14 @@ span {
 	display: block;
 	-webkit-animation: fadeIn 1s;
     animation: fadeIn 1s;
-	width:80px;
-	height:80px;
+	width:40px;
+	height:40px;
 	margin-left:-20px !important;
 }
 
 #sidebar.active {
-    min-width: 80px;
-    max-width: 80px;
+    min-width: 40px;
+    max-width: 40px;
     text-align: center;
 }
 
@@ -402,13 +402,15 @@ a.article:hover {
 /* ---------------------------------------------------
     MEDIAQUERIES
 ----------------------------------------------------- */
-
+/*
 @media (max-width: 540px), (max-width: 1080px and min-resolution: 2dppx) {
+*/
+@media (max-width: 1080px), (max-width: 1080px and min-resolution: 2dppx) {
     #sidebar {
-        min-width: 80px;
-        max-width: 80px;
+        min-width: 50px;
+        max-width: 50px;
         text-align: center;
-        margin-left: -80px !important;
+        margin-left: -50px !important;
     }
     .dropdown-toggle::after {
         top: auto;

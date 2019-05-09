@@ -28,7 +28,7 @@ function CheckForErrors(callback){
 function DrawActiveLink(page){
     var pages = [
 	"#lindex", "#lplaylist", "#lstatus", "#lhosts", "#loptions", "#lruns",
-	"#llog", "#lusers", "#lhelp", "#laccount", "#lcontrol", "#lshifts"
+	"#llog", "#lusers", "#lhelp", "#laccount", "#lcontrol", "#lshifts", "#lmonitor"
     ];
     for(var i in pages){
     	console.log(pages[i]);

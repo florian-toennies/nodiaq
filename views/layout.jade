@@ -63,7 +63,7 @@ html
 
             img.logo(src="/xenonnt/images/mstile-310x310.png")
           ul.list-unstyled.components(style="padding-top:5px")
-            li.colored#lindex
+            li.colored.CTAs#lindex
                a(href="/xenonnt")
                  span.fa-stack.has-badge#errorIcon
                    i.fa.fa-binoculars
@@ -76,6 +76,10 @@ html
               a(href='/xenonnt/status')
                 i.fa.fa-tasks
                 span Status
+            li.colored#lmonitor
+              a(href='/xenonnt/monitor')
+                i.fa.fa-desktop
+                span Monitor
             li.colored.CTAs#lhosts
               a(href='/xenonnt/hosts') 
                 i.fa.fa-desktop
@@ -128,6 +132,7 @@ html
 
         CheckForErrors(setTimeout(CheckForErrors, 5000));
         $('.sidebarCollapse').on('click', function () {
+          $('#content').toggleClass('active');
           $('#sidebar').toggleClass('active');
           $('#sidebar_wrapper').toggleClass('active');
                     $('.sidebarCollapse').toggleClass('active');
