@@ -1,0 +1,27 @@
+extends layout
+
+block extrahead
+
+  script(src="javascripts/monitor_script.js", type="text/javascript")
+  link(href="stylesheets/custom-select.css", rel="stylesheet")
+
+block content     
+  div.main-container
+    h3 Some Monitoring
+    br
+    div.row(style='height:100%;max-height:600px;')
+      div.col-3
+        h5 Options
+        hr
+        strong Choose collection to plot: 
+        select.cselect#run_select
+        select.cselect#channel_select
+        button(onclick="PlotRun()") Plot 
+      div.col-9
+        div#chartdiv   
+
+  script.
+    $(document).ready(function(){
+    //      DrawActiveLink("#lmonitor");
+      PopulateAvailableRuns("run_select");
+    });

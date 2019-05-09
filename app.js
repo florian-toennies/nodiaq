@@ -19,6 +19,15 @@ var dax_cstr = process.env.DAQ_MONGO_USER + ":" + process.env.DAQ_MONGO_PASSWORD
 var db = monk(dax_cstr, {authSource: process.env.DAQ_MONGO_DB});
 console.log(dax_cstr);
 
+var monitor_cstr = "mongodb://"+process.env.DAQ_MONGO_USER +":"+process.env.DAQ_MONGO_PASSWORD+"@"+process.env.DAQ_MONGO_HOST+":"+process.env.DAQ_MONGO_PORT+"/"+process.env.DAQ_MONGO_DB;
+var monitor_client = new mongo.MongoClient(monitor_cstr);
+var monitor_db;
+console.log(monitor_cstr);
+monitor_client.connect(function(err) {
+    console.log(err);
+    monitor_db = monitor_client.db('online_monitor');
+});
+
 
 // For Runs DB Datatable
 var runs_mongo = require("./runs_mongo");
@@ -53,6 +62,7 @@ var statusRouter = require('./routes/status');
 var authRouter = require('./routes/auth');
 var controlRouter = require('./routes/control');
 var scopeRouter = require('./routes/scope');
+var monitorRouter = require('./routes/monitor');
 var shiftRouter = require('./routes/shifts');
 
 // Using express!
@@ -137,6 +147,7 @@ app.use(function(req,res,next){
     req.db = db;
     req.transporter = transporter;
     req.runs_db = runs_db;
+    req.monitor_db = monitor_db;
     req.ObjectID = ObjectID;
     req.detectors = detectors;
     next();
@@ -157,6 +168,7 @@ app.use('/status', statusRouter);
 app.use('/auth', authRouter);
 app.use('/control', controlRouter);
 app.use('/scope', scopeRouter);
+app.use('/monitor', monitorRouter);
 app.use('/shifts', shiftRouter);
 
 // catch 404 and forward to error handler
