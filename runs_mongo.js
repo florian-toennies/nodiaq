@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var DataTable = require('mongoose-datatable');
 var runsModel;
 var dbURI = "mongodb://" + process.env.RUNS_MONGO_USER + ":" + process.env.RUNS_MONGO_PASSWORD + '@' +
- 			process.env.RUNS_MONGO_HOST+':'+process.env.RUNS_MONGO_PORT+'/'+process.env.RUNS_MONGO_DB;
+ 			process.env.RUNS_MONGO_HOST;
 var runsdb = mongoose.connection;
 
 var runs;
@@ -10,9 +10,10 @@ var runsTableSchema;
 
 DataTable.configure({ verbose: false, debug : false });
 mongoose.plugin(DataTable.init);
-mongoose.connect(dbURI, {dbName: process.env.RUN_MONGO_DB});//'xenonnt'});
+mongoose.connect(dbURI, {dbName: process.env.RUNS_MONGO_DB});//'xenonnt'});
 
 console.log(dbURI);
+console.log("HERE");
 
 runsdb.on('error', console.error.bind(console, 'connection error:'));
 runsdb.once('open', function callback ()
@@ -32,7 +33,7 @@ runsdb.once('open', function callback ()
 		    tags: [ {user: String, date: Date, text: String} ],
 		    comments: [{user: String, date: Date, text: String}],
 		},
-		{ collection: "run"});
+		{ collection: process.env.RUNS_MONGO_COLLECTION});
 	    runs = mongoose.model('runs', runsTableSchema);
 	    runsModel = require('mongoose').model('runs');
 	});

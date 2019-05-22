@@ -58,11 +58,13 @@ block content
             span(id="#{controller}_checkin")
             span ) &nbsp;&nbsp;
             span(id="#{controller}_devices")
-        div.col-sm-12.col-md-12.col-lg-12(style="padding:5px;border:0px solid #ccc;")
+        div.col-sm-12.col-md-12.col-lg-6(style="padding:5px;border:0px solid #ccc;")
           div(style="width:100%;border-bottom:1px solid #ccc;background-color:#151675;color:white;padding-left:5px;")
             h5 Recent Dispatcher Commands
           div.panel-group#command_panel(style="font-size:14px")
-
+        div.col-sm-12.col-md-12.col-lg-6(style="padding:5px;border:0px solid #ccc;")
+          div(style="width:100%;border-bottom:1px solid #ccc;background-color:#151675;color:white;padding-left:5px;")
+            h5 Live Processing Nodes
       
   script.
     var readers = ["fdaq00_reader_0", "fdaq00_reader_1"];

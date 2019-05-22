@@ -12,7 +12,7 @@ router.get('/', ensureAuthenticated, function(req, res) {
 });
 
 router.post('/getDirectory', ensureAuthenticated, function(req, res){
-    var db = req.runs_db;
+    var db = req.users_db;
     var collection = db.get("users");
     collection.find({}, {"sort": {"last_name": -1}},
 		    function(e, docs){
@@ -21,7 +21,7 @@ router.post('/getDirectory', ensureAuthenticated, function(req, res){
 });
 
 router.post('/addUserGroup', ensureAuthenticated, function(req, res){
-    var db = req.runs_db;
+    var db = req.users_db;
     var collection = db.get("users");
     var user_id = req.body.the_user;
     var group = req.body.the_group;
@@ -39,7 +39,7 @@ router.post('/addUserGroup', ensureAuthenticated, function(req, res){
 });
 
 router.post('/removeUserGroup', ensureAuthenticated, function(req, res){
-    var db = req.runs_db;
+    var db = req.users_db;
     var collection = db.get("users");
     var user_id= req.body.the_user;
     var group =req.body.the_group;

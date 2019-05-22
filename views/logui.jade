@@ -8,28 +8,29 @@ block extrahead
 
 block content     
   div.main-container(style="width:100%;padding:25")
-    form(action="logui/new_log_message", method="post")
-      div.input-group.mb-3#newentry(style='padding-top:5px')
-        input.form-control(type="text", name="entry", placeholder="New Log Entry...")
-        div.input-group-append
-          button.btn.btn-outline-secondary(type="submit") Enter
-    form(action="logui", method="get")
-      div.input-group.mb-3#priority(style='padding-top:5px')
-        input#cb_message(style='margin-top:5px' type='checkbox' name='filter_message' checked)
-        span &nbsp;Messages&nbsp;&nbsp;&nbsp;
-        input#cb_open_warning(style='margin-top:5px' type='checkbox' name='filter_open_warning' checked)
-        span &nbsp;Open Warnings&nbsp;&nbsp;&nbsp;
-        input#cb_closed_warning(style='margin-top:5px' type='checkbox' name='filter_closed_warning' checked)
-        span &nbsp;Closed Warnings&nbsp;&nbsp;&nbsp;
-        input#cb_open_error(style='margin-top:5px' type='checkbox' name='filter_open_error' checked)
-        span &nbsp;Open Errors&nbsp;&nbsp;&nbsp;
-        input#cb_closed_error(style='margin-top:5px' type='checkbox' name='filter_closed_error' checked)
-        span &nbsp;Closed Errors&nbsp;&nbsp;&nbsp;
-        input#cb_debug(style='margin-top:5px' type='checkbox' name='filter_debug')
-        span &nbsp;Debug&nbsp;&nbsp;&nbsp;
-        input#cb_fatal(style='margin-top:5px' type='checkbox' name='filter_fatal' checked)
-        span &nbsp;Fatal Errors&nbsp;&nbsp;&nbsp;
-        button.btn.btn-sm.btn-outline-secondary(style="margin-top:-5px" type="submit") Filter
+    
+    div.input-group.mb-3#newentry(style='padding-top:5px')
+      input.form-control#log_entry_box(type="text", name="entry", placeholder="New Log Entry...")
+      div.input-group-append
+        button.btn.btn-outline-secondary(type='submit' onclick="NewMessage()") Enter
+    div.input-group.mb-3#priority(style='padding-top:5px')
+      input#cb_message(style='margin-top:5px' type='checkbox' name='filter_message' checked)
+      span &nbsp;Messages&nbsp;&nbsp;&nbsp;
+      input#cb_open_warning(style='margin-top:5px' type='checkbox' name='filter_open_warning' checked)
+      span &nbsp;Open Warnings&nbsp;&nbsp;&nbsp;
+      input#cb_closed_warning(style='margin-top:5px' type='checkbox' name='filter_closed_warning' checked)
+      span &nbsp;Closed Warnings&nbsp;&nbsp;&nbsp;
+      input#cb_open_error(style='margin-top:5px' type='checkbox' name='filter_open_error' checked)
+      span &nbsp;Open Errors&nbsp;&nbsp;&nbsp;
+      input#cb_closed_error(style='margin-top:5px' type='checkbox' name='filter_closed_error' checked)
+      span &nbsp;Closed Errors&nbsp;&nbsp;&nbsp;
+      input#cb_debug(style='margin-top:5px' type='checkbox' name='filter_debug')
+      span &nbsp;Debug&nbsp;&nbsp;&nbsp;
+      input#cb_fatal(style='margin-top:5px' type='checkbox' name='filter_fatal' checked)
+      span &nbsp;Fatal Errors&nbsp;&nbsp;&nbsp;
+      input#cb_user_message(style='margin-top:5px' type='checkbox' name='filter_user' checked)
+      span &nbsp;User Message&nbsp;&nbsp;&nbsp;
+      button.btn.btn-sm.btn-outline-secondary(style="margin-top:-5px" type="submit" onclick="UpdateLogTable('#log_table')") Filter
     table#log_table(style="width:100%;height:100%")
 
 

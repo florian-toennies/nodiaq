@@ -15,7 +15,7 @@ router.get('/', ensureAuthenticated, function(req, res) {
 router.get('/get_shifts', ensureAuthenticated, function(req, res){
     // FullCalendar will call this function to populate itself
     // The arguments are fixed as 'start' and 'end', which are ISO dates
-    var db = req.runs_db;
+    var db = req.users_db;
     var collection = db.get("shifts");
 
     var q = url.parse(req.url, true).query;
@@ -45,7 +45,7 @@ router.get('/get_shifts', ensureAuthenticated, function(req, res){
 
 router.get("/total_shift_aggregates", ensureAuthenticated, function(req, res){
     
-    var db = req.runs_db;
+    var db = req.users_db;
     var collection = db.get("shifts");
     collection.aggregate([
 	{"$match": {"institute": {"$ne": "none"}}}, 
@@ -67,7 +67,7 @@ function getNextDayOfWeek(date, dayOfWeek) {
     return resultDate;
 }
 router.post('/add_shifts', ensureAuthenticated, function(req, res){
-    var db = req.runs_db;
+    var db = req.users_db;
     var collection = db.get('shifts');
     
     // Get form data
@@ -111,7 +111,7 @@ router.post('/add_shifts', ensureAuthenticated, function(req, res){
     return res.sendStatus(200);    
 });
 router.post('/remove_shifts', ensureAuthenticated, function(req, res){
-    var db = req.runs_db;
+    var db = req.users_db;
     var collection = db.get("shifts");
     
     var start = new Date(req.body.start_date);
@@ -127,7 +127,7 @@ router.post('/remove_shifts', ensureAuthenticated, function(req, res){
 
 router.post('/modify_shift', ensureAuthenticated, function(req, res){
 
-    var db = req.runs_db;
+    var db = req.users_db;
     var collection = db.get("shifts");
 
     var start = new Date(req.body.start_date);

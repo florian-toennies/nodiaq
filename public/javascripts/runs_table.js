@@ -222,6 +222,8 @@ function ShowDetail(run){
 	$.getJSON("runsui/get_run_doc?run="+run, function(data){
 			console.log(window['user']);
 		// Set base data
+		console.log(data);
+		console.log("HERE");
 		document.getElementById("detail_Number").innerHTML = data['number'];
 		$("#detail_Detectors").html(data['detector']);
 		$("#detail_Start").html(moment(data['start']).format('DD.MM.YYYY HH:mm'));

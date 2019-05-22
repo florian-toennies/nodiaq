@@ -13,7 +13,7 @@ router.get('/', ensureAuthenticated, function(req, res) {
 
 router.get('/get_run_doc', ensureAuthenticated, function(req, res){
 	var db = req.runs_db;
-	var collection = db.get("run");
+	var collection = db.get(process.env.RUNS_MONGO_COLLECTION);
 	var q = url.parse(req.url, true).query;
     var num = q.run;
 	if(typeof num !== 'undefined')
@@ -29,7 +29,7 @@ router.get('/get_run_doc', ensureAuthenticated, function(req, res){
 });
 router.post('/addtags', ensureAuthenticated, function(req, res){
     var db = req.runs_db;
-    var collection = db.get("run");
+    var collection = db.get(process.env.RUNS_MONGO_COLLECTION);
 
     var runs = req.body.runs;
     var tag = req.body.tag;
@@ -52,7 +52,7 @@ router.post('/addtags', ensureAuthenticated, function(req, res){
 
 router.post('/removetag', ensureAuthenticated, function(req, res){
     var db = req.runs_db;
-    var collection = db.get("run");
+    var collection = db.get(process.env.RUNS_MONGO_COLLECTION);
 
     var run = req.body.run;
     var tag = req.body.tag;
@@ -71,7 +71,7 @@ router.post('/removetag', ensureAuthenticated, function(req, res){
 
 router.post('/addcomment', ensureAuthenticated, function(req, res){
     var db = req.runs_db;
-    var collection = db.get("run");
+    var collection = db.get(process.env.RUNS_MONGO_COLLECTION);
 
     var runs = req.body.runs;
     var comment = req.body.comment;

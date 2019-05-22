@@ -11,9 +11,17 @@ var mongo = require('mongodb');
 var ObjectID = mongo.ObjectID;
 var monk = require('monk');
 var runs_cstr = process.env.RUNS_MONGO_USER + ":" + process.env.RUNS_MONGO_PASSWORD + '@' +
- 			process.env.RUNS_MONGO_HOST+':'+process.env.RUNS_MONGO_PORT+'/'+process.env.RUNS_MONGO_DB;
+ 			process.env.RUNS_MONGO_HOST;
 console.log(runs_cstr);
+// Take top line for local LNGS DB
 var runs_db = monk(runs_cstr, {authSource: process.env.RUNS_MONGO_DB});
+//var runs_db = monk(runs_cstr);
+
+// In case different
+var users_cstr = process.env.USERS_MONGO_USER+":"+process.env.USERS_MONGO_PASSWORD+"@"+
+      process.env.USERS_MONGO_HOST;
+var users_db = monk(users_cstr, {authSource: process.env.USERS_MONGO_DB});
+
 var dax_cstr = process.env.DAQ_MONGO_USER + ":" + process.env.DAQ_MONGO_PASSWORD + "@" + 
 			process.env.DAQ_MONGO_HOST + ":" + process.env.DAQ_MONGO_PORT + "/" + process.env.DAQ_MONGO_DB;
 var db = monk(dax_cstr, {authSource: process.env.DAQ_MONGO_DB});
@@ -147,6 +155,7 @@ app.use(function(req,res,next){
     req.db = db;
     req.transporter = transporter;
     req.runs_db = runs_db;
+    req.users_db = users_db;
     req.monitor_db = monitor_db;
     req.ObjectID = ObjectID;
     req.detectors = detectors;

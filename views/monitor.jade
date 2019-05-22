@@ -7,18 +7,26 @@ block extrahead
 
 block content     
   div.main-container
-    h3 Some Monitoring
+    h3 Data Monitoring
     br
     div.row(style='height:100%;max-height:600px;')
       div.col-3
-        h5 Options
+        h5 Pulse Rates
         hr
         strong Choose collection to plot: 
         select.cselect#run_select
+        br
         select.cselect#channel_select
-        button(onclick="PlotRun()") Plot 
+        br
+        button.btn.btn-info(onclick="PlotRun()") Plot 
+        br
+        h5 Some other monitoring thing
+        hr
+        button(onclick="alert('not implemented');") Plot
+        br
       div.col-9
-        div#chartdiv   
+        div#chartdiv(style='height:300px')
+        div#samplediv(style='height:300px')
 
   script.
     $(document).ready(function(){

@@ -90,7 +90,7 @@ router.get('/get_reader_status', ensureAuthenticated, function(req, res){
 	    if(sdoc.length == 0)
 		return res.send(JSON.stringify({}));
 	    var rdoc = sdoc[0];
-	    console.log(rdoc);
+	    // console.log(rdoc);
 	    // Basically return sdoc but we want to add time
 	    // since client time may vary we assume server time
 	    // is correct

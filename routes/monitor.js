@@ -15,7 +15,10 @@ router.get('/', ensureAuthenticated, function(req, res) {
 router.get('/available_runs', ensureAuthenticated, function(req, res){
     var db = req.monitor_db;
     db.listCollections().toArray(function(err, collInfos) {	
-	return res.send(JSON.stringify(collInfos));
+        collInfos = collInfos.sort(function(a, b){
+            return parseInt(a['name'].substr(0, 6)) - parseInt(b['name'].substr(0, 6));
+        });
+	    return res.send(JSON.stringify(collInfos));
     });
 });
 

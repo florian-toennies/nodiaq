@@ -1,9 +1,8 @@
 var passport = require('passport');
 var monk = require('monk');
-var runs_cstr = process.env.RUNS_MONGO_USER + ":" + process.env.RUNS_MONGO_PASSWORD + '@' +
-    process.env.RUNS_MONGO_HOST+':'+process.env.RUNS_MONGO_PORT+'/'+
-    process.env.RUNS_MONGO_DB;
-var runs_db = monk(runs_cstr, {authSource: process.env.RUNS_MONGO_DB});
+var runs_cstr = process.env.USERS_MONGO_USER + ":" + process.env.USERS_MONGO_PASSWORD + '@' +
+    process.env.USERS_MONGO_HOST;
+var runs_db = monk(runs_cstr, {authSource: process.env.USERS_MONGO_DB});
 
 
 passport.serializeUser(function(user, done) {

@@ -1,6 +1,7 @@
 var express = require("express");
 var url = require("url");
 var router = express.Router();
+var pf = '/xenonnt';
 
 function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) { return next(); }
@@ -11,7 +12,7 @@ router.get('/', ensureAuthenticated, function(req, res) {
     
     // I'm not sure if this is a nasty trick or intended usage
     var q = url.parse(req.url, true).query;
-    
+
     res.render('logui', { title: 'Help', user:req.user });
 });
 
@@ -21,9 +22,16 @@ router.get('/getMessages', ensureAuthenticated, function(req, res){
     var collection = db.get('log');
     var q = url.parse(req.url, true).query;
     var limit = q.limit;
+    var include = q.get_priorities;
+    if (typeof include == 'undefined')
+	include = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+    else
+	include = include.map(Number);
+
     if (typeof limit == 'undefined')
-        limit = 10; //sure, why not                                                                      
-    collection.find({},  { "sort": {"_id": -1}, "limit" : parseInt(limit) },
+        limit = 100; //sure, why not
+    console.log(include);
+    collection.find({"priority": {"$in": include}},  { "sort": {"_id": -1}, "limit" : parseInt(limit) },
                     function(e,docs){
                         var ret = [];
                         for(var i in docs){
@@ -49,6 +57,6 @@ router.post('/new_log_message', (req, res) => {
 	"time": new Date()
     }
     collection.insert(idoc);
-    return res.redirect("/logui");
+    return res.send(JSON.stringify(idoc));
 });
 module.exports = router;
