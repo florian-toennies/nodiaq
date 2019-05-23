@@ -16,6 +16,15 @@ router.get('/', ensureAuthenticated, function(req, res) {
     res.render('logui', { title: 'Help', user:req.user });
 });
 
+router.get('/areThereErrors', ensureAuthenticated, function(req, res){
+    var db=req.db;
+    var collection=db.get('log');
+    var error_codes = [2, 3, 4]; //warning, error, fatal
+    collection.find({"priority": {"$in": error_codes}}, {}, function(e, docs){
+	var ndocs = docs.length;
+	return res.send(JSON.stringify({"error_docs": ndocs}));
+    });
+});			
 
 router.get('/getMessages', ensureAuthenticated, function(req, res){
     var db = req.db;
@@ -58,5 +67,24 @@ router.post('/new_log_message', (req, res) => {
     }
     collection.insert(idoc);
     return res.send(JSON.stringify(idoc));
+});
+
+router.post('/acknowledge_errors', (req, res) => {
+    var db = req.db;
+    var collection = db.get("log");
+    var error_codes = [2, 3, 4]; //warning, error, fatal
+    var matchdoc = {"priority": {"$in": error_codes}};
+    var updatedoc = {
+        "$inc": {"priority": 10},
+        "$set": {
+            "closing_user": req.user.last_name,
+            "closing_message": req.body.message,
+            "closing_date": new Date()
+        } 
+    }
+    collection.update(matchdoc, updatedoc, {"multi": true},
+        function(){
+            return res.send(JSON.stringify(updatedoc));
+    })
 });
 module.exports = router;

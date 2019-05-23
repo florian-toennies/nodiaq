@@ -116,6 +116,12 @@ html
             li.colored(style="background-color:#06d6a0")
               a(href="/xenonnt/logout") Sign Out
       div#content(style="padding-left:5px;padding-right:5px;padding-top:0px;padding-bottom:0px")
+        nav#errorbar 
+          h5 
+            i.fa.fa-exclamation-triangle
+            span &nbsp; There are unacknowledged errors. Please go to the 
+            a(href='/xenonnt/logui') log page 
+            span to close them
         //nav.navbar.navbar-expand-lg.navbar-light.bg-light
         // div.container-fluid
         block content

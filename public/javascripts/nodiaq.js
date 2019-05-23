@@ -21,8 +21,17 @@ function CheckForErrors(callback){
 		}
 		else{
 			$("#errorIcon").removeClass("has-badge");
-
 		}
+	});
+	$.getJSON(gp+"/logui/areThereErrors", function(data){
+			if(data['error_docs']>0){
+				$("#errorbar").addClass("active");
+				document.flashDatButton=true;
+			}
+			else{
+				$("#errorbar").removeClass('active');
+				document.flashDatButton=false;
+			}
 	});
 }
 function DrawActiveLink(page){

@@ -133,6 +133,23 @@ overflow-y: auto;
 /* SIDEBAR ON MOBILE */
 
 /* I put myself into a bit of a hole. Default state is 'active' */
+#errorbar.active{
+    display:block;
+    height: 40px;
+    width:calc(100%+11px);
+    background-color: #cc0505;
+    margin-left: -5px;
+    margin-right: -5px;
+    color: #eeeeee;
+    padding-top: 5px;
+    padding-left: 10px;
+}
+#errorbar{
+    display: none;
+}
+#errorbar a{
+    color: #9FB3FF;
+}
 #topbar.active {
 	display: block;
 	height: 150px;

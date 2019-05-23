@@ -1,3 +1,23 @@
+function CheckFlash(){
+    //console.log(document.flashDatButton);
+    if(typeof(document.flashDatButton)!="undefined" && document.flashDatButton){
+        $( "#ack_button" ).animate({
+            backgroundColor: "#d9534f",
+            color: "#fff",
+            //width: 500
+          }, 3000 , 'swing',
+          function(){
+            $( "#ack_button" ).animate({
+                backgroundColor: "#f0ad4e",
+                color: "#222",
+                //width: 500
+              }, 3000 , 'swing', CheckFlash)}
+        )
+    }
+    else{
+        setTimeout(CheckFlash, 2000);
+    }
+}
 function NewMessage(){
     $.ajax({
         url:'logui/new_log_message',
@@ -10,6 +30,27 @@ function NewMessage(){
     });    
 }
 
+function CloseOpenErrors(){
+    if(!$("#close_error_ack").is(":checked")){
+	alert("You must indicate you have at least a vague idea what you're doing. If you don't feel like you have a vague idea what you're doing then what on earth are you doing operating a world-class dark matter detector?");
+	return;
+    }
+    var sensible_thing = $("#sensible_input").val();
+    if(!sensible_thing.replace(/\s/g, '').length){
+	alert("At least have a decency to write some gibberish in the box. Reminder that we will store your user ID with your gibberish so we can berate you later.");
+	return;
+    }
+    $.ajax({
+        url:'logui/acknowledge_errors',
+        type:'post',
+        data:{"message": sensible_thing}, 
+        success:function(){
+            UpdateLogTable("#log_table");
+            $("#sensible_thing").val("");
+        }
+    });
+
+}
 
 function DateToString(date){
     if(isNaN(date.getFullYear()))
@@ -18,12 +59,22 @@ function DateToString(date){
 }
     
 function InitializeTable(DOM){
-    var STATUS=["<span style='font-weight:bold;color:black'>DEBUG</span>",
-		"<span style='font-weight:bold;color:blue'>MESSAGE</span>",
-		"<span style='font-weight:bold;color:orange'>WARNING</span>",
-		"<span style='font-weight:bold;color:red'>ERROR</span>",
-		"<span style='font-weight:bold;color:red'>FATAL</span>",
-		"<span style='font-weight:bold;color:green'>USER</span>"];
+    var STATUS=["DEBUG","MESSAGE","WARNING","ERROR","FATAL", "USER",
+    null, null, null, null, null, null, 		
+    "WARNING closed", "ERROR closed", "FATAL closed",
+	       ];
+    var OPENER=["<span style='font-weight:bold;color:black'>",
+		"<span style='font-weight:bold;color:blue'>",
+		"<span style='font-weight:bold;color:orange'>",
+		"<span style='font-weight:bold;color:red'>",
+		"<span style='font-weight:bold;color:red'>",
+		"<span style='font-weight:bold;color:green'>",
+		null, null, null, null, null, null,
+		"<span style='font-weight:bold;color:orange'>",
+		"<span style='font-weight:bold;color:red'>",
+		"<span style='font-weight:bold;color:red'>",
+               ];
+		
 
     // Get the window height minus padding (80px)
     var vh = $(window).height() - $("#newentry").outerHeight(true) - 50;
@@ -37,16 +88,25 @@ function InitializeTable(DOM){
 	     headerFilter: "input", headerFilterPlaceholder: "filter users"},
             {title:"Message", field:"message", headerFilter: "input",
 	     headerFilterPlaceholder: "filter messages"},	    
-            {title:"Priority", field:"priority", width: 100,
+            {title:"Priority", field:"priority", width: 200,
 	     formatter:function(cell, formatterParams){
 		 //cell - the cell component
 		 //formatterParams - parameters set for the column
-		 return STATUS[cell.getValue()];
+		 var post = "";
+		 if(cell.getRow().getData().closing_user != undefined){
+		     post = " by " + cell.getRow().getData().closing_user;
+		 }
+		 var idx = cell.getValue();
+		 return OPENER[idx] + STATUS[idx] + post + "</span>";
 	    }},
 	],
-	//rowClick:function(e, row){ //trigger an alert message when the row is clicked
-        //    alert("Row " + row.getData().id + " Clicked!!!!");
-	//},
+	rowClick:function(e, row){ //trigger an alert message when the row is clicked
+	    if(row.getData().closing_user != undefined){
+		alert("Exception closed by " + row.getData().closing_user + " on " + 
+		      row.getData().closing_date + " with message: " + row.getData().closing_message);
+
+	    }
+	},
     });
 }
 
