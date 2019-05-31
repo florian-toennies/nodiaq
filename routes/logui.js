@@ -5,7 +5,7 @@ var pf = '/xenonnt';
 
 function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) { return next(); }
-    return res.redirect('/login');
+    return res.redirect(pf+'/login');
 }
 
 router.get('/', ensureAuthenticated, function(req, res) {

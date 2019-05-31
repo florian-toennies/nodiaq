@@ -1,13 +1,16 @@
 extends layout
 
 block extrahead
-  script(src="/xenonnt/javascripts/moment.min.js", type="text/javascript")
-  script(src="/xenonnt/javascripts/overview_treant.js", type="text/javascript")
-  script(src="/xenonnt/javascripts/raphael.js", type="text/javascript")
-  script(src="/xenonnt/javascripts/jquery.easing.js", type="text/javascript")
-  script(src="/xenonnt/javascripts/jquery.mousewheel.js", type="text/javascript")
-  script(src="/xenonnt/javascripts/Treant.js", type="text/javascript")
-  link(rel="stylesheet" href="/xenonnt/stylesheets/Treant.css")
+  script(src="/xenonnt/javascripts/mustache.min.js", type="text/javascript")
+  script(src="/xenonnt/javascripts/overview.js", type="text/javascript")
+  //
+    script(src="/xenonnt/javascripts/moment.min.js", type="text/javascript")
+    script(src="/xenonnt/javascripts/overview_treant.js", type="text/javascript")
+    script(src="/xenonnt/javascripts/raphael.js", type="text/javascript")
+    script(src="/xenonnt/javascripts/jquery.easing.js", type="text/javascript")
+    script(src="/xenonnt/javascripts/jquery.mousewheel.js", type="text/javascript")
+    script(src="/xenonnt/javascripts/Treant.js", type="text/javascript")
+    link(rel="stylesheet" href="/xenonnt/stylesheets/Treant.css")
   link(rel="stylesheet" href="/xenonnt/stylesheets/overview.css")
   //  
     script(src="/xenonnt/javascripts/go-debug.js", type="text/javascript")
@@ -19,8 +22,17 @@ block extrahead
 
 block content     
   div.main-container
-    span.fontscale Welcome #{user.first_name}, feel free to look around but careful touching anything! This is an alpha-level preview
+    span.fontscale Welcome #{user.first_name}, feel free to look around but careful touching anything! This is an alpha-level preview. Also, it will be rebooted randomly, go down for days, change colors, crash your browser, mine bitcoin in the background, install funny cookies, and do all kinds of crazy stuff. So don't be surprised.
     hr
+
+    div.row
+      div.col-12.col-md-6
+        h5 Detector Status
+      div.col-12.col-md-6
+        h5 Run History
+      div.col-12.col-md-6
+        h5 Who's on Shift
+        div#shift_box
 
     div#treant(style="width:100%;height:100%;margin:0")
     //
@@ -32,9 +44,10 @@ block content
   script.
     $(document).ready(function(){
       DrawActiveLink("#lindex");
+      PopulateShifters("shift_box");
       //DrawOverviewCharts();
       //UpdateOverviewPage();
       //GetOptionsFiles(DrawMap);
-      GetOptionsFiles(DrawTree);
-      UpdateFromReaders();
+      //GetOptionsFiles(DrawTree);
+      //UpdateFromReaders();
     });

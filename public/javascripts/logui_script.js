@@ -47,6 +47,7 @@ function CloseOpenErrors(){
         success:function(){
             UpdateLogTable("#log_table");
             $("#sensible_thing").val("");
+	    $("#error_modal").modal('hide');
         }
     });
 

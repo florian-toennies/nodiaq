@@ -21,13 +21,56 @@ function isEmpty(obj) {
     return true;
 }
 
+function UpdateUnique(mongo_doc, username, collection){
+    return new Promise(resolve => {
+	collection.find({"daq_id": username}, function(e, docs){
+	    if(docs.length !== 0)
+		return(UpdateUnique(mongo_doc, "xe"+username, collection));
+	    collection.update({"last_name": mongo_doc['last_name'],
+			       "first_name": mongo_doc['first_name'],
+			       "institute": mongo_doc['institute']},
+			      {"$set": {"daq_id": username}});
+	    resolve(username);
+	});	    
+    });
+}
+
+function GenerateDAQID(mongo_doc){
+    // Just return the last name in lower case. In case not unique add the string 'xe' 
+    // until it is and maybe auto-email parents to be more creative next time.
+    // Remove diacritics from last name as well
+
+    // This probably makes it clear that the whole async/promise thing is still hazy
+    if(typeof mongo_doc['daq_id'] !== 'undefined')
+	return new Promise(resolve => {
+	    resolve(mongo_doc['daq_id']);
+	});
+
+    var last_name = mongo_doc['last_name'];
+    var username = last_name.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
+
+    // Check uniqueness
+    var collection = runs_db.get("users");
+    return new Promise(resolve => {
+	resolve(UpdateUnique(mongo_doc, username, collection));
+    });
+}
+
 // GithubStrategy
 var GitHubStrategy = require('passport-github2').Strategy;
 var GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 var GITHUB_CLIENT_SECRET = process.env.GITHUB_SECRET_KEY;
-function PopulateProfile(mongo_doc, github_profile, ldap_profile){
+async function PopulateProfile(mongo_doc, github_profile, ldap_profile, callback){
 
     var ret_profile = {};
+
+    // This step important. We need a unique identifier for each user. The user
+    // doesn't actually need to see this but it's important for some internal 
+    // things.     
+    ret_profile['daq_id'] = await GenerateDAQID(mongo_doc);
+    console.log(ret_profile);
+    console.log("HERE");
+
     var extra_fields = ['skype', 'github_id', 'cell',
                         'favorite_color', 'email', 'lngs_ldap_uid',
                         'last_name', 'first_name', 'institute', 'position',
@@ -53,7 +96,7 @@ function PopulateProfile(mongo_doc, github_profile, ldap_profile){
     if(typeof mongo_doc['api_username'] !== 'undefined')
         ret_profile['api_key'] = "SET";
     
-    return ret_profile;
+    callback(ret_profile);
 }
 
 passport.use(new GitHubStrategy({
@@ -76,14 +119,15 @@ passport.use(new GitHubStrategy({
                                   return done(null, false, "Couldn't find user in DB");
                               }
                               var doc = docs[0];
-                              var ret_profile = PopulateProfile(doc, profile, {});
-			      // Save a couple things from the github profile                           
-                              collection.update({"github": profile._json.login},
-                                                {"$set": { "picture_url": profile._json.avatar_url,
-                                                           "github_home": profile.html_url}
-                                                });
+                              PopulateProfile(doc, profile, {}, function(ret_profile){
+				  // Save a couple things from the github profile
+				  collection.update({"github": profile._json.login},
+                                                    {"$set": { "picture_url": profile._json.avatar_url,
+                                                               "github_home": profile.html_url}
+                                                    });
 			      
-			      return done(null, ret_profile);
+				  return done(null, ret_profile);
+			      });
 			  });
       });
   }));
@@ -113,15 +157,16 @@ passport.use(new LdapStrategy(OPTS,
 					 return done(null, false, "Couldn't find user in DB");
 				     }
 				     var doc = docs[0];
-				     var ret_profile = PopulateProfile(doc, {}, user);
-				     // Save a couple things from the github profile 
-				     collection.update({"lngs_ldap_uid": user.uid},
-                                                {"$set": { 
-						    "lngs_ldap_email": user.mail,
-                                                    "lngs_ldap_cn": user.cn
-						}
-                                                });
-				     return done(null, ret_profile);
+				     var ret_profile = PopulateProfile(doc, {}, user, function(ret_profile){
+					 // Save a couple things from the github profile 
+					 collection.update({"lngs_ldap_uid": user.uid},
+							   {"$set": { 
+							       "lngs_ldap_email": user.mail,
+							       "lngs_ldap_cn": user.cn
+							   }
+							   });
+					 return done(null, ret_profile);
+				     });
                                  }); // end mongo query                 
              }));
 

@@ -1,5 +1,26 @@
 var gp = "/xenonnt";
-function CheckForErrors(callback){
+
+function FYouButton(buttonid){
+    $("#"+buttonid).mouseover(function(){
+        var t = ($(window).height()-80)*Math.random() + 80;
+        var l = ($(window).width()-40)*Math.random();
+        console.log(t);
+        $("#"+buttonid).css({'z-index': 10, //'height': '31px',
+                             'top': t, 'left': l, 'position':'absolute'});
+
+        var rand = Math.random() * 30;
+        if(rand<1){
+            var ahahah = document.getElementById("ahahah");
+            ahahah.pause();
+            ahahah.currentTime = 0;
+            ahahah.play();
+        }
+
+    });
+}
+
+
+function CheckForErrors(){
 	$.getJSON(gp+"/status/get_broker_status", function(data){
 		console.log(data);
 		var detectors = ["tpc", "muon_veto", "neutron_veto"];
@@ -25,13 +46,29 @@ function CheckForErrors(callback){
 	});
 	$.getJSON(gp+"/logui/areThereErrors", function(data){
 			if(data['error_docs']>0){
+			    if(!($("#errorbar").hasClass("active")))
 				$("#errorbar").addClass("active");
-				document.flashDatButton=true;
+			    document.flashDatButton=true;
+
+			    // Disable start run button if there are errors
+			    if(document.getElementById("submit_changes")!=null &&
+			       !($("#submit_changes").hasClass("FYOU"))){
+				FYouButton('submit_changes');
+				$("#submit_changes").addClass("FYOU");
+			    }
 			}
 			else{
+			    if($("#errorbar").hasClass("active"))
 				$("#errorbar").removeClass('active');
-				document.flashDatButton=false;
+			    document.flashDatButton=false;
+			    
+			    // Re-enable button that would let you start a run
+			    if($("#submit_changes").hasClass("FYOU")){
+				$("#submit_changes").unbind("mouseover");
+				$("#submit_changes").removeClass("FYOU");
+			    }
 			}
+	    setTimeout(CheckForErrors, 5000);
 	});
 }
 function DrawActiveLink(page){

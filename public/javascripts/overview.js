@@ -1,5 +1,48 @@
 var prefix = '/xenonnt/';
 
+function PopulateShifters(shift_div){
+    var shifter_template = '<div class="row" style="margin-top:10px;"><div class="col-12" style="background-color:#e5e5e5;color:#555"><strong>{{shift_type}}</strong></div><div class="col-12">{{shifter_name}}</div><div class="col-12"><i class="fa fa-envelope"></i>&nbsp;{{shifter_email}}</div><div class="col-12"><i class="fa fa-phone"></i>&nbsp;{{shifter_phone}}</div><div class="col-12"><i class="fab fa-skype"></i>&nbsp;{{shifter_skype}}</div><div class="col-12"><i class="fab fa-github"></i>&nbsp;{{shifter_github}}</div></div>';
+    
+    $.getJSON(prefix+"/shifts/get_current_shifters", function(data){
+
+
+	var test_view = [
+	    {
+		shift_type: "Shifter",
+		shifter_name: "Manfred Klinton",
+		shifter_email: "mklinton@chicago.edu",
+		shifter_phone: "555-5555",
+		shifter_skype: "mklinton",
+		shifter_github: "mklintons_github"
+	    },
+	    {
+		shift_type: "Shifter",
+		shifter_name: "Manfred Klinton's Uncle",
+		shifter_email: "mklintonuncle@chicago.edu",
+		shifter_phone: "555-5556",
+		shifter_skype: "mklintonsr",
+		shifter_github: "mklintonsrs_github"
+	    },];
+	var html ="";
+	for(var i in test_view)
+	    html += Mustache.render(shifter_template, test_view[i]);
+	
+	document.getElementById(shift_div).innerHTML = html;
+    });
+}
+
+
+
+
+
+
+
+
+
+// Everything under this point is likely deprecated
+
+
+
 function GetStatus(i){
     var STATUSES = [
         "<span style='color:blue'><strong>Idle</strong></span>",

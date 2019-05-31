@@ -2,6 +2,7 @@ var express = require("express");
 var url = require("url");
 var router = express.Router();
 var fs = require('fs');
+var gp = '/xenonnt';
 
 function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) { return next(); }

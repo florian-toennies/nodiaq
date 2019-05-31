@@ -1,15 +1,36 @@
 var express = require("express");
 var url = require("url");
 var router = express.Router();
+var gp = '/xenonnt';
 
 function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) { return next(); }
-    return res.redirect('/login');
+    return res.redirect(gp+'/login');
 }
 
 router.get('/', ensureAuthenticated, function(req, res) {
     // Get our user's institute
     res.render('shifts', { title: 'Shifts', user:req.user });
+});
+
+router.get('/get_current_shifters', ensureAuthenticated, function(req, res){
+    var db = req.users_db;
+    var collection = db.get("shifts");
+
+    var today = new Date();
+    collection.find({"start": {"$lte": today},
+		     "end": {"$gte": today}},
+		    function(e, docs){
+			var users = [];
+			var qusers = [];
+			for(var i in docs){
+			    users.push({"shifter": docs[i]['shifter'],
+					"shift_type": docs[i]['shift_type']});
+			    qusers.push(docs[i]['shifter']);
+			}
+			var user_collection = db.get("users");
+
+		    });
 });
 
 router.get('/get_shifts', ensureAuthenticated, function(req, res){
