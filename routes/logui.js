@@ -59,10 +59,13 @@ router.get('/getMessages', ensureAuthenticated, function(req, res){
 router.post('/new_log_message', (req, res) => {
     var db = req.db;
     var collection = db.get("log");
+    var p = 5;
+    if(typeof req.body.priority != 'undefined')
+      p=parseInt(req.body.priority);
     var idoc = {
 	"user": req.user.last_name,
 	"message": req.body.entry,
-	"priority": 5,
+	"priority": p,
 	"time": new Date()
     }
     collection.insert(idoc);

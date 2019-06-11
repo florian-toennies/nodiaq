@@ -29,7 +29,21 @@ block content
       div.col-12.col-md-6
         h5 Detector Status
       div.col-12.col-md-6
-        h5 Run History
+        div.row
+          div.col-6 Run History        
+          div.col-6
+            div.btn-group.btn-group-toggle#pie_button(data-toggle="buttons")
+              label.btn.btn-secondary
+                input(type="radio" name="options" id="option1" autocomplete="off" value=10) 
+                span 10 days
+              label.btn.btn-secondary.active
+                input(type="radio" name="options" id="option2" autocomplete="off" value=30 checked) 
+                span 30 days
+              label.btn.btn-secondary
+                input(type="radio" name="options" id="option3" autocomplete="off" value=90) 
+                span 90 days
+
+        div#pie_box
       div.col-12.col-md-6
         h5 Who's on Shift
         div#shift_box
@@ -45,6 +59,10 @@ block content
     $(document).ready(function(){
       DrawActiveLink("#lindex");
       PopulateShifters("shift_box");
+      DrawPie("pie_box", 30);
+      $("#pie_button :input").change(function() {
+         DrawPie("pie_box", $(this).val());
+      });
       //DrawOverviewCharts();
       //UpdateOverviewPage();
       //GetOptionsFiles(DrawMap);

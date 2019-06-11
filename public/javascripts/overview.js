@@ -1,37 +1,67 @@
 var prefix = '/xenonnt/';
 
+$("#pie_button :input").change(function() {
+console.log(this.val());
+});
+
 function PopulateShifters(shift_div){
     var shifter_template = '<div class="row" style="margin-top:10px;"><div class="col-12" style="background-color:#e5e5e5;color:#555"><strong>{{shift_type}}</strong></div><div class="col-12">{{shifter_name}}</div><div class="col-12"><i class="fa fa-envelope"></i>&nbsp;{{shifter_email}}</div><div class="col-12"><i class="fa fa-phone"></i>&nbsp;{{shifter_phone}}</div><div class="col-12"><i class="fab fa-skype"></i>&nbsp;{{shifter_skype}}</div><div class="col-12"><i class="fab fa-github"></i>&nbsp;{{shifter_github}}</div></div>';
     
     $.getJSON(prefix+"/shifts/get_current_shifters", function(data){
-
-
-	var test_view = [
-	    {
-		shift_type: "Shifter",
-		shifter_name: "Manfred Klinton",
-		shifter_email: "mklinton@chicago.edu",
-		shifter_phone: "555-5555",
-		shifter_skype: "mklinton",
-		shifter_github: "mklintons_github"
-	    },
-	    {
-		shift_type: "Shifter",
-		shifter_name: "Manfred Klinton's Uncle",
-		shifter_email: "mklintonuncle@chicago.edu",
-		shifter_phone: "555-5556",
-		shifter_skype: "mklintonsr",
-		shifter_github: "mklintonsrs_github"
-	    },];
+	
 	var html ="";
-	for(var i in test_view)
-	    html += Mustache.render(shifter_template, test_view[i]);
+	for(var i in data)
+	    html += Mustache.render(shifter_template, data[i]);
 	
 	document.getElementById(shift_div).innerHTML = html;
     });
 }
 
+function DrawPie(pie_div, ndays){
 
+    $.getJSON(prefix+"/runsui/runsfractions?days="+ndays, function(data){
+
+	if(typeof(document.piechart) != 'undefined')
+            document.piechart.destroy;
+	var series = [];
+	var tot=0;
+	for(var i in data)
+	    tot+=data[i];
+	for(var i in data)
+	    series.push({"name": i, "y": data[i]/tot});
+	document.piechart = Highcharts.chart(pie_div, {
+	    chart: {
+		plotBackgroundColor: null,
+		plotBorderWidth: null,
+		plotShadow: false,
+		type: 'pie'
+	    },
+	    credits: {enabled: false},
+	    title: {text: null},
+	    tooltip: {
+		pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
+	    },
+	    plotOptions: {
+		pie: {
+		    allowPointSelect: true,
+		    cursor: 'pointer',
+		    dataLabels: {
+			enabled: true,
+			format: '<b>{point.name}</b>: {point.percentage:.2f} %',
+			style: {
+			    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+			}
+		    }
+		}
+	    },
+	    series: [{
+		name: 'Modes',
+		colorByPoint: true,
+		data: series,
+	    }]
+	});
+    });
+}
 
 
 

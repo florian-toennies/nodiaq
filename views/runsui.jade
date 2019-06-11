@@ -7,6 +7,7 @@ block extrahead
   script(src="javascripts/datatables.pageResize.min.js", type="text/javascript")
   script(src="javascripts/moment.min.js", type="text/javascript")
   script(src="javascripts/runs_table.js", type="text/javascript")
+  link(rel="stylesheet", href="stylesheets/runs_style.css")
   link(rel="stylesheet" href="https://rawgithub.com/yesmeck/jquery-jsonview/master/dist/jquery.jsonview.css")
   script(type="text/javascript" src="https://rawgithub.com/yesmeck/jquery-jsonview/master/dist/jquery.jsonview.js")
 
@@ -32,10 +33,10 @@ block content
           button.btn.btn-default#add_comment_button Add Comments
     div.col-12
       div.form-group(style="width:100%")
-        label MongoDB Query: &nbsp;
-        input#mongoquery(type="text" placeholder="{}")
+        label(style="margin-top:-25px") MongoDB Query: &nbsp;
+        textarea#mongoquery(rows="1" cols="10" type="text" placeholder="{}")
         span &nbsp;
-        button.btn.btn-default(onclick="CheckMongoQuery()") Apply
+        button.btn.btn-default(onclick="CheckMongoQuery()" style="margin-top:-25px") Apply
         
     br
     div#resize_wrapper(style="height:90%")

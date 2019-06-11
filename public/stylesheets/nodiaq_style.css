@@ -72,6 +72,7 @@ div.dataTables_length {
 .sidebarCollapse.active{
 	float:right;
 	outline: none;
+	background-color: #888;/*0c1178;*/
   }
   .sidebarCollapse.active:hover{
 	background-color:rgba(150,150,150,1.0);
@@ -187,14 +188,19 @@ overflow-y: auto;
  .desktop_title{
  	display: none;
  }
+.desktop_title div{
+  padding-left:8px;
+}
 
 #sidebar {
 	width:100%;
     display: block;
     overflow-y: scroll;
     /*background: #7386D5;*/
-    background: #0c1178;
-    color: #fff;
+    /*background: #0c1178;
+    color: #fff;*/
+    color: #666;
+    background: #ccc;
     height: 100vh;
 	-webkit-transition: height 0.3s ease-in-out;
     -moz-transition: height 0.3s ease-in-out;
@@ -205,9 +211,13 @@ overflow-y: auto;
 	/*display: none;*/
 	height: 0px !important;
 	overflow: hidden;
+	background: #0c1178;                                                                    color: #fff;
+}
+#sidebar.active ul li a{
+  color: #fff;
 }
 #sidebar ul li a {
-	color: #fff;
+	color: #333;
     padding: 10px;
     font-size: 3.1em;
     display: block;
@@ -253,14 +263,16 @@ only screen and (min-width: 1081px)
         height:50px;
         margin-left:0px !important;
     }
-	#sidebar ul li a {
-        font-size: 1.15em;
-        }
+    #sidebar ul li a {
+        font-size: .85em;
+    }
     
-        #sidebar ul li.active>a, a[aria-expanded="true"] {
-            color: #333;
-            background: #fff;
-        }
+    #sidebar ul li.active>a, a[aria-expanded="true"] {
+ color: #7386D5;
+ background: #fff;
+        /*color: #eee;
+        background: #0c1178;*/
+    }
         #sidebar.active ul li a {
             padding: 10px 2px;
             text-align: center;
@@ -337,17 +349,17 @@ position: fixed;
 
 
 	/* CTAs are things that only appear when expanded */
-	ul.CTAs {
-    padding: 20px;
-	}
-	ul.CTAs a {
+ul.CTAs {
+    padding: 10px;
+}
+ul.CTAs li a {
     text-align: center;
-    font-size: 0.9em !important;
+    font-size: 0.7em !important;
     display: block;
     border-radius: 5px;
     margin-bottom: 5px;
-	}
-	#sidebar.active .sidebar-header h3,
+}
+#sidebar.active .sidebar-header h3,
 	#sidebar.active .CTAs {
     display: none;
     -webkit-animation: fadeOut 1s;
@@ -385,8 +397,8 @@ position: fixed;
     display: block;
     max-width: 250px;
     /*background: #7386D5;*/
-    background: #0c1178;
-    color: #fff;
+    background: #eee;
+    color: #333;
     transition: all 0.3s;
     height: 100vh !important;
     overflow-y: auto;
@@ -397,6 +409,8 @@ position: fixed;
 	min-width: 50px;
 	max-width: 50px;
 	text-align: center;
+	background: #0c1178;
+	color: #fff;
 	margin-left: 0 !important;
 	height: 100vh !important;
 	overflow-y: auto;

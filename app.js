@@ -72,6 +72,7 @@ var controlRouter = require('./routes/control');
 var scopeRouter = require('./routes/scope');
 var monitorRouter = require('./routes/monitor');
 var shiftRouter = require('./routes/shifts');
+var adminRouter = require('./routes/admin');
 
 // Using express!
 var app = express();
@@ -179,6 +180,7 @@ app.use('/control', controlRouter);
 app.use('/scope', scopeRouter);
 app.use('/monitor', monitorRouter);
 app.use('/shifts', shiftRouter);
+app.use('/admin', adminRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
