@@ -40,8 +40,33 @@ runsdb.once('open', function callback ()
 
 exports.getDataForDataTable = function getData (request, response) {
     //"type.typeName" : "Trolley"
-    console.log("Get Request for Data Table made with data: ", request.query);
-    runsModel.dataTable(request.query,  {"conditions": request.query['conditions']},function (err, data) {
+    //console.log("Get Request for Data Table made with data: ", request.query);
+    //console.log(request.query['date_min']);
+    //console.log(request.query['date_max']);
+    //console.log(request.query['conditions']);
+    var conditions = {};
+    if(typeof request.query['conditions'] !== 'undefined')
+	conditions = JSON.parse(request.query['conditions']);
+
+    // Date filtering
+    if(request.query['date_min'] !== undefined){
+	if(request.query['date_min'] !== '' && 
+	   request.query['date_max'] == '' && 
+	   !('start' in Object.keys(conditions)))
+	    conditions['start'] = {"$gt": new Date(request.query['date_min'])};
+	else if(request.query['date_min'] !== '' &&
+		request.query['date_max'] !== '' &&
+		!('start' in Object.keys(conditions)))
+	    conditions['start'] = {"$gt": new Date(request.query['date_min']),
+				   "$lt": new Date(request.query['date_max'])};
+	else if(request.query['date_min'] == '' &&
+		request.query['date_max'] !== '' &&
+		!('start' in Object.keys(conditions)))
+	    conditions['start'] = {"$lt": new Date(request.query['date_max'])};
+    }
+    //console.log(conditions);
+    runsModel.dataTable(request.query,  {"conditions": conditions},
+			function (err, data) {
 	response.send(data);
     });
 };

@@ -1,44 +1,49 @@
-
 function CheckMongoQuery(){
-	var query = $("#mongoquery").val();
-	if(query === "")
-		query = "{}";
-	try{
-		JSON.parse(query);
-	}
-	catch(e){
-		alert("Your mongo query is not valid JSON!");
-		console.log(e);
-		return;
-	}
-console.log(document.datatable_div);
-	document.datatable_options['ajax']['data'] = {"conditions": JSON.parse(query)};
-	console.log(document.datatable_options);
-	$(document.datatable_div).DataTable().destroy()
-  	$(document.datatable_div).DataTable(document.datatable_options);
+    var query = $("#mongoquery").val();
+    if(query === "")
+	query = "{}";
+    try{JSON.parse(query);}
+    catch(e){
+	alert("Your mongo query is not valid JSON!");
+	return;
+    }
+    document.datatable_options['ajax']['data'] ={"conditions": query};
+    $(document.datatable_div).DataTable().destroy();
+    $(document.datatable_div).DataTable(document.datatable_options);
 }
+
 function InitializeRunsTable(divname){
     var table_options = {                                                                   
         processing : true,
         serverSide : true,
 	//scrollCollapse: true,
-        pageResize: true,
+        //pageResize: true,
 	//scrollY: 100, 
 	//scrollX: false,
 	//scrollResize: true,
         paging: true,
-        lengthChange: true,
+        //lengthChange: true,
 	//responsive: true,
         
         order: [[1, "desc"]],
-        iDisplayLength: 15,
+        iDisplayLength: 100,
+
+	// Custom DOM settings to add date filters to datatable header
+	dom: "<'row'<'col-sm-3'l><'col-sm-6 text-center'b><'col-sm-3'f>>" +
+	    "<'row'<'col-sm-12'tr>>" +
+	    "<'row'<'col-sm-5'i><'col-sm-7'p>>", 
+
         ajax : {
             url: 'runtable/getDatatable',
             beforeSend: function ( jqXHR,  settings) {
                       console.log(jqXHR);
             },
-            data: {}
-            
+            data: function ( d ) {
+                return $.extend( {}, d, {
+		    "date_min": $('#datepicker_from').val(),
+		    "date_max": $('#datepicker_to').val()
+		});
+            },
         },
         columns : [
         	{ data : "number", "render": function(data, type, row){
@@ -90,7 +95,18 @@ function InitializeRunsTable(divname){
     var table = $(divname).DataTable(table_options);
     document.datatable_options = table_options;
     document.datatable_div = divname;
-   
+    
+    var filter_html = "<span class='date-label' id='date-label-from'> From: <input class='date_range_filter date' id='datepicker_from' type='date'></span><span class='date-label' id='date-label-to'> To: <input class='date_range_filter date' id='datepicker_to' type='date'></span>";
+
+    $("#runs_table_wrapper .row .col-sm-6").html(filter_html);
+    $('#datepicker_from').change(function() {
+	table.draw();
+    });
+    $('#datepicker_to').change(function() {
+        table.draw();
+    });
+
+
     $(divname + ' tbody').on( 'click', 'td', function () {
     	console.log($(this));
     	if(!$(this).hasClass("not-selectable")){
@@ -201,66 +217,67 @@ function InitializeRunsTable(divname){
     });
 }
 function RemoveTag(run, user, tag){
-	console.log("Remove tag!");
-	console.log(run, user, tag);
-	// Remove ALL tags with a given text string
-	if(typeof run === 'undefined' || typeof user === 'undefined' || typeof tag === 'undefined')
-		return;
-	$.ajax({
-		type: "POST",
-		url: "runsui/removetag",
-		data: {"run": run, "user": user, "tag": tag},
-		success: function(){ ShowDetail(run);},
-		error: function(jqXHR, textStatus, errorThrown){
-			alert("Error, status = " +textStatus + ", " + "error thrown: " + errorThrown);
-		}
-	});
+    // Remove ALL tags with a given text string
+    if(typeof run === 'undefined' || typeof user === 'undefined' || typeof tag === 'undefined')
+	return;
+    $.ajax({
+	type: "POST",
+	url: "runsui/removetag",
+	data: {"run": run, "user": user, "tag": tag},
+	success: function(){ ShowDetail(run);},
+	error: function(jqXHR, textStatus, errorThrown){
+	    alert("Error, status = " +textStatus + ", " + "error thrown: " + errorThrown);
+	}
+    });
 }
 
 function ShowDetail(run){
-	//var namefield =  [['Number', 'number'], ['Detectors', 'detectors'], ['Start', 'start']End', 'User', 'Mode', 'Source'];
-	$.getJSON("runsui/get_run_doc?run="+run, function(data){
-			console.log(window['user']);
-		// Set base data
-		console.log(data);
-		console.log("HERE");
-		document.getElementById("detail_Number").innerHTML = data['number'];
-		$("#detail_Detectors").html(data['detector']);
-		$("#detail_Start").html(moment(data['start']).format('DD.MM.YYYY HH:mm'));
-		$("#detail_End").html(moment(data['end']).format('DD.MM.YYYY HH:mm'));
-		$("#detail_User").html(data['user']);
-		$("#detail_Mode").html(data['mode']);
-		$("#detail_Source").html(data['source']);
 
-		var tag_html = "";
-		for(var i in data['tags']){
-			var row = data['tags'][i];
-			tag_html += "<tr><td>" + row['name'] + "</td><td>" + row['user'] + "</td><td>";
-			tag_html += moment(row['date']).format("DD.MM.YYYY HH:mm") + "</td>";
-			if(row['user'] === window['user']){
-				tag_html += "<td><button onclick='RemoveTag("+data['number']+", "+'"'+row['user']+'"'+", "+'"'+row['name']+'"';
-				tag_html += ")' class='btn btn-warning'>Remove tag</button></td></tr>";
-			}
-			else
-				tag_html += "<td></td></tr>";
-		}
-		$("#detail_Tags").html(tag_html);
-		var comment_html = "";
-		for(var i in data['comments']){
-			var row = data['comments'][i];
-			comment_html += "<tr><td>" + row['user'] + "</td><td>" + row['comment'] + "</td><td>";
-			comment_html += moment(row['date']).format("DD.MM.YYYY HH:mm") + "</td></tr>";
-		}
-		$("#detail_Comments").html(comment_html);
-	    
-	    // Locations
-	    var location_html = "";
-	    for(var i in data['data']){
-		location_html+="<table style='width:100%;border-bottom:1px solid #eee'><tr><td>Type</td><td>"+data['data'][i]['type']+"</td></tr><tr><td>Host</td><td>"+data['data'][i]['host']+"</td></tr><tr><td>Path</td><td>"+data['data'][i]['location']+"</td></tr></table>";
-	    }
-	    document.getElementById("location_div").innerHTML=location_html;
-	    $("#detail_JSON").JSONView(data, {"collapsed": true});
-		$("#runsModal").modal();
-	});
+    $.getJSON("runsui/get_run_doc?run="+run, function(data){
 	
+	// Set base data
+	document.getElementById("detail_Number").innerHTML = data['number'];
+	$("#detail_Detectors").html(data['detector']);
+	$("#detail_Start").html(moment(data['start']).format('DD.MM.YYYY HH:mm'));
+	$("#detail_End").html(moment(data['end']).format('DD.MM.YYYY HH:mm'));
+	$("#detail_User").html(data['user']);
+	$("#detail_Mode").html(data['mode']);
+	$("#detail_Source").html(data['source']);
+	
+	var tag_html = "";
+	for(var i in data['tags']){
+	    var row = data['tags'][i];
+	    tag_html += "<tr><td>" + row['name'] + "</td><td>" + row['user'] + "</td><td>";
+	    tag_html += moment(row['date']).format("DD.MM.YYYY HH:mm") + "</td>";
+	    if(row['user'] === window['user']){
+		tag_html += ("<td><button onclick='RemoveTag("+data['number']+", "+
+			     '"'+row['user']+'"'+", "+'"'+row['name']+'"');
+		tag_html += ")' class='btn btn-warning'>Remove tag</button></td></tr>";
+	    }
+	    else
+		tag_html += "<td></td></tr>";
+	}
+	$("#detail_Tags").html(tag_html);
+	var comment_html = "";
+	for(var i in data['comments']){
+	    var row = data['comments'][i];
+	    comment_html += "<tr><td>" + row['user'] + "</td><td>" + row['comment'] + "</td><td>";
+	    comment_html += moment(row['date']).format("DD.MM.YYYY HH:mm") + "</td></tr>";
+	}
+	$("#detail_Comments").html(comment_html);
+	
+	// Locations
+	var location_html = "";
+	for(var i in data['data']){
+	    location_html+=("<table style='width:100%;border-bottom:1px solid #eee'>"+
+			    "<tr><td>Type</td><td>"+
+			    data['data'][i]['type']+"</td></tr><tr><td>Host</td><td>"+
+			    data['data'][i]['host']+"</td></tr><tr><td>Path</td><td>"+
+			    data['data'][i]['location']+"</td></tr></table>");
+	}
+	document.getElementById("location_div").innerHTML=location_html;
+	$("#detail_JSON").JSONView(data, {"collapsed": true});
+	$("#runsModal").modal();
+    });
+    
 }

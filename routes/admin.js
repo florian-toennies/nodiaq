@@ -4,7 +4,12 @@ var router = express.Router();
 var gp = '/xenonnt';
 
 function ensureAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) { return next(); }
+    if (req.isAuthenticated()) { 
+	for(var i in req.user.groups){
+	    if(req.user.groups[i] == 'admin')
+		return next(); 
+	}
+    }
     return res.redirect(gp+'/login');
 }
 

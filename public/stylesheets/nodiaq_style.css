@@ -4,9 +4,9 @@
 	color: #ddd;
 }
 
-div.dataTables_length {
+/*div.dataTables_length {
     display: none;
-}
+}*/
 /* CSS for the badge on sidebar buttons */
 #sidebar:not(:active) .fa-stack.has-badge[data-count]:after{
   position:absolute;
