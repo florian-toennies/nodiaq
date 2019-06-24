@@ -38,7 +38,7 @@ html
     script(src="/xenonnt/javascripts/chart.js" type="text/javascript")
     block extrahead
   body
-    
+    div.overlay    
     div.wrapper
       nav#topbar.colored.active
           button.navbar-btn.colored.sidebarCollapse(type="button")
@@ -53,68 +53,92 @@ html
             span.anticolored
             span.anticolored
           div.sidebar-header.colored(style="padding-bottom:5px")
-            div.CTAs.desktop_title(style="height:40px;width:100%")
-              div.headertitle
-                h4 XENONnT DAQ
-          img.logo(src="/xenonnt/images/mstile-310x310.png")
+            div.CTAs.desktop_title(style="height:80px;width:100%")
+              img.second_logo(src="/xenonnt/images/ntLogo.svg")
+              div.headertitle               
+                h4 XENONnT Data Acquisition
+          img.logo(src="/xenonnt/images/ntLogo.svg")
           ul.list-unstyled.components(style="padding-top:5px")
+            li.sectionlabel.CTAs(style='color:#0c1178')
+              span DAQ System
             li.colored.CTAs#lindex
                a(href="/xenonnt")
-                 span.fa-stack.has-badge#errorIcon
-                   i.fas.fa-dumpster-fire
-                 span(style="margin-left:-10px") Overview
+                 //
+                   span.fa-stack.has-badge#errorIcon(style="height:1.3em")
+                 i.fas.fa-dumpster-fire
+                 span Overview
+                 span.extralabel Main DAQ landing page
             li.colored#lcontrol
               a(href='/xenonnt/control') 
                 i.fa.fa-wrench 
                 span Control
+                span.extralabel Start/Stop DAQ
             li.colored#lstatus
               a(href='/xenonnt/status')
                 i.fa.fa-tasks
                 span Status
-            li.colored#lmonitor
-              a(href='/xenonnt/monitor')
-                i.fa.fa-desktop
-                span Monitor
+                span.extralabel Detailed system status
             li.colored.CTAs#lhosts
               a(href='/xenonnt/hosts') 
                 i.fa.fa-desktop
                 span Hosts
+                span.extralabel System monitor for DAQ machines
             li.colored.CTAs#loptions
               a(href='/xenonnt/options') 
                 i.fa.fa-cogs
                 span Config
-            li.colored#lruns
-              a(href='/xenonnt/runsui')
-                i.fas.fa-running
-                span Runs
-            li.colored.CTAs#lscope
-             a(href='/xenonnt/scope')
-               i.fa.fa-heartbeat
-               span Pulse Viewer
+                span.extralabel View or configure DAQ options
             li.colored.CTAs#llog
               a(href='/xenonnt/logui')
                 i.fa.fa-book-open
                 span Log
-            li.colored#lhelp
-              a(href='/xenonnt/help')
-                i.fa.fa-question
-                span Help
-            br
+                span.extralabel View log and acnknowledge errors
+            li.sectionlabel.CTAs
+              span Data and Monitoring
+            li.colored#lruns
+              a(href='/xenonnt/runsui')
+                i.fas.fa-running
+                span Runs
+                span.extralabel User interface to the Runs DB
+            li.colored#lmonitor
+              a(href='/xenonnt/monitor')
+                i.fa.fa-binoculars
+                span Monitor
+                span.extralabel Online data monitoring
+            li.colored.CTAs#lscope
+              a(href='/xenonnt/scope')
+                i.fa.fa-heartbeat
+                span Pulse Viewer
+                span.extralabel View pulses from PMTs live
+            li.sectionlabel.CTAs
+              span Operations and Organization
             li.colored#lshifts
               a(href='/xenonnt/shifts') 
                 i.fa.fa-id-badge
                 span Shifts
+                span.extralabel Sign up for shifts
             li.colored.CTAs#lusers
               a(href='/xenonnt/users') 
                 i.fa.fa-kiwi-bird
                 span Users
+                span.extralabel Browse XENON collaboration members
             li.colored.CTAs#laccount
               a(href="/xenonnt/account") 
                 i.fa.fa-user-astronaut
                 span Profile
+                span.extralabel Keep your info up to date
             br
-            li.colored(style="background-color:#06d6a0")
-              a(href="/xenonnt/logout") Sign Out
+            li.colored#lhelp
+              a(href='/xenonnt/help')
+                i.fa.fa-question
+                span Help
+                span.extralabel Operator's quick reference
+            br
+            br
+            li.colored.signout(style="background-color:#06d6a0")          
+              a(href="/xenonnt/logout") 
+                i.far.fa-hand-peace
+                span Sign Out
       div#content(style="padding-left:5px;padding-right:5px;padding-top:0px;padding-bottom:0px")
         nav#errorbar 
           h5 
@@ -133,8 +157,9 @@ html
 
         CheckForErrors();
         $('.sidebarCollapse').on('click', function () {
-          $('#content').toggleClass('active');
+          //$('#content').toggleClass('active');
           $('#sidebar').toggleClass('active');
+          $('.overlay').toggleClass('active');
           $('#sidebar_wrapper').toggleClass('active');
                     $('.sidebarCollapse').toggleClass('active');
           $('#topbar').toggleClass('active');

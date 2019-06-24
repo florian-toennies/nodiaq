@@ -13,6 +13,15 @@ function CheckMongoQuery(){
 }
 
 function InitializeRunsTable(divname){
+
+    $('#detectorselector label').on("click", function() {
+        console.log(this.childNodes[0].value);
+        document.detector = this.childNodes[0].value;
+        $(document.datatable_div).DataTable().destroy();
+        $(document.datatable_div).DataTable(document.datatable_options);
+    });
+
+    document.detector = 'xenonnt';
     var table_options = {                                                                   
         processing : true,
         serverSide : true,
@@ -41,7 +50,8 @@ function InitializeRunsTable(divname){
             data: function ( d ) {
                 return $.extend( {}, d, {
 		    "date_min": $('#datepicker_from').val(),
-		    "date_max": $('#datepicker_to').val()
+		    "date_max": $('#datepicker_to').val(),
+		    "detector": document.detector
 		});
             },
         },

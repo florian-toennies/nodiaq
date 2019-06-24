@@ -4,9 +4,10 @@ var runsModel;
 var dbURI = "mongodb://" + process.env.RUNS_MONGO_USER + ":" + process.env.RUNS_MONGO_PASSWORD + '@' +
  			process.env.RUNS_MONGO_HOST;
 var runsdb = mongoose.connection;
-
 var runs;
 var runsTableSchema;
+var xenon1tRunsSchema;
+var xenon1t_runs_collection = 'runs_new';
 
 DataTable.configure({ verbose: false, debug : false });
 mongoose.plugin(DataTable.init);
@@ -34,6 +35,24 @@ runsdb.once('open', function callback ()
 		    comments: [{user: String, date: Date, text: String}],
 		},
 		{ collection: process.env.RUNS_MONGO_COLLECTION});
+	    
+	    // Legacy support for accessing XENON1T runs
+	    xenon1tRunsSchema = new Schema(
+		{
+		    number: Number,
+		    detector: [String],
+		    start: Date,
+		    end: Date,
+		    user: String,
+		    mode: String,
+		    source: String,
+		    tags: [ {user: String, date: Date, text: String} ],
+                    comments: [{user: String, date: Date, text: String}],
+                },
+		{ collection: xenon1t_runs_collection });
+	    runs_1t = mongoose.model('runs_new', xenon1tRunsSchema);
+	    runsModel1T = require('mongoose').model('runs_new');
+
 	    runs = mongoose.model('runs', runsTableSchema);
 	    runsModel = require('mongoose').model('runs');
 	});
@@ -45,6 +64,9 @@ exports.getDataForDataTable = function getData (request, response) {
     //console.log(request.query['date_max']);
     //console.log(request.query['conditions']);
     var conditions = {};
+    var detector = 'xenonnt';
+    if(typeof request.query['detector'] !== 'undefined')
+	detector = request.query['detector'];
     if(typeof request.query['conditions'] !== 'undefined')
 	conditions = JSON.parse(request.query['conditions']);
 
@@ -65,8 +87,15 @@ exports.getDataForDataTable = function getData (request, response) {
 	    conditions['start'] = {"$lt": new Date(request.query['date_max'])};
     }
     //console.log(conditions);
-    runsModel.dataTable(request.query,  {"conditions": conditions},
-			function (err, data) {
-	response.send(data);
-    });
+    if(detector == 'xenonnt')
+	runsModel.dataTable(request.query,  {"conditions": conditions},
+			    function (err, data) {
+				response.send(data);
+			    });
+    else
+	runsModel1T.dataTable(request.query,  {"conditions": conditions},
+                            function (err, data) {
+                                response.send(data);
+                            });
+    
 };

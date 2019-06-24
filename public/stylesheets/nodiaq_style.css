@@ -4,11 +4,28 @@
 	color: #ddd;
 }
 
+/* Overlay is for when we expand the sidebar */
+.overlay{
+  position: fixed;
+  display: none;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  background-color: rgba(0,0,0,0.8);
+  z-index: 99;
+}
+.overlay.active{
+    display: block;
+}
+#sidebar_wrapper{
+    z-index: 100;
+}
 /*div.dataTables_length {
     display: none;
 }*/
 /* CSS for the badge on sidebar buttons */
-#sidebar:not(:active) .fa-stack.has-badge[data-count]:after{
+/*#sidebar:not(:active) .fa-stack.has-badge[data-count]:after{
   position:absolute;
   right:-300%;
   top:10%;
@@ -37,7 +54,7 @@
   text-align:center;
   min-width:2em;
   font-weight:bold;
-}
+}*/
 /* end badge  */
 .fontscale_header{
  	font-size: 4.0em;
@@ -121,9 +138,9 @@
     padding: 20px;
     min-height: 100vh;
     transition: all 0.3s;
-left: 50px;
-position: absolute;
-overflow-y: auto;
+    left: 50px;
+    position: absolute;
+    overflow-y: auto;
 }
 #content.active{
     left: 250px;
@@ -189,11 +206,12 @@ overflow-y: auto;
  	display: none;
  }
 .desktop_title div{
-  padding-left:8px;
+  padding-left:150px;
+  padding-top:25px;
 }
 
 #sidebar {
-	width:100%;
+    width:100%;
     display: block;
     overflow-y: scroll;
     /*background: #7386D5;*/
@@ -211,7 +229,8 @@ overflow-y: auto;
 	/*display: none;*/
 	height: 0px !important;
 	overflow: hidden;
-	background: #0c1178;                                                                    color: #fff;
+	background: #0c1178;  
+        color: #fff;
 }
 #sidebar.active ul li a{
   color: #fff;
@@ -238,10 +257,15 @@ overflow-y: auto;
 	display: none;
 }
 #sidebar .second_logo{
-	display: none;
+    display: block;
+    height: 80px;
 }
+#sidebar.active .logo{
+    display: none;
+}
+   
 .headertitle{
-    width:220px;
+    width:40%;
     float:left;
     top:0;
     left:0;
@@ -255,30 +279,7 @@ only screen and (min-width: 540px) and (max-resolution: 120dpi),
 only screen and (min-width: 540px) and (min-resolution: 120dpi),
 only screen and (min-width: 1081px) 
 {
-    #sidebar.active  .logo{
-        display: block;
-        -webkit-animation: fadeIn 1s;
-        animation: fadeIn 1s;
-        width:50px;
-        height:50px;
-        margin-left:0px !important;
-    }
-    #sidebar ul li a {
-        font-size: .85em;
-    }
-    
-    #sidebar ul li.active>a, a[aria-expanded="true"] {
- color: #7386D5;
- background: #fff;
-        /*color: #eee;
-        background: #0c1178;*/
-    }
-        #sidebar.active ul li a {
-            padding: 10px 2px;
-            text-align: center;
-            font-size: 0.65em;
-        }
-  .main-container{
+    .main-container{
       /*height: 100vh;*/
       overflow-y: auto;
       overflow-x: hidden;
@@ -286,67 +287,133 @@ only screen and (min-width: 1081px)
     .wrapper {
     display: flex;
     align-items: stretch;
-	}
-	 .desktop_title{
- 	display: block;
+        }
+         .desktop_title{
+        display: block;
  }
  .fontscale{
- 	font-size: 1.0em;
+        font-size: 1.0em;
  }
  .fontscale_header{
- 	font-size: 2.0em;
+        font-size: 2.0em;
  }
  .fontscale_status{
- 	font-size: 1.5em;
+        font-size: 1.5em;
  }
-	 .sidebarCollapse {
-    width: 40px;
-    height: 40px;
-	}
- .sidebarCollapse span {
-    width: 80%;
-    height: 2px;
-	}
-	.sidebarCollapse span:first-of-type,
-    .sidebarCollapse span:nth-of-type(2),
-    .sidebarCollapse span:last-of-type {
 
-        margin: 5px auto;
-	 }
 
-    /* Main styling. It's 250 px by default but 80px 'active' */
-   #topbar {
-   	 	display: none;
-	}
-	#topbar.active{
-		display: none;
-	}
-
-#sidebar_wrapper{
-  width: 250px;
-min-width:250px;
-max-width:250px;
-  height:100%;
-  overflow: hidden;
-margin:0;
+.desktop_title{
+   background-color: #0c1178;
 }
-#sidebar_wrapper.active{
-  width:50px;
-  min-width:50px;
-max-width:50px;
-overflow: hidden;
-top: 0;
-position: fixed;
+.desktop_title div h4{
+   color: #ccc;
 }
-#sidebar.active ul li a i {
-    margin-right: 0;
+ #sidebar.active  .logo{
+     display: block;
+     -webkit-animation: fadeIn 1s;
+     animation: fadeIn 1s;
+     width:50px;
+     height:50px;
+     margin-left:0px !important;
+ }
+#sidebar ul li{
+    width: 50%;
+    height: 58px;
+    float: left;
+}
+#sidebar.active ul li{
+    width: 100%;
+    float: left;
+    height: 58px;
+}
+#sidebar ul li.sectionlabel{
+    width:100%;
+    float: left;
+    height: 30px;
+    margin-bottom: 10px;
+}
+#sidebar ul li.signout{
+    width: 100%;
+    float: left;
+    margin-top: 45px;
+    text-align: center;
+}
+#sidebar ul li.signout a{
+    padding-top: 15px;
+}
+
+ #sidebar ul li.active>a, a[aria-expanded="true"] {
+     color: #7386D5;
+     background: #fff;
+ /*color: #eee;                                                                                   
+   background: #0c1178;*/
+ }
+ #sidebar.active ul li a {
+     padding: 10px 2px;
+     text-align: center;
+     font-size: 0.65em;
+ }
+#sidebar.active ul li a span.extralabel{
+    display: none;
+}
+#sidebar ul li a span.extralabel{
+    margin-left: 0px;
+    font-size: .75em;
     display: block;
-    -webkit-animation: fadeIn 1s;
-    animation: fadeIn 1s;
-    font-size: 1.8em;
-    margin-bottom: 5px;
 }
+    
 
+ #sidebar ul li a {
+     font-size: 1.1em;
+     height: 100%;
+ }    
+ .sidebarCollapse {
+     width: 40px;
+     height: 40px;
+ }
+ .sidebarCollapse span {
+     width: 80%;
+     height: 2px;
+    }
+ .sidebarCollapse span:first-of-type,
+ .sidebarCollapse span:nth-of-type(2),
+ .sidebarCollapse span:last-of-type {	
+     margin: 5px auto;
+ }
+ 
+ /* Main styling. It's 250 px by default but 80px 'active' */
+ #topbar {
+     display: none;
+ }
+ #topbar.active{
+     display: none;
+ }
+ 
+ #sidebar_wrapper{
+     width: 50%;
+     min-width:350px;
+     /*max-width:250px;*/
+     height:100%;
+     overflow: hidden;
+     margin:0;
+ }
+ #sidebar_wrapper.active{
+     width:50px;
+     min-width:50px;
+     max-width:50px;
+     overflow: hidden;
+     top: 0;
+     position: fixed;
+ }
+ #sidebar.active ul li a i {
+     margin-right: 0;
+     display: block;
+     -webkit-animation: fadeIn 1s;
+     animation: fadeIn 1s;
+     font-size: 1.8em;
+     margin-bottom: 5px;
+ }
+ 
 
 	/* CTAs are things that only appear when expanded */
 ul.CTAs {
@@ -380,6 +447,13 @@ ul.CTAs li a {
 	 .sidebarCollapse.active span {
         margin: 0 auto;
  }
+.sectionlabel{
+    text-align: center;
+    font-size: 1.2em;
+    margin-top: 20px;
+    background-color: #ccc;
+    height: 40px;
+}
  .sidebarCollapse.active span:first-of-type {
         transform: rotate(45deg) translate(2px, 2px);
  }
@@ -390,14 +464,15 @@ ul.CTAs li a {
         transform: rotate(-45deg) translate(1px, -1px);
  }
 
-    #sidebar {
-    margin-top: 0px;
-    width:100%;
-    min-width: 250px;
-    display: block;
-    max-width: 250px;
-    /*background: #7386D5;*/
-    background: #eee;
+ #sidebar {
+     margin-top: 0px;
+     width:100%;
+     min-width: 350px;
+     display: block;
+     /*max-width: 250px;*/
+     
+     /*background: #7386D5;*/
+     background: #eee;
     color: #333;
     transition: all 0.3s;
     height: 100vh !important;

@@ -224,15 +224,19 @@ router.get('/get_reader_history', ensureAuthenticated, function(req,res){
 	    'times': {'$push': '$time'},
 	}},
     ], function(err, result){	
-	retval = result[0];
-	ret = {};
-	ret[retval['_id']] =  {'rates': [], 'buffs': []};
-	for(var i in retval['rates']){
-	    ret[retval['_id']]['rates'].push([retval['times'][i],
-					      retval['rates'][i]]);
-	    ret[retval['_id']]['buffs'].push([retval['times'][i],
-					      retval['buffs'][i]]);
-	};
+	var ret = {};
+	if(result.length > 0){
+	    retval = result[0];
+	    ret[retval['_id']] =  {'rates': [], 'buffs': []};
+	    for(var i in retval['rates']){
+		ret[retval['_id']]['rates'].push([retval['times'][i],
+						  retval['rates'][i]]);
+		ret[retval['_id']]['buffs'].push([retval['times'][i],
+						  retval['buffs'][i]]);
+	    };
+	}
+	else
+	    ret = {'error': err};
 	
 	return res.send(JSON.stringify(ret));
     });
