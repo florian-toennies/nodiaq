@@ -52,14 +52,14 @@ html
             span.anticolored
             span.anticolored
             span.anticolored
-          div.sidebar-header.colored(style="padding-bottom:5px")
+          div.sidebar-header.colored
             div.CTAs.desktop_title(style="height:80px;width:100%")
               img.second_logo(src="/xenonnt/images/ntLogo.svg")
               div.headertitle               
                 h4 XENONnT Data Acquisition
           img.logo(src="/xenonnt/images/ntLogo.svg")
-          ul.list-unstyled.components(style="padding-top:5px")
-            li.sectionlabel.CTAs(style='color:#0c1178')
+          ul.list-unstyled.components
+            li.sectionlabel.CTAs(style='color:#0c1178;margin-top:0')
               span DAQ System
             li.colored.CTAs#lindex
                a(href="/xenonnt")
@@ -68,6 +68,7 @@ html
                  i.fas.fa-dumpster-fire
                  span Overview
                  span.extralabel Main DAQ landing page
+            br
             li.colored#lcontrol
               a(href='/xenonnt/control') 
                 i.fa.fa-wrench 
@@ -93,7 +94,7 @@ html
                 i.fa.fa-book-open
                 span Log
                 span.extralabel View log and acnknowledge errors
-            li.sectionlabel.CTAs
+            li.sectionlabel.CTAs(style='color:#0c1178')
               span Data and Monitoring
             li.colored#lruns
               a(href='/xenonnt/runsui')
@@ -110,7 +111,7 @@ html
                 i.fa.fa-heartbeat
                 span Pulse Viewer
                 span.extralabel View pulses from PMTs live
-            li.sectionlabel.CTAs
+            li.sectionlabel.CTAs(style='color:#0c1178')
               span Operations and Organization
             li.colored#lshifts
               a(href='/xenonnt/shifts') 

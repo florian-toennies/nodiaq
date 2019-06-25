@@ -40,28 +40,4 @@ router.get('/github/callback',
 	       res.redirect(gp);
 	   });
 
-
-/*router.get("/github/callback", function(req, res, next){
-    console.log("Github authenticate");
-    passport.authenticate('github', { failureRedirect: gp+'/login' }, 
-			  function(err, user, info) {
-			      console.log("Calling DB");
-			      var db = req.runs_db;
-			      var collection = db.get('users');
-			      collection.find({"github_id": req.user.name},
-					      function(e, docs){
-						  console.log("DB returned");
-						  if(docs.length == 0)
-						      return res.redirect(
-							  gp+"/login",
-							  {"message": "User not found"});
-						  req.logIn(user, function(err) {
-						      if (err) { return next(err); }
-						      return res.redirect(gp+'/');
-						  });
-					      });
-			      //return(res.redirect('/login'));
-			  });
-});
-*/
 module.exports = router;

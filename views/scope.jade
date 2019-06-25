@@ -4,25 +4,49 @@ block extrahead
 
   script(src="javascripts/scope_script.js", type="text/javascript")
   link(href="stylesheets/custom-select.css", rel="stylesheet")
+  script(src="javascripts/dygraph.min.js", type="text/javascript")
+  link(href="stylesheets/dygraph.css", rel="stylesheet")
 
 block content     
   div.main-container
     h3 Live Scope
     br
-    div.row(style='height:100%;max-height:600px;')
+    div.row(style='height:100%;max-height:1000px;')
       div.col-3
         h5 Options
         hr
         strong Run: 
         select.cselect#run_select
         strong Channel: 
-        input(type='number' min=0 max=248 name='channel') 
+        input#channel_select(type='number' min=0 max=248 name='channel') 
+        button.btn.btn-info(onclick="GetData()") Get Data
        
       div.col-9
-        div#chartdiv   
+        div#chartdiv(style='width:100%')   
+
+    div.row
+      div.col-4
+        span 
+          strong Channel:
+        &nbsp;
+        span#channel_id 
+      div.col-4
+        span
+          strong Time: 
+        &nbsp;
+        span#time_id
+      div.col-4
+        span
+          strong Length: 
+        span#length_id
+    div.col12(style='margin-left:100px')
+      button.btn.btn-info(onclick="Next()") Next
+      &nbsp;
+      button.btn.btn-info(onclick="Prev()") Prev
 
   script.
     $(document).ready(function(){
+      document.chart = null;
       DrawActiveLink("#lscope");
       PopulateAvailableRuns("run_select");
     });

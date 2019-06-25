@@ -9,10 +9,6 @@ function ensureAuthenticated(req, res, next) {
 }
 
 router.get('/', ensureAuthenticated, function(req, res) {
-    
-    // I'm not sure if this is a nasty trick or intended usage
-    var q = url.parse(req.url, true).query;
-
     res.render('logui', { title: 'Help', user:req.user });
 });
 

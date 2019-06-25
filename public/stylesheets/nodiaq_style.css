@@ -243,10 +243,11 @@
     -webkit-animation: fadeIn 1s;
     animation: fadeIn 1s;
 	}
-	#sidebar ul li a:hover {
-    	color: #7386D5;
-    	background: #fff;
-	}
+#sidebar ul li a:hover {
+    color: #7386D5;
+    background: #fff;
+    text-decoration: none;
+}
 #sidebar.active ul ul a {
     padding: 10px !important;
 }
@@ -331,6 +332,10 @@ only screen and (min-width: 1081px)
     float: left;
     height: 30px;
     margin-bottom: 10px;
+
+    background-image: linear-gradient(to right, rgba(238, 238, 238), rgba(214, 214, 214, 1) , rgba(238, 238, 238));
+
+
 }
 #sidebar ul li.signout{
     width: 100%;
