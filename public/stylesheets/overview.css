@@ -1,0 +1,42 @@
+.treantNode {
+    padding: 5px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    background-color: #ffffff;
+    border: 1px solid #000;
+    width: 200px;
+    
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.treantDigiNode {
+    padding: 2px;
+    -webkit-border-radius: 1px;
+    -moz-border-radius: 1px;
+    border-radius: 1px;
+    background-color: #151675;
+    border: 1px solid #000;
+    width: 80px;
+    /*font-family: Tahoma;*/
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+}
+
+
+.treantReaderNode {
+    padding: 2px;
+    -webkit-border-radius: 1px;
+    -moz-border-radius: 1px;
+    border-radius: 1px;
+    background-color: #AAAAAA;
+    border: 1px solid #000;
+    width: 150px;
+    /*font-family: Tahoma;*/
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+}
+
