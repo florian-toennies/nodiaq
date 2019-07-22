@@ -1,7 +1,7 @@
 var express = require("express");
 var url = require("url");
 var router = express.Router();
-var pf = '/xenonnt';
+var pf = '';
 
 function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) { return next(); }

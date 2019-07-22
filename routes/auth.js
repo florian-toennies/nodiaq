@@ -2,7 +2,7 @@ var express = require("express");
 var url = require("url");
 var passport = require("passport");
 var router = express.Router(); 
-var gp='/xenonnt';
+var gp='';
 
 // GET /auth/github
 //   Use passport.authenticate() as route middleware to authenticate the
@@ -37,7 +37,7 @@ router.post('/password',
 router.get('/github/callback',
 	passport.authenticate('github', { failureRedirect: gp+'/login' }),
 	   function(req, res) {	   
-	       res.redirect(gp);
+	       res.redirect('/');
 	   });
 
 module.exports = router;

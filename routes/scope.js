@@ -7,7 +7,7 @@ var url = require("url");
 var router = express.Router();
 var fs = require('fs');
 var lz4 = require('lz4');
-var gp = '/xenonnt';
+var gp = '';
 
 var runs_fs_base = '/data/xenon/raw/xenonnt';
 
@@ -36,27 +36,22 @@ function ReadFragments(path, thechannel, max_fragments){
     var data = uncompressed.slice(0, uncompressedSize);
     var i = 0;
     var pulses = [];
-    console.log("Opening fragment " + path);
     return new Promise( resolve => {
 	while(i+141 < data.length && pulses.length<max_fragments && i>=0){
+
 	    // Get header data for first fragment in pulse
-	    //console.log(i);
-	    //console.log(data.slice(i, i+2));
 	    var channel = data.slice(i, i+2).readInt16LE();	    
 	    var time = parseInt(data.slice(i+4, i+12).reverse().toString('hex', 0, 8), 16);
 	    var frag_length = data.slice(i+12, i+16).readInt32LE();
 	    var pulse_length = data.slice(i+20, i+24).readInt32LE();
 	    
 	    var samples = [];
-	    //console.log(frag_length);
 	    for(var j=0; j<frag_length; j+=1){
 		if(samples.length > pulse_length)
 		    break;
-		//console.log(i+30+2*j);
-		//console.log(data.length);
 		samples.push(data.slice(i+31+2*j, i+31+2*j+2).readInt16LE());
 	    }
-	    //console.log(samples);
+
 	    // Now get further fragments if they exist
 	    i += frag_length*2 + 31;
 	    
@@ -70,8 +65,7 @@ function ReadFragments(path, thechannel, max_fragments){
 		i+= frag_length*2+31;
 		
 	    }
-	    //console.log(channel);
-	    //console.log(thechannel);
+
 	    if(channel === thechannel)
 		pulses.push({"channel": channel, "time": time, "pulse_length": pulse_length, 
 			     "sample": samples});
@@ -101,7 +95,7 @@ function PullData(reader, channel, full_path, ret_pulses, n_pulses,
     // Chunk names have to be of length 6
     var s = "000000" + last_chunk_called;
     var chunk_name = s.substr(s.length-6);
-    console.log("Got this many pulses " + ret_pulses.length.toString());
+
     return new Promise( resolve => {
 	var items = fs.readdirSync(full_path + "/" + chunk_name);
 	
@@ -130,18 +124,15 @@ function PullData(reader, channel, full_path, ret_pulses, n_pulses,
 	    }
 	}
 	
-	if(index === -1){ // unknown failure. return what you have
-	    console.log("INDEX IS -1");
+	if(index === -1) // unknown failure. return what you have
 	    resolve(ret_pulses);
-	}
+	
 	// Otherwise just read the file. This is actually the hard part tbh. 
 	ReadFragments(full_path + "/" + chunk_name + "/" + sorted_files[index],
 		      channel, n_pulses - ret_pulses.length).then(
 			  result => {
 			      ret_pulses = ret_pulses.concat(result);
-			      console.log("RET PULSES LENGTH: " + ret_pulses.length.toString());
-			      if(ret_pulses.length >= n_pulses){
-				  console.log("RESOLVING");
+			      if(ret_pulses.length >= n_pulses){		
 				  resolve(ret_pulses);
 			      }
 			      else{
@@ -154,17 +145,17 @@ function PullData(reader, channel, full_path, ret_pulses, n_pulses,
 }
 
 async function GetChannelWaveforms(run, reader, channel, fspath, callback){
+    // This is a wrapper to allow me to await the PullData function. It also
+    // does some initial filesystem searching to get the most recent chunk
 
     var ret_pulses = [];
     var last_file_called = "";
     var last_chunk_called = -1;
     var n_pulses = 50;
 
-    console.log("Getting channel waveforms at " + fspath);
     // Go into the filesystem and get the largest chunk present. For simplicity we ignore
     // pre and post chunks by only taking chunks with file name length 6.
     var full_path = fspath + '/' + run;
-    console.log(full_path);
     items = fs.readdirSync(full_path);
     var sorted_files = items.filter(function (file) {
 	return file.length === 6 ? true : false;
@@ -177,10 +168,8 @@ async function GetChannelWaveforms(run, reader, channel, fspath, callback){
 
     var last_chunk_called = parseInt(sorted_files[sorted_files.length - 1]);
 
-    console.log("CALLING");
     var pulses =  await PullData(reader, channel, full_path, ret_pulses, n_pulses, 
 				 last_file_called, last_chunk_called);
-    console.log("CALLBACK");
     callback(pulses);
 
 }
@@ -210,7 +199,6 @@ router.get('/get_pulses', ensureAuthenticated, function(req, res){
 			      return JSON.stringify({"error": e});
 			  if(Object.keys(docs[0]).indexOf('channels') < 0 || 
 			     Object.keys(docs[1]).indexOf('boards') < 0){
-			      console.log("FAIL");
 			      return JSON.stringify({"error": "malformed doc(s)"});
 			  }
 			  
@@ -244,10 +232,7 @@ router.get('/get_pulses', ensureAuthenticated, function(req, res){
 			  if(reader === "")
 			      return JSON.stringify({"error": "failed to find reader with that board"});
 
-			  console.log("GET WAVEFORMS");			  
 			  GetChannelWaveforms(run, reader, channel, fspath, function(pulses){
-			      //console.log(pulses);
-			      console.log(pulses.length);
 			      return res.send(JSON.stringify(pulses));
 			  });
 	

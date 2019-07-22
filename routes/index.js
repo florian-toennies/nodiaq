@@ -1,7 +1,7 @@
 var express = require('express');
 var url = require('url');
 var router = express.Router();
-var gp="/xenonnt";
+var gp="";
 
 function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) { return next(); }
@@ -241,7 +241,7 @@ function SendConfirmationMail(req, random_hash, link, callback){
         from: process.env.DAQ_CONFIRMATION_ACCOUNT,
         to: req.body.email,
         subject: 'XENONnT Account Confirmation',
-        html: '<p>Please click <a href="https://xenon1t-daq.lngs.infn.it/xenonnt/'+link+'?code='+random_hash+'">here</a> to verify your email.</p><p>If you did not request this email please delete.</p>'
+        html: '<p>Please click <a href="https://xenon1t-daq.lngs.infn.it/'+link+'?code='+random_hash+'">here</a> to verify your email.</p><p>If you did not request this email please delete.</p>'
     };
     
     transporter.sendMail(mailOptions, function(error, info){

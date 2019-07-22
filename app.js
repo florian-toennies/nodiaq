@@ -4,36 +4,41 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var bodyParser = require("body-parser");
-var gp="/xenonnt";
+var gp="";
 
 // General MongoDB Access via monk
 var mongo = require('mongodb');
 var ObjectID = mongo.ObjectID;
 var monk = require('monk');
 var runs_cstr = process.env.RUNS_MONGO_USER + ":" + process.env.RUNS_MONGO_PASSWORD + '@' +
- 			process.env.RUNS_MONGO_HOST;
+ 			process.env.RUNS_MONGO_HOST + ":" + process.env.RUNS_MONGO_PORT + "/" + process.env.RUNS_MONGO_DB;
+console.log("Runs DB")
 console.log(runs_cstr);
 // Take top line for local LNGS DB
-var runs_db = monk(runs_cstr, {authSource: process.env.RUNS_MONGO_DB});
+var runs_db = monk(runs_cstr, {authSource: process.env.DAQ_MONGO_AUTH_DB});
 //var runs_db = monk(runs_cstr);
 
 // In case different
 var users_cstr = process.env.USERS_MONGO_USER+":"+process.env.USERS_MONGO_PASSWORD+"@"+
-      process.env.USERS_MONGO_HOST;
-var users_db = monk(users_cstr, {authSource: process.env.USERS_MONGO_DB});
+    process.env.USERS_MONGO_HOST + ":" + process.env.USERS_MONGO_PORT + "/" + process.env.USERS_MONGO_DB;
+console.log("Users DB");
+console.log(users_cstr);
+var users_db = monk(users_cstr, {authSource: process.env.DAQ_MONGO_AUTH_DB});
 
 var dax_cstr = process.env.DAQ_MONGO_USER + ":" + process.env.DAQ_MONGO_PASSWORD + "@" + 
-			process.env.DAQ_MONGO_HOST + ":" + process.env.DAQ_MONGO_PORT + "/" + process.env.DAQ_MONGO_DB;
-var db = monk(dax_cstr, {authSource: process.env.DAQ_MONGO_DB});
+    process.env.DAQ_MONGO_HOST + ":" + process.env.DAQ_MONGO_PORT + "/" + process.env.DAQ_MONGO_DB;
+console.log("DAX DB");
+console.log(dax_cstr);
+var db = monk(dax_cstr, {authSource: process.env.DAQ_MONGO_AUTH_DB});
 console.log(dax_cstr);
 
 var monitor_cstr = "mongodb://"+process.env.DAQ_MONGO_USER +":"+process.env.DAQ_MONGO_PASSWORD+"@"+process.env.DAQ_MONGO_HOST+":"+process.env.DAQ_MONGO_PORT+"/"+process.env.DAQ_MONGO_DB;
-var monitor_client = new mongo.MongoClient(monitor_cstr);
+var monitor_client = new mongo.MongoClient(monitor_cstr, {authSource: process.env.DAQ_MONGO_AUTH_DB});
 var monitor_db;
 console.log(monitor_cstr);
 monitor_client.connect(function(err) {
     console.log(err);
-    monitor_db = monitor_client.db('online_monitor');
+    monitor_db = monitor_client.db('daq');
 });
 
 

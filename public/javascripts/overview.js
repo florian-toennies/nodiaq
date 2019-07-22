@@ -9,10 +9,22 @@ function PopulateShifters(shift_div){
     
     $.getJSON(prefix+"/shifts/get_current_shifters", function(data){
 	
+	console.log(data);
 	var html ="";
-	for(var i in data)
-	    html += Mustache.render(shifter_template, data[i]);
-	
+	for(var i in data){
+	    blank_shifts = {"shifter_name": "Kein schwein",
+                            "shifter_email": "d.trump@whitehouse.gov",
+                            "shifter_phone": "555-55555",
+                            "shifter_skype": "awesomeburger420",
+                            "shifter_github": "mklinton",
+                            "shift_type": "Expert shifter"
+                           };
+	    if(data[i]['shifter'] !=='none') 
+		html += Mustache.render(shifter_template, data[i]);
+	    else
+		html+=Mustache.render(shifter_template, blank_shifts);
+	}
+
 	document.getElementById(shift_div).innerHTML = html;
     });
 }

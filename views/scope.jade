@@ -9,20 +9,37 @@ block extrahead
 
 block content     
   div.main-container
-    h3 Live Scope
+    h3 Pulse Viewer
     br
-    div.row(style='height:100%;max-height:1000px;')
+    div.row(style='width:100%')
       div.col-3
         h5 Options
         hr
-        strong Run: 
-        select.cselect#run_select
-        strong Channel: 
-        input#channel_select(type='number' min=0 max=248 name='channel') 
-        button.btn.btn-info(onclick="GetData()") Get Data
+        p
+          strong Run: &nbsp;
+          select.cselect#run_select
+        p
+          strong Channel: &nbsp;
+          input#channel_select(type='number' min=0 max=248 value=0 name='channel') 
+        p
+          button.btn.btn-info(onclick="GetData()") Get New Data
+        p 
+          button.btn.btn-default(onclick="Prev()") Previous
+          &nbsp;
+          button.btn.btn-default(onclick="Next()") Next
        
       div.col-9
         div#chartdiv(style='width:100%')   
+
+    table(style="width:100%")
+      thead
+        tr
+          th Index (in query)
+          th Channel
+          th Time
+          th Human time min:sec:ms
+          th Length (samples)
+      tbody#pulse_table
 
     div.row
       div.col-4
@@ -39,10 +56,7 @@ block content
         span
           strong Length: 
         span#length_id
-    div.col12(style='margin-left:100px')
-      button.btn.btn-info(onclick="Next()") Next
-      &nbsp;
-      button.btn.btn-info(onclick="Prev()") Prev
+
 
   script.
     $(document).ready(function(){

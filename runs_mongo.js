@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var DataTable = require('mongoose-datatable');
 var runsModel;
 var dbURI = "mongodb://" + process.env.RUNS_MONGO_USER + ":" + process.env.RUNS_MONGO_PASSWORD + '@' +
- 			process.env.RUNS_MONGO_HOST;
+ 			process.env.RUNS_MONGO_HOST + ":" + process.env.RUNS_MONGO_PORT + "/" + process.env.DAQ_MONGO_AUTH_DB;
 var runsdb = mongoose.connection;
 var runs;
 var runsTableSchema;

@@ -25,8 +25,7 @@ function RedrawRatePlot(){
     var resolution = $("#menu_resolution_s").val();
     var variable = $("#menu_variable_s").val();
 
-    var readers = ["reader0_reader_0", 'reader2_reader_2', 'reader3_reader_3', 
-		   'reader4_reader_4', 'reader6_reader_6', 'reader7_reader_7'];
+    var readers = ["reader0_reader_0", 'reader1_reader_0', 'reader2_reader_0'];
     var controllers = ['reader0_controller_0'];
     document.reader_data = {};
     var colors = {"rate": "#1c0877", "buff": "#df3470", "third": "#3dd89f"}
@@ -130,9 +129,7 @@ function DrawInitialRatePlot(){
 }
 
 function DrawInitialStatus(){
-    var readers = ["reader0_reader_0", 'reader2_reader_2',
-                   'reader3_reader_3', 'reader4_reader_4', 'reader6_reader_6',
-                   'reader7_reader_7'];
+    var readers = ["reader0_reader_0", 'reader1_reader_0', 'reader2_reader_0'];
     html = "<h5 style='width:100%;background-color:#151675;color:white;padding:3px;padding-left:5px;'>Readout Node Status</h5>";
     for(var i in readers){
 	html += "<div style='width:100%;'><strong>"+readers[i]+" </strong>";
@@ -146,9 +143,7 @@ function DrawInitialStatus(){
 }
 
 function UpdateStatusPage(){
-    var readers = ["reader0_reader_0", 'reader2_reader_2', 
-		   'reader3_reader_3', 'reader4_reader_4', 'reader6_reader_6', 
-		   'reader7_reader_7'];
+    var readers = ["reader0_reader_0", 'reader1_reader_0', 'reader2_reader_0'];
     var controllers = ['reader0_controller_0'];
     var brokers = []; //["fdaq00_broker_0"]; 
 
@@ -164,7 +159,8 @@ function UpdateFromReaders(readers){
         var reader = readers[i];
         $.getJSON("status/get_reader_status?reader="+reader, function(data){
             var rd = data['host'];
-
+	    console.log(rd);
+	    console.log(reader);
             document.getElementById(rd+"_status").innerHTML = GetStatus(data['status']);
             document.getElementById(rd+"_rate").innerHTML   = data['rate'].toFixed(2) + " MB/s";
             document.getElementById(rd+"_buffer").innerHTML = data['buffer_length'].toFixed(2) + " MB";
@@ -326,7 +322,7 @@ function UpdateCommandPanel(){
 
 
 function UpdateStatusPageOld(){
-    var readers = ["reader0_reader_0", 'reader2_reader_2', 'reader3_reader_3', 'reader4_reader_4', 'reader6_reader_6', 'reader7_reader_7'];
+    var readers = ["reader0_reader_0", 'reader1_reader_0', 'reader2_reader_0'];
     var controllers = ['reader0_controller_0'];
     var brokers = []; //["fdaq00_broker_0"];
     
@@ -535,7 +531,7 @@ function UpdateChart(host, ts, rate, buff){
 function DrawInitialCharts(){
     document.charts = {};
     document.last_time_charts = {};
-    var readers = ["reader0_reader_0", 'reader2_reader_2', 'reader3_reader_3', 'reader4_reader_4', 'reader6_reader_6', 'reader7_reader_7'];
+    var readers = ["reader0_reader_0", 'reader1_reader_0', 'reader2_reader_0'];
     var controllers = ['reader0_controller_0'];
 
     var colors = {"rate": "#1c0877", "buff": "#df3470", "third": "#3dd89f"}

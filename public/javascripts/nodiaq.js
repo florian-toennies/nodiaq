@@ -1,4 +1,4 @@
-var gp = "/xenonnt";
+var gp = "";
 
 function FYouButton(buttonid){
     $("#"+buttonid).mouseover(function(){
@@ -19,57 +19,54 @@ function FYouButton(buttonid){
     });
 }
 
+var statii = ["IDLE", "ARMING", "ARMED", "RUNNING", "ERROR", "UNKNOWN"];
+
+function DetectorInfoLoop(){
+    FillDetectorInfo('tpc');
+    FillDetectorInfo('muon_veto');
+    FillDetectorInfo('neutron_veto');
+    setTimeout(DetectorInfoLoop, 10000);
+}
+
+function FillDetectorInfo(det){
+    $.getJSON(gp+"/status/get_detector_status?detector="+det,
+	      function(data){
+		  document.getElementById(det+"_status").innerHTML = statii[data['status']];
+		  document.getElementById(det+"_mode").innerHTML = data['mode'];
+		  document.getElementById(det+"_run").innerHTML = data['number'];
+		  document.getElementById(det+"_rate").innerHTML = data['rate'].toFixed(2);
+		  document.getElementById(det+"_readers").innerHTML = data['readers'];
+	      });
+}
 
 function CheckForErrors(){
-	$.getJSON(gp+"/status/get_broker_status", function(data){
-		console.log(data);
-		var detectors = ["tpc", "muon_veto", "neutron_veto"];
-		var detector_names = ["TPC", "Muon Veto", "Neutron Veto"];
-		var error = 0;
-		for(var i in detectors){
-			var det = detectors[i];
-			for(var j in data){
-				if(data[j]['detector'] !== det)
-					continue;
-				// We report an error state for any detector with diagnosis 'error'
-				if(data[j]['diagnosis'] === 'error')
-					error+=1;
-			}
-		}
-		if(error>0){
-			$("#errorIcon").addClass("has-badge");
-			$("#errorIcon").attr("data-count", error);
-		}
-		else{
-			$("#errorIcon").removeClass("has-badge");
-		}
-	});
-	$.getJSON(gp+"/logui/areThereErrors", function(data){
-			if(data['error_docs']>0){
-			    if(!($("#errorbar").hasClass("active")))
-				$("#errorbar").addClass("active");
-			    document.flashDatButton=true;
-
-			    // Disable start run button if there are errors
-			    if(document.getElementById("submit_changes")!=null &&
-			       !($("#submit_changes").hasClass("FYOU"))){
-				FYouButton('submit_changes');
-				$("#submit_changes").addClass("FYOU");
-			    }
-			}
-			else{
-			    if($("#errorbar").hasClass("active"))
-				$("#errorbar").removeClass('active');
-			    document.flashDatButton=false;
-			    
-			    // Re-enable button that would let you start a run
-			    if($("#submit_changes").hasClass("FYOU")){
-				$("#submit_changes").unbind("mouseover");
-				$("#submit_changes").removeClass("FYOU");
-			    }
-			}
-	    setTimeout(CheckForErrors, 5000);
-	});
+	$.getJSON(gp+"/logui/areThereErrors", 
+		  function(data){
+		      if(data['error_docs']>0){
+			  if(!($("#errorbar").hasClass("active")))
+			      $("#errorbar").addClass("active");
+			  document.flashDatButton=true;
+			  
+			  // Disable start run button if there are errors
+			  if(document.getElementById("submit_changes")!=null 
+			     && !($("#submit_changes").hasClass("FYOU"))){
+			      FYouButton('submit_changes');
+			      $("#submit_changes").addClass("FYOU");
+			  }
+		      }
+		      else{
+			  if($("#errorbar").hasClass("active"))
+			      $("#errorbar").removeClass('active');
+			  document.flashDatButton=false;
+			  
+			  // Re-enable button that would let you start a run
+			  if($("#submit_changes").hasClass("FYOU")){
+			      $("#submit_changes").unbind("mouseover");
+			      $("#submit_changes").removeClass("FYOU");
+			  }
+		      }
+		      setTimeout(CheckForErrors, 5000);
+		  });
 }
 function DrawActiveLink(page){
     var pages = [
