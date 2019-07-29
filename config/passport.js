@@ -138,9 +138,9 @@ passport.use(new GitHubStrategy({
 var LdapStrategy = require('passport-ldapauth').Strategy;
 var OPTS = {
   server: {
-    url: 'ldaps://lngsldap.lngs.infn.it',
-    bindDn: '',
-    bindCredentials: '',
+    url: process.env.LDAP_URI,
+    bindDn: process.env.LDAP_BIND_DN,
+    bindCredentials: process.env.LDAP_BIND_CREDENTIALS,
     searchBase: 'ou=xenon,ou=accounts,dc=lngs,dc=infn,dc=it',
       searchFilter: '(uid={{username}})' //'(uid=%(user)s)'                                              
   },
