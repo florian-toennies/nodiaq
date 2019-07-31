@@ -73,14 +73,15 @@ function InitializeRunsTable(divname){
             { data : "user"},
             { data : "start", format: 'DD.MM.YYYY HH:mm', type: 'datetime'},
             { data : "end", "defaultContent": "<i>Not set</i>"},
-            { data : "tags", "defaultContent": "",
+            { data : "tags.name", "defaultContent": "",
 	      searchable: true,
 	      "render": function(data, type, row){
+		  console.log(row);
 		  ret = "";	  
-		  if(typeof(data) != "undefined"){
-		      for(var i=0; i<data.length; i+=1){
-			  ret+=data[i]["name"];
-			  if(i!=data.length-1)
+		  if(typeof(row) != "undefined"){
+		      for(var i=0; i<row.tags.length; i+=1){
+			  ret+=row.tags[i]["name"];
+			  if(i!=row.tags.length-1)
 			      ret+=", ";
 		      }
 		  }
