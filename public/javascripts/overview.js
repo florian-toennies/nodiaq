@@ -1,4 +1,4 @@
-var prefix = '/xenonnt/';
+var prefix = '';
 
 $("#pie_button :input").change(function() {
 console.log(this.val());

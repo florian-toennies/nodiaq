@@ -14,19 +14,28 @@ router.get('/', ensureAuthenticated, function(req, res) {
 
 router.get('/get_run_doc', ensureAuthenticated, function(req, res){
     var db = req.runs_db;
-    var collection = db.get(process.env.RUNS_MONGO_COLLECTION);
     var q = url.parse(req.url, true).query;
     var num = q.run;
-	if(typeof num !== 'undefined')
-	  num = parseInt(num, 10);
-	if(typeof num === "undefined")
-	  return res.send(JSON.stringify({}));
+    if(typeof num !== 'undefined')
+	num = parseInt(num, 10);
+    if(typeof num === "undefined")
+	return res.send(JSON.stringify({}));
+    if(typeof q.experiment === "undefined" || q.experiment === "xenonnt"){
+	var collection = db.get(process.env.RUNS_MONGO_COLLECTION);
 	collection.find({"number": num}, function(e, docs){
 		if(docs.length ===0)
 		  return res.send(JSON.stringify({}));
 		return res.send(JSON.stringify(docs[0]));
 	});
-	  
+    }
+    else if(q.experiment === "xenon1t"){
+	var collection = db.get(process.env.RUNS_MONGO_COLLECTION_1T);
+	collection.find({"number": num}, function(e, docs){
+	    if(docs.length ===0)
+		return res.send(JSON.stringify({}));
+	    return res.send(JSON.stringify(docs[0]));
+	});
+    }
 });
 router.post('/addtags', ensureAuthenticated, function(req, res){
     var db = req.runs_db;

@@ -29,7 +29,7 @@ function DetectorInfoLoop(){
 }
 
 function FillDetectorInfo(det){
-    $.getJSON(gp+"/status/get_detector_status?detector="+det,
+    $.getJSON("status/get_detector_status?detector="+det,
 	      function(data){
 		  document.getElementById(det+"_status").innerHTML = statii[data['status']];
 		  document.getElementById(det+"_mode").innerHTML = data['mode'];
@@ -40,7 +40,7 @@ function FillDetectorInfo(det){
 }
 
 function CheckForErrors(){
-	$.getJSON(gp+"/logui/areThereErrors", 
+	$.getJSON("logui/areThereErrors", 
 		  function(data){
 		      if(data['error_docs']>0){
 			  if(!($("#errorbar").hasClass("active")))

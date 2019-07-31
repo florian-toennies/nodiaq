@@ -15,7 +15,7 @@ var runs_cstr = process.env.RUNS_MONGO_USER + ":" + process.env.RUNS_MONGO_PASSW
 console.log("Runs DB")
 console.log(runs_cstr);
 // Take top line for local LNGS DB
-var runs_db = monk(runs_cstr, {authSource: process.env.DAQ_MONGO_AUTH_DB});
+var runs_db = monk(runs_cstr, {authSource: process.env.RUNS_MONGO_AUTH_DB});
 //var runs_db = monk(runs_cstr);
 
 // In case different

@@ -57,11 +57,11 @@ function InitializeRunsTable(divname){
         },
         columns : [
         	{ data : "number", "render": function(data, type, row){
-        		return "<button style='padding:3px;padding-left:5px;padding-right:5px;background-color:#ef476f;color:#eee' class='btn btn-defailt btn-xs' onclick='ShowDetail(" + data + ");'>show</button>"} },
+        		return "<button style='padding:3px;padding-left:5px;padding-right:5px;background-color:#ef476f;color:#eee' class='btn btn-defailt btn-xs' onclick='ShowDetail(" + data + ', "'+document.detector+'"'+");'>show</button>"} },
             { data : "number" , searchable: true},
             { data : "detector" },
             { data : "mode", searchable: true },
-            { data : "bootstrax", searchable: true,
+            { data : "bootstrax", searchable: false,
 	      "render": function(data, type, row){
 		  ret = "";
 		  if(typeof(data) != "undefined"){
@@ -241,9 +241,12 @@ function RemoveTag(run, user, tag){
     });
 }
 
-function ShowDetail(run){
+function ShowDetail(run, experiment){
 
-    $.getJSON("runsui/get_run_doc?run="+run, function(data){
+    var querystring = "runsui/get_run_doc?run="+run;
+    if(experiment=="xenon1t")
+	querystring+="&experiment=xenon1t";
+    $.getJSON(querystring, function(data){
 	
 	// Set base data
 	document.getElementById("detail_Number").innerHTML = data['number'];

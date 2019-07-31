@@ -1,20 +1,19 @@
 var mongoose = require('mongoose');
-var DataTable = require('mongoose-datatable');
+var DataTable = require('mongoose-datatable').default;
 var runsModel;
 var dbURI = "mongodb://" + process.env.RUNS_MONGO_USER + ":" + process.env.RUNS_MONGO_PASSWORD + '@' +
- 			process.env.RUNS_MONGO_HOST + ":" + process.env.RUNS_MONGO_PORT + "/" + process.env.DAQ_MONGO_AUTH_DB;
+ 			process.env.RUNS_MONGO_HOST + ":" + process.env.RUNS_MONGO_PORT + "/" + process.env.RUNS_MONGO_AUTH_DB;
 var runsdb = mongoose.connection;
 var runs;
 var runsTableSchema;
 var xenon1tRunsSchema;
 var xenon1t_runs_collection = 'runs_new';
 
-DataTable.configure({ verbose: false, debug : false });
+console.log(DataTable)
+DataTable.configure({ verbose: true, debug : true });
 mongoose.plugin(DataTable.init);
 mongoose.connect(dbURI, {dbName: process.env.RUNS_MONGO_DB});//'xenonnt'});
 
-console.log(dbURI);
-console.log("HERE");
 
 runsdb.on('error', console.error.bind(console, 'connection error:'));
 runsdb.once('open', function callback ()
@@ -23,15 +22,16 @@ runsdb.once('open', function callback ()
 	    var Schema = mongoose.Schema;
 	    runsTableSchema = new Schema(
 		{
-		    number : Number,
+		    number : {type: Number, required: true},
 		    detector: [String],
 		    start : Date,
 		    end : Date,
 		    user: String,
 		    mode: String,
-		    source: String,
+		    source: { type: {type: String} },
+		    
 		    bootstrax: [{state: String, host: String, time: Date, started_processing: Date}],
-		    tags: [ {user: String, date: Date, text: String} ],
+		    tags: [ {user: String, date: Date, name: String} ],
 		    comments: [{user: String, date: Date, text: String}],
 		},
 		{ collection: process.env.RUNS_MONGO_COLLECTION});
@@ -39,14 +39,15 @@ runsdb.once('open', function callback ()
 	    // Legacy support for accessing XENON1T runs
 	    xenon1tRunsSchema = new Schema(
 		{
-		    number: Number,
-		    detector: [String],
+		    number: {type: Number, required: true},
+		    detector: String,
 		    start: Date,
 		    end: Date,
 		    user: String,
 		    mode: String,
-		    source: String,
-		    tags: [ {user: String, date: Date, text: String} ],
+		    source: { type: {type: String} },
+		    //bootstrax: {type: [{state: String, host: String, time: Date, started_processing: Date}], required: false}, // optional		
+		    tags: [ {user: String, date: Date, name: String} ],
                     comments: [{user: String, date: Date, text: String}],
                 },
 		{ collection: xenon1t_runs_collection });
@@ -58,11 +59,7 @@ runsdb.once('open', function callback ()
 	});
 
 exports.getDataForDataTable = function getData (request, response) {
-    //"type.typeName" : "Trolley"
-    //console.log("Get Request for Data Table made with data: ", request.query);
-    //console.log(request.query['date_min']);
-    //console.log(request.query['date_max']);
-    //console.log(request.query['conditions']);
+
     var conditions = {};
     var detector = 'xenonnt';
     if(typeof request.query['detector'] !== 'undefined')
@@ -70,6 +67,8 @@ exports.getDataForDataTable = function getData (request, response) {
     if(typeof request.query['conditions'] !== 'undefined')
 	conditions = JSON.parse(request.query['conditions']);
 
+    console.log("QUERY");
+    console.log(request.query);
     // Date filtering
     if(request.query['date_min'] !== undefined){
 	if(request.query['date_min'] !== '' && 
@@ -88,14 +87,29 @@ exports.getDataForDataTable = function getData (request, response) {
     }
     //console.log(conditions);
     if(detector == 'xenonnt')
-	runsModel.dataTable(request.query,  {"conditions": conditions},
-			    function (err, data) {
+	runsModel.dataTable(request.query,  {"conditions": conditions}).then(
+			    function (data) {
 				response.send(data);
-			    });
-    else
-	runsModel1T.dataTable(request.query,  {"conditions": conditions},
-                            function (err, data) {
+			    }).catch(
+				function(err){
+				    console.log(err);
+				});
+    else{
+	var i = -1;
+	var query = request.query;
+	for(var j=0; j<query.columns.length; j+=1)
+	    if(query.columns[j].data =='bootstrax')
+		i=j;
+	if(i != -1)
+	    query.columns.splice(i, 1);
+        console.log("NEW QUERY");
+	console.log(query);
+	runsModel1T.dataTable(query,  {"conditions": conditions}).then(
+                            function (data) {
                                 response.send(data);
-                            });
+                            }).catch(function(err){
+				console.log(err);
+			    });
+    }
     
 };
