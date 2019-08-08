@@ -188,7 +188,7 @@ router.get('/login', function(req, res){
 
 router.get('/logout', function(req, res){
     req.logout();
-    res.redirect(gp);
+    res.redirect('/');
 });
 
 
@@ -400,7 +400,7 @@ router.post("/linkGithub", (req, res) => {
 
 				// Synchronous
 				const cryptoRandomString = require('crypto-random-string');
-				const random_hash = cryptoRandomString(128);
+				var random_hash = cryptoRandomString(128);
 				collection.update({"email": req.body.email},
 						  {"$set": {"github_temp": req.body.github,
 							    "github_hash": random_hash}});

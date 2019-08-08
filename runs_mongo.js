@@ -9,7 +9,6 @@ var runsTableSchema;
 var xenon1tRunsSchema;
 var xenon1t_runs_collection = 'runs_new';
 
-console.log(DataTable)
 DataTable.configure({ verbose: true, debug : true });
 mongoose.plugin(DataTable.init);
 mongoose.connect(dbURI, {dbName: process.env.RUNS_MONGO_DB});//'xenonnt'});
@@ -67,8 +66,8 @@ exports.getDataForDataTable = function getData (request, response) {
     if(typeof request.query['conditions'] !== 'undefined')
 	conditions = JSON.parse(request.query['conditions']);
 
-    console.log("QUERY");
-    console.log(request.query);
+    //console.log("QUERY");
+    //console.log(request.query);
     // Date filtering
     if(request.query['date_min'] !== undefined){
 	if(request.query['date_min'] !== '' && 
@@ -102,12 +101,14 @@ exports.getDataForDataTable = function getData (request, response) {
 		i=j;
 	if(i != -1)
 	    query.columns.splice(i, 1);
-        console.log("NEW QUERY");
-	console.log(query);
+        //console.log("NEW QUERY");
+	//console.log(query);
+	//console.log("That was new query");
 	runsModel1T.dataTable(query,  {"conditions": conditions}).then(
                             function (data) {
                                 response.send(data);
                             }).catch(function(err){
+				console.log("We had an error!");
 				console.log(err);
 			    });
     }

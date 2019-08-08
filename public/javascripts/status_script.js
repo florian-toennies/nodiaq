@@ -238,18 +238,21 @@ function UpdateCommandPanel(){
     if(document.local_command_queue.length !== 0){
         // Fetch all ID's newer than the first ID that hasn't been fully acknowledged   
         recent = document.local_command_queue[0]['_id'];
-        for(var k in document.local_command_queue){
+        /*for(var k in document.local_command_queue){
             if('acknowledged' in document.local_command_queue[k] && 'host' in 
 	       document.local_command_queue[k] &&
                document.local_command_queue[k]['acknowledged'].length !== 
 	       document.local_command_queue[k]['host'].length)
-                recent = document.local_command_queue[k]['_id'];
-        }
+		recent = document.local_command_queue[k]['_id'];
+        }*/
     }
     $.getJSON("status/get_command_queue?limit=20&id="+recent, function(data){
         var fillHTML="";
 
-        for(var i in data){
+	console.log("COMMANDS");
+	console.log(data);
+	console.log(document.local_command_queue);
+        for(var i in data){	    
             doc = data[i];
             var timestamp = parseInt(doc['_id'].substr(0,8), 16)*1000
             var date = new Date(timestamp);
@@ -292,23 +295,23 @@ function UpdateCommandPanel(){
             //                  fillHTML += 'Panel Footer';                                      
             fillHTML += '</div></div></div></div>';
 	    
-            try{
-		$("#"+document.local_command_queue[document.local_command_queue.length-1]).remove();
-                document.local_command_queue.splice(document.local_command_queue.length-1, 1);
-            }
-            catch(E){
+            //try{
+	    //	$("#"+document.local_command_queue[document.local_command_queue.length-1]).remove();
+            //    document.local_command_queue.splice(document.local_command_queue.length-1, 1);
+            //}
+            //catch(E){
                 //                                                                               
-            }
+            //}
 	}
 	
         $("#command_panel").prepend(fillHTML);
 	
-        if(document.local_command_queue.length === 0)
-            document.local_command_queue = data;
-        else{
-            for(var j in data)
-                document.local_command_queue.unshift(data[j]);
-        }
+        //if(document.local_command_queue.length === 0)
+        //document.local_command_queue = data;
+        //else{
+        for(var j=data.length-1; j>=0; j-=1)// in data)
+            document.local_command_queue.unshift(data[j]);
+	//}
 	
         while(document.local_command_queue.length > command_length){
             $("#"+document.local_command_queue[document.local_command_queue.length-1]['_id']).remove();

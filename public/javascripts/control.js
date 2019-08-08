@@ -19,6 +19,8 @@ function PopulateRunsList(callback){
 			}
 
     	}}(detector)));
+	document.getElementById("lz_mode").innerHTML = "<option value='shit'><strong>xenon leak mode</strong></option><option value='goblind'><strong>HV spark mode</strong></option><option value='blow'><strong>just explode</strong></option><option value='oops'><strong>find dark matter but it turns out not to be dark matter mode</strong></option>";
+	
 	}
 }
 
