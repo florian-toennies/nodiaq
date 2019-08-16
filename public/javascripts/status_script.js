@@ -1,4 +1,6 @@
-function GetStatus(i){
+var CHECKIN_TIMEOUT=30;
+
+function GetStatus(i, checkin){
     var STATUSES = [
         "<span style='color:blue'><strong>Idle</strong></span>",
 	"<span style='color:cyan'><strong>Arming</strong></span>",
@@ -8,7 +10,18 @@ function GetStatus(i){
         "<span style='color:red'><strong>Timeout</strong></span>",
         "<span style='color:yellow'><strong>Undecided</strong></span>"
     ];
-    return STATUSES[i];
+    if(checkin < CHECKIN_TIMEOUT)
+	return STATUSES[i];
+    STATUSES = [
+	"<span style='color:red'><strong>Idle</strong></span>",
+	"<span style='color:red'><strong>Arming</strong></span>",
+	"<span style='color:red'><strong>Armed</strong></span>",
+	"<span style='color:red'><strong>Running</strong></span>",
+	"<span style='color:red'><strong>Error</strong></span>",
+	"<span style='color:red'><strong>Timeout</strong></span>",
+	"<span style='color:red'><strong>Undecided</strong></span>"
+    ];
+    return STATUSES[i];    
 }
 function FYouButton(buttonid){
     $("#"+buttonid).mouseover(function(){
@@ -132,7 +145,7 @@ function DrawInitialStatus(){
     var readers = ["reader0_reader_0", 'reader1_reader_0', 'reader2_reader_0'];
     html = "<h5 style='width:100%;background-color:#151675;color:white;padding:3px;padding-left:5px;'>Readout Node Status</h5>";
     for(var i in readers){
-	html += "<div style='width:100%;'><strong>"+readers[i]+" </strong>";
+	html += "<div id='"+readers[i]+"_statdiv' style='width:100%;'><strong>"+readers[i]+" </strong>";
         html += "<span id='"+readers[i]+"_status'></span>&nbsp;";
 	html += "<span id='"+readers[i]+"_rate'></span> (Buff: ";
 	html += "<span id='"+readers[i]+"_buffer'></span>)&nbsp;&nbsp;(";
@@ -161,7 +174,11 @@ function UpdateFromReaders(readers){
             var rd = data['host'];
 	    console.log(rd);
 	    console.log(reader);
-            document.getElementById(rd+"_status").innerHTML = GetStatus(data['status']);
+	    if(data['checkin'] > CHECKIN_TIMEOUT)
+		$("#"+rd+"_statdiv").css('color', 'red');
+	    else
+		$("#"+rd+"_statdiv").css('color', 'black');
+            document.getElementById(rd+"_status").innerHTML = GetStatus(data['status'], data['checkin']);
             document.getElementById(rd+"_rate").innerHTML   = data['rate'].toFixed(2) + " MB/s";
             document.getElementById(rd+"_buffer").innerHTML = data['buffer_length'].toFixed(2) + " MB";
             //document.getElementById(rd+"_mode").innerHTML   = data['run_mode'];
@@ -207,7 +224,7 @@ function UpdateCrateControllers(controllers){
 			  if(att!='status')
 			      document.getElementById(c+"_"+att).innerHTML = data[att];
 			  else{		
-			      document.getElementById(c+"_"+att).innerHTML = GetStatus(data[att]);
+			      document.getElementById(c+"_"+att).innerHTML = GetStatus(data[att], data['checkin']);
 			  }
 		      }
 		      var html = "";

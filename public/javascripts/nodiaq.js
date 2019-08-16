@@ -28,14 +28,51 @@ function DetectorInfoLoop(){
     setTimeout(DetectorInfoLoop, 10000);
 }
 
-function FillDetectorInfo(det){
+function FillDetectorInfo(det, callback){
+    var status_classes = [
+	'fa-minus-circle', // idle
+	'fa-spinner', // arming
+	'fa-spinner', // armed
+	'fa-plus-circle',  // running
+	'fa-times-circle', // error
+	'fa-exclamation-triangle',      // timeout
+	'fa-question-circle'	 //unknown
+    ];
+    var status_colors = [
+	'white',
+	'yellow',
+	'orange',
+	'green',
+	'red',
+	'red',
+	'red'
+    ];
+    var detnames = { "tpc": "TPC", "muon_veto": "Muon Veto", "neutron_veto": "Neutron Veto"};
+    var title_text = [' is IDLE', ' is ARMING', ' is ARMED', ' is RUNNING', ' is IN ERROR',
+		      ' is TIMING OUT', ' is UNKNOWN'];
+   
+    console.log("FILLING DET INFO FOR " + det);
     $.getJSON("status/get_detector_status?detector="+det,
 	      function(data){
-		  document.getElementById(det+"_status").innerHTML = statii[data['status']];
-		  document.getElementById(det+"_mode").innerHTML = data['mode'];
-		  document.getElementById(det+"_run").innerHTML = data['number'];
-		  document.getElementById(det+"_rate").innerHTML = data['rate'].toFixed(2);
-		  document.getElementById(det+"_readers").innerHTML = data['readers'];
+		  if($("#"+det+"_status").length){
+		      document.getElementById(det+"_status").innerHTML = statii[data['status']];
+		      document.getElementById(det+"_mode").innerHTML = data['mode'];
+		      document.getElementById(det+"_run").innerHTML = data['number'];
+		      document.getElementById(det+"_rate").innerHTML = data['rate'].toFixed(2);
+		      document.getElementById(det+"_readers").innerHTML = data['readers'];
+		  }
+		  console.log(data);
+		  for(var i in status_classes)
+		      $("#"+det+"_status_icon").removeClass(status_classes[i]);
+		  $("#"+det+"_status_icon").removeClass('fa-spin');
+		  if(data['status'] == null)
+		      data['status'] = 6;
+		  $("#"+det+"_status_icon").addClass(status_classes[data['status']]);
+		  if(data['status'] == 1 || data['status'] == 2)
+		      $("#"+det+"_status_icon").addClass('fa-spin');
+		  $("#"+det+"_status_icon").css("color", status_colors[data['status']]);
+		  $("#"+det+"_status_icon").attr('title', detnames[det] + title_text[data['status']]);
+		  callback();
 	      });
 }
 
@@ -65,7 +102,11 @@ function CheckForErrors(){
 			      $("#submit_changes").removeClass("FYOU");
 			  }
 		      }
-		      setTimeout(CheckForErrors, 5000);
+		      // Callback chain
+		      FillDetectorInfo("tpc", function(){
+			  FillDetectorInfo("muon_veto", function(){
+			      FillDetectorInfo("neutron_veto",  function(){
+				  setTimeout(CheckForErrors, 5000)});});});
 		  });
 }
 function DrawActiveLink(page){

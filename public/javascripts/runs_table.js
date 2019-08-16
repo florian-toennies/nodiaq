@@ -57,7 +57,8 @@ function InitializeRunsTable(divname){
         },
         columns : [
         	{ data : "number", "render": function(data, type, row){
-        		return "<button style='padding:3px;padding-left:5px;padding-right:5px;background-color:#ef476f;color:#eee' class='btn btn-defailt btn-xs' onclick='ShowDetail(" + data + ', "'+document.detector+'"'+");'>show</button>"} },
+        	    return "<button style='padding:3px;padding-left:5px;padding-right:5px;background-color:#ef476f;color:#eee' class='btn btn-defailt btn-xs' onclick='ShowDetail(" + data + ', "'+document.detector+'"'+");'>show</button>"}
+		},
             { data : "number" , searchable: true},
             { data : "detector" },
             { data : "mode", searchable: true },
@@ -71,18 +72,40 @@ function InitializeRunsTable(divname){
 	      }
 	    },
             { data : "user"},
-            { data : "start", format: 'DD.MM.YYYY HH:mm', type: 'datetime'},
-            { data : "end", "defaultContent": "<i>Not set</i>"},
+            { data : "start", format: 'DD. MMM.YYYY HH:mm', type: 'datetime'},
+            { data : "end", defaultContent: "",
+		"render": function(data, type, row){
+		    
+		  if(typeof(row) === "undefined" || typeof(row.end) === "undefined" ||
+		     typeof(row.start) === "undefined")
+		      return "not set"
+		  console.log(row);
+		  tdiff = (new Date(row.end)).getTime() - (new Date(row.start)).getTime();
+		  console.log(tdiff);
+		    console.log("TDIFF");
+		    var hours = Math.floor(tdiff/(1000*3600));
+		    var mins = Math.floor(tdiff/(1000*60)) - (60*hours);
+		    var secs = Math.floor(tdiff/(1000)) - (3600*hours + 60*mins);
+		    var ret = ("00" + hours.toString()).substr(-2) + ":" +
+			("00" + mins.toString()).substr(-2) + ":" +
+			("00" + secs.toString()).substr(-2);
+		    return ret;
+	      },
+	    },
             { data : "tags.name", "defaultContent": "",
 	      searchable: true,
-	      "render": function(data, type, row){
-		  console.log(row);
+	      "render": function(data, type, row){		  
 		  ret = "";	  
-		  if(typeof(row) != "undefined"){
+		  if(typeof(row) != "undefined" && typeof(row.tags) != "undefined"){
 		      for(var i=0; i<row.tags.length; i+=1){
-			  ret+=row.tags[i]["name"];
-			  if(i!=row.tags.length-1)
-			      ret+=", ";
+			  var divclass = "badge-secondary";
+			  if(row.tags[i]["name"][0] == "_")
+			      divclass = "badge-primary";
+			  ret += "<div class='inline-block'><span class='badge " +
+			      divclass + "'>" + row.tags[i]["name"] + "</span>";
+			  //ret+=<row.tags[i]["name"];
+			  //if(i!=row.tags.length-1)
+			  //ret+=", ";
 		      }
 		  }
 		  return ret;
@@ -94,14 +117,16 @@ function InitializeRunsTable(divname){
 		      return data[data.length-1]["comment"]; return "";}}
         ],
 	columnDefs: [
-	 { className: "not-selectable", "targets": [ 0 ] },
+	    { className: "not-selectable", width: 50, targets: [ 0 ] },
+	    { width: 60, targets: [1, 2]},
 	    {
-		targets: [6, 7],
+		targets: [6],
 		render: function(data){
-		    return moment(data).format('DD.MM.YYYY HH:mm');
+		    return moment(data).format('DD. MMM. YYYY HH:mm');
 		}
 	    }
-	]
+	],
+	fixedColumns: true
     };
     var table = $(divname).DataTable(table_options);
     document.datatable_options = table_options;

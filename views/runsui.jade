@@ -49,7 +49,7 @@ block content
   
     br
     div#resize_wrapper(style="height:90%;width:100%")
-      table.nowrap#runs_table
+      table.nowrap.table-striped.table-hover#runs_table
         thead
           tr
             th Detail
@@ -59,7 +59,7 @@ block content
             th Strax
             th User
             th Start
-            th End
+            th Length
             th Tags
             th Newest Comment
   div.modal.fade#runsModal(tabindex="-1" role="dialog")
@@ -89,8 +89,8 @@ block content
               div.tab-pane.fade#tab_tags(role="tabpanel" aria-labelledby="tags-tab") 
                 table.table.table-striped
                   thead
-                    td User
                     td Tag
+                    td User
                     td Date Added
                     td Remove?
                   tbody#detail_Tags
