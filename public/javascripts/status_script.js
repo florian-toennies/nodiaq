@@ -1,4 +1,5 @@
 var CHECKIN_TIMEOUT=30;
+document.ceph_chart = null;
 
 function GetStatus(i, checkin){
     var STATUSES = [
@@ -168,6 +169,7 @@ function UpdateStatusPage(){
 }
 
 function MakeCephGauge(){
+
     document.ceph_chart = Highcharts.chart('ceph_chartdiv', Highcharts.merge(
 	{
 	    chart: { type: 'solidgauge'},
@@ -213,7 +215,7 @@ function MakeCephGauge(){
 	}, {
 	yAxis: {
 	    min: 0,
-	    max: 10.0,
+	    max: 100,
 	    title: {
 		text: 'Buffer Capacity'
 	    }
@@ -223,18 +225,18 @@ function MakeCephGauge(){
 	},
 
 	series: [{
-	    name: 'Storage (TB)',
+	    name: 'Storage Used',
 	    data: [0.],
-	    //dataLabels: {
-	/*	format:
-		'<div style="text-align:center">' +
-		    '<span style="font-size:25px">{y}</span><br/>' +
-		    '<span style="font-size:12px;opacity:0.4">km/h</span>' +
-		    '</div>'*/
-	    //	    },
-	    //tooltip: {
-	    //valueSuffix: ' km/h'
-	    //}
+	    dataLabels: {
+	    format:
+	    '<div style="text-align:center">' +
+		'<span style="font-size:15px">{y:.2f}</span><br/>' +
+		'<span style="font-size:8px;opacity:0.4">%</span>' +
+		'</div>'
+	    },
+	    tooltip: {
+		valueSuffix: ' %'
+	    }
 	}]
 
     }));
@@ -243,16 +245,18 @@ function MakeCephGauge(){
 function UpdateCeph(){
     $.getJSON("hosts/get_host_status?host=ceph",
 	      function(data){
+		  if(document.ceph_chart == null){
+		      MakeCephGauge();
+		  }
 		  document.getElementById("ceph_storage_total").innerHTML =
 		      "  " + (data['ceph_size']/1e12).toFixed(2) + "TB";
 		  document.getElementById("ceph_storage_free").innerHTML =
 		      "  " + (data['ceph_free']/1e12).toFixed(2) + "TB";
 		  document.getElementById("ceph_storage_available").innerHTML =
 		      "  " + (data['ceph_available']/1e12).toFixed(2) + "TB";
-		  document.ceph_chart.update({"yAxis": { "min": 0, "max": data['ceph_size']/1e12,
-							 "title": {"text": "Buffer Capacity"}}});
-		  document.RatePlot.series[i].addPoint(
-		      [(data['ceph_size']-data['ceph_available'])/1e12], true, update);
+
+		  document.ceph_chart.series[0].addPoint(
+		      [100*(data['ceph_size']-data['ceph_available'])/data['ceph_size']], true, true);
 		  
 	      });
 }

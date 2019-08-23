@@ -68,8 +68,8 @@ block content
           div(style="width:100%;border-bottom:1px solid #ccc;background-color:#151675;color:white;padding-left:5px;")
             h5 Ceph Status
           div.row
-            div.col-6.col-sm-12#ceph_chartdiv
-            div.col-6.col-sm-12
+            div.col-3#ceph_chartdiv
+            div.col-9
               div(style="width:100%")
                 a(href="") Ceph Admin Dashboard (doesn't exist yet)
               div(style="width:100%")
@@ -89,7 +89,6 @@ block content
     $(document).ready(function () {
       //FYouButton('update_button');
       RedrawRatePlot();
-      MakeCephGauge();
       DrawInitialStatus();
       UpdateStatusPage();
       DrawActiveLink("#lstatus");
