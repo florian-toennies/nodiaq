@@ -78,7 +78,7 @@ function DrawMonitorCharts(){
     document.charts = {};
     document.last_time_charts = {};
 
-    var hosts = ["reader0", 'reader2', 'reader3', 'reader4', 'reader6', 'reader7', 'eb0', 'eb1'];
+    var hosts = ["reader0", 'reader1', 'reader2', 'eb0', 'eb1', 'eb2'];
 
     for(i in hosts){
 	var host = hosts[i];

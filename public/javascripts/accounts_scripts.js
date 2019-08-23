@@ -8,3 +8,10 @@ function FillAPIInfo(userdoc){
 		document.getElementById("api_username").innerHTML = userdoc['api_username'];
 	}
 }
+
+function ReqXenonGroup(){
+
+    $.getJSON("account/request_github_access", function(data){
+	console.log(data);
+    });
+}

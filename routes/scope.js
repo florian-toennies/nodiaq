@@ -9,7 +9,7 @@ var fs = require('fs');
 var lz4 = require('lz4');
 var gp = '';
 
-var runs_fs_base = '/data/xenon/raw/xenonnt';
+var runs_fs_base = '/live_data/xenonnt';
 
 function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) { return next(); }
@@ -31,7 +31,8 @@ function ReadFragments(path, thechannel, max_fragments){
     // Get strax data (up to max_fragments) for a given module and channel 
     // at a given path
     file_buffer = fs.readFileSync(path);
-    var uncompressed = new Buffer(file_buffer.length*3); // it can't do 5x compression, right?
+    console.log("Reading frament at " + path);
+    var uncompressed = new Buffer(file_buffer.length*3); // it can't do 3x compression, right?
     var uncompressedSize = lz4.decodeBlock(file_buffer, uncompressed);
     var data = uncompressed.slice(0, uncompressedSize);
     var i = 0;
@@ -97,6 +98,7 @@ function PullData(reader, channel, full_path, ret_pulses, n_pulses,
     var chunk_name = s.substr(s.length-6);
 
     return new Promise( resolve => {
+	console.log("Reading chunk at " + chunk_name);
 	var items = fs.readdirSync(full_path + "/" + chunk_name);
 	
 	var sorted_files = items.filter(function (file) {
@@ -192,14 +194,16 @@ router.get('/get_pulses', ensureAuthenticated, function(req, res){
     // NOTE: I have hardcoded the options names to get here... probably bad 
     // but what else you gonna do? Just change name when you inevitably stumble
     // on this.
-    options_coll.find({"name": {"$in": ['xenon1t_channel_map', 'xenon1t_board_definitions_tpc']}},
-		      {"sort": {"name": -1}}, // this is to make channel_map first!
-		      function(e, docs){			  
+    console.log("Searching options");
+    options_coll.find({"name": {"$in": ['channel_map_xenon', 'xenonnt_board_definitions_working_selftrigger']}},
+		      {"sort": {"name": 1}}, // this is to make channel_map first!
+		      function(e, docs){
+			  console.log("Found options");
 			  if(docs.length !== 2)
-			      return JSON.stringify({"error": e});
+			      return res.send(JSON.stringify({"error": e}));
 			  if(Object.keys(docs[0]).indexOf('channels') < 0 || 
 			     Object.keys(docs[1]).indexOf('boards') < 0){
-			      return JSON.stringify({"error": "malformed doc(s)"});
+			      return res.send(JSON.stringify({"error": "malformed doc(s)"}));
 			  }
 			  
 			  // Get the reader, module, and m_channel from doc
@@ -219,7 +223,7 @@ router.get('/get_pulses', ensureAuthenticated, function(req, res){
 			  
 			  // Fail if we didn't find mod/channel
 			  if(module <0 || channel <0)
-			      return JSON.stringify({"error": "failed to find channel in map"});
+			      return res.send(JSON.stringify({"error": "failed to find channel in map"}));
 
 			  // Now get the reader for this module
 			  var reader = "";
@@ -229,9 +233,10 @@ router.get('/get_pulses', ensureAuthenticated, function(req, res){
 				  break;
 			      }
 			  }
+			  console.log("Found reader " + reader);
 			  if(reader === "")
-			      return JSON.stringify({"error": "failed to find reader with that board"});
-
+			      return res.send(JSON.stringify({"error": "failed to find reader with that board"}));
+			  console.log("Getting channel waveforms at " + fspath);
 			  GetChannelWaveforms(run, reader, channel, fspath, function(pulses){
 			      return res.send(JSON.stringify(pulses));
 			  });

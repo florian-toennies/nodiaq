@@ -1,3 +1,8 @@
+function SearchTag(name){
+    $("#mongoquery").val('{"tags.name": "' + name+ '"}');
+    CheckMongoQuery();
+}
+
 function CheckMongoQuery(){
     var query = $("#mongoquery").val();
     if(query === "")
@@ -7,7 +12,7 @@ function CheckMongoQuery(){
 	alert("Your mongo query is not valid JSON!");
 	return;
     }
-    document.datatable_options['ajax']['data'] ={"conditions": query};
+    document.datatable_options['ajax']['data'] ={"conditions": query, detector: document.detector};
     $(document.datatable_div).DataTable().destroy();
     $(document.datatable_div).DataTable(document.datatable_options);
 }
@@ -102,7 +107,9 @@ function InitializeRunsTable(divname){
 			  if(row.tags[i]["name"][0] == "_")
 			      divclass = "badge-primary";
 			  ret += "<div class='inline-block'><span class='badge " +
-			      divclass + "'>" + row.tags[i]["name"] + "</span>";
+			      divclass + "' style='cursor:pointer' onclick='SearchTag("
+			      + '"' + row.tags[i]['name'] +
+			      '"' + ")'>" + row.tags[i]["name"] + "</span>";
 			  //ret+=<row.tags[i]["name"];
 			  //if(i!=row.tags.length-1)
 			  //ret+=", ";
@@ -113,8 +120,13 @@ function InitializeRunsTable(divname){
 	    },
             { data : "comments", "defaultContent": "",
 	      "render": function(data, type, row){
-		  if(typeof(data) != "undefined" && data.length>0)
-		      return data[data.length-1]["comment"]; return "";}}
+		  if(typeof(data) != "undefined" && data.length>0){
+		      if(typeof data[data.length-1]["comment"] != "undefined")
+			  return data[data.length-1]["comment"];
+		      if(typeof data[data.length-1]["text"] != "undefined")
+			  return data[data.length-1]["text"];
+		      return "";}
+	      }}
         ],
 	columnDefs: [
 	    { className: "not-selectable", width: 50, targets: [ 0 ] },
@@ -300,7 +312,12 @@ function ShowDetail(run, experiment){
 	var comment_html = "";
 	for(var i in data['comments']){
 	    var row = data['comments'][i];
-	    comment_html += "<tr><td>" + row['user'] + "</td><td>" + row['comment'] + "</td><td>";
+	    comment_html += "<tr><td>" + row['user'] + "</td><td>";
+	    if(typeof row["comment"] != "undefined")
+		comment_html += row['comment'];
+	    else
+		comment_html += row["text"];				    
+	    comment_html += "</td><td>";
 	    comment_html += moment(row['date']).format("DD.MM.YYYY HH:mm") + "</td></tr>";
 	}
 	$("#detail_Comments").html(comment_html);

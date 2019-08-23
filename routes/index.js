@@ -1,5 +1,6 @@
 var express = require('express');
 var url = require('url');
+var http = require('https');
 var router = express.Router();
 var gp="";
 
@@ -127,6 +128,48 @@ router.get('/status_update', ensureAuthenticated, function(req, res){
 
 router.get('/account', ensureAuthenticated, function(req, res){
     res.render('account', { user: req.user });
+});
+
+router.get('/account/request_github_access', ensureAuthenticated, function(req, res){
+    console.log("HI");
+    var owner = process.env.GITHUB_ADMIN_USER;
+    var password = process.env.GITHUB_ADMIN_PASSWORD;
+    var gid = req.user.github;
+    options = {
+	hostname: 'api.github.com',
+	port: 443,
+	path: '/orgs/xenon1t/memberships/' + gid,
+	method: 'PUT',
+	body: {
+	    "role": "member",
+	    "state": "active"
+	},
+	auth: owner + ":" + password,
+	headers: {
+	    "User-Agent": "Other"
+	}
+	//'Content-Type': 'application/x-www-form-urlencoded',
+	//'Content-Length': Buffer.byteLength(postData)
+	//}
+    };
+    console.log(options);
+    const request = http.request(options, (response) => {
+	console.log(`STATUS: ${res.statusCode}`);
+	console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
+	response.setEncoding('utf8');
+	response.on('data', (chunk) => {
+	    console.log(`BODY: ${chunk}`);
+	    return res.send(JSON.stringify(chunk));
+	});
+	response.on('end', () => {
+	    console.log('No more data in response.');
+	});
+    });
+    request.on('error', (e) => {
+	console.error(`problem with request: ${e.message}`);
+    });
+    request.end();    
+    
 });
 
 router.get('/account/request_api_key', ensureAuthenticated, function(req, res){
@@ -278,8 +321,10 @@ let privatekey = require("../config/googleapikey.json");
 function TryToFindUser(cursor, email, collection, callback){
 
     // If we have the user in DB just return callback without hitting API
-    if(cursor.length == 1)
+    if(cursor.length == 1){
 	callback(true);
+	return;
+    }
 
     // Authenticate and set up google API
     let spreadsheetId = process.env.USER_SPREADSHEET_ID;

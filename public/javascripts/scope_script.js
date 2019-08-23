@@ -1,11 +1,9 @@
 function PopulateAvailableRuns(divname){
     $.getJSON('scope/available_runs', function(data){
-	console.log(data);
 	html = "";
 	for(var i in data){
-	    // for now
-	    if(parseInt(data[i]) > 10895 && parseInt(data[i]) < 22000)
-		html += "<option value="+data[i]+">"+data[i]+"</option>";
+	    // for now	   
+	    html += "<option value="+data[i]+">"+data[i]+"</option>";
 	}
 	document.getElementById(divname).innerHTML = html;
     });
