@@ -413,8 +413,8 @@ only screen and (min-width: 1081px)
  }
  
  #sidebar_wrapper{
-     width: 50%;
-     min-width:350px;
+     width: 500px;
+     /*min-width:450px;*/
      /*max-width:250px;*/
      height:100%;
      overflow: hidden;

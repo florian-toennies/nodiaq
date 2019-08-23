@@ -163,7 +163,98 @@ function UpdateStatusPage(){
     UpdateCommandPanel();
     UpdateCrateControllers(controllers);
     UpdateFromReaders(readers);
+    UpdateCeph();
     setTimeout(UpdateStatusPage, 5000);
+}
+
+function MakeCephGauge(){
+    document.ceph_chart = Highcharts.chart('ceph_chartdiv', Highcharts.merge(
+	{
+	    chart: { type: 'solidgauge'},
+	    title: null,
+	    pane: {
+		center: ['50%', '85%'],
+		size: '140%',
+		startAngle: -90,
+		endAngle: 90,
+		background: {
+		    backgroundColor:
+		    Highcharts.defaultOptions.legend.backgroundColor || '#EEE',
+		    innerRadius: '60%',
+		    outerRadius: '100%',
+		    shape: 'arc'
+		}
+	    },	    
+	    tooltip: {
+		enabled: false
+	    },	    
+	    // the value axis
+	    yAxis: {
+		stops: [
+		    [0.1, '#55BF3B'], // green
+		    [0.5, '#DDDF0D'], // yellow
+		    [0.9, '#DF5353'] // red
+		],
+		lineWidth: 0,
+		minorTickInterval: null,
+		tickAmount: 2,
+		title: {y: -70},
+		labels: {y: 16}
+	    },
+	    plotOptions: {
+		solidgauge: {
+		    dataLabels: {
+			y: 5,
+			borderWidth: 0,
+			useHTML: true
+		    }
+		}
+	    }	    	    
+	}, {
+	yAxis: {
+	    min: 0,
+	    max: 10.0,
+	    title: {
+		text: 'Buffer Capacity'
+	    }
+	},
+	credits: {
+	    enabled: false
+	},
+
+	series: [{
+	    name: 'Storage (TB)',
+	    data: [0.],
+	    //dataLabels: {
+	/*	format:
+		'<div style="text-align:center">' +
+		    '<span style="font-size:25px">{y}</span><br/>' +
+		    '<span style="font-size:12px;opacity:0.4">km/h</span>' +
+		    '</div>'*/
+	    //	    },
+	    //tooltip: {
+	    //valueSuffix: ' km/h'
+	    //}
+	}]
+
+    }));
+}
+
+function UpdateCeph(){
+    $.getJSON("hosts/get_host_status?host=ceph",
+	      function(data){
+		  document.getElementById("ceph_storage_total").innerHTML =
+		      "  " + (data['ceph_size']/1e12).toFixed(2) + "TB";
+		  document.getElementById("ceph_storage_free").innerHTML =
+		      "  " + (data['ceph_free']/1e12).toFixed(2) + "TB";
+		  document.getElementById("ceph_storage_available").innerHTML =
+		      "  " + (data['ceph_available']/1e12).toFixed(2) + "TB";
+		  document.ceph_chart.update({"yAxis": { "min": 0, "max": data['ceph_size']/1e12,
+							 "title": {"text": "Buffer Capacity"}}});
+		  document.RatePlot.series[i].addPoint(
+		      [(data['ceph_size']-data['ceph_available'])/1e12], true, update);
+		  
+	      });
 }
 
 function UpdateFromReaders(readers){
