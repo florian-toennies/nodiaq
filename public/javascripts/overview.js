@@ -24,8 +24,8 @@ function PopulateShifters(shift_div){
 	    else
 		html+=Mustache.render(shifter_template, blank_shifts);
 	}
-
-	document.getElementById(shift_div).innerHTML = html;
+        if(html != "")
+	    document.getElementById(shift_div).innerHTML = html;
     });
 }
 

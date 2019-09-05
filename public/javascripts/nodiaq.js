@@ -83,12 +83,15 @@ function CheckForErrors(){
 			  if(!($("#errorbar").hasClass("active")))
 			      $("#errorbar").addClass("active");
 			  document.flashDatButton=true;
+			  //var h = window.innerHeight - $('#errorbar').height();
+			  $('.main-container').css('height', 'calc(100vh-'+$('#errorbar').height()+'px)');
 			  
 			  // Disable start run button if there are errors
 			  if(document.getElementById("submit_changes")!=null 
 			     && !($("#submit_changes").hasClass("FYOU"))){
-			      FYouButton('submit_changes');
-			      $("#submit_changes").addClass("FYOU");
+			      //FYouButton('submit_changes');
+			      //$("#submit_changes").addClass("FYOU");
+			      console.log("Should prevent submit_changes here");
 			  }
 		      }
 		      else{

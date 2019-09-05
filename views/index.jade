@@ -21,39 +21,38 @@ block extrahead
   
 
 block content     
-  div.main-container
-    span.fontscale Welcome #{user.first_name}, feel free to look around but careful touching anything! This is an alpha-level preview. Also, it will be rebooted randomly, go down for days, change colors, crash your browser, mine bitcoin in the background, install funny cookies, and do all kinds of crazy stuff. So don't be surprised.
-    hr
+  div.main-container(style='background-color:#eeeeee;margin:-5px;padding:15px;height:100vh')
+    div(style='background-color:white;padding:20px;')
+        span.fontscale Welcome #{user.first_name}, feel free to look around but careful touching anything! This is an alpha-level preview. Also, it will be rebooted randomly, go down for days, change colors, crash your browser, mine bitcoin in the background, install funny cookies, and do all kinds of crazy stuff. So don't be surprised.
+    br
 
     div.row
       each val in [['tpc', 'TPC'], ['neutron_veto', 'Neutron Veto'], ['muon_veto', 'Muon Veto']]
         div.col-md-4.col-xs-12
-          div(class="det_card #{val[0]}_card")
-            h5 
-              img(src="/images/#{val[0]}_icon.png" style="margin-top:-10px;height:35px;")
-              span &nbsp;&nbsp;
-              span #{val[1]} 
-            p
-              strong Status: &nbsp;
-              strong(id="#{val[0]}_status")
-              strong &nbsp;@&nbsp;
-              span(id="#{val[0]}_rate")
+          div(class="det_card")
+            h5
+              //
+                img(src="/images/#{val[0]}_icon.png" style="margin-top:-10px;height:35px;")
+                span &nbsp;&nbsp;
+              span(style='font-size:14px;color:#333333;') The #{val[1]} is &nbsp;
+               strong(id="#{val[0]}_status")
+            p              
+              span(style='font-size:40px' id="#{val[0]}_rate")
               strong &nbsp; MB/s
-            p
-              strong Mode: &nbsp;
-              span(id="#{val[0]}_mode")
-            p
-              strong Run: &nbsp;
+            p(style='font-size:10px')              
+              strong Run &nbsp;
               span(id="#{val[0]}_run")
-              strong &nbsp; Readers: &nbsp;
+              strong ,&nbsp;
+              span(id="#{val[0]}_mode")
+              strong &nbsp; ( &nbsp;
               span(id="#{val[0]}_readers")
-
-    hr
-    div.row
-      div.col-12.col-md-6
+              strong &nbsp; ) &nbsp;
+    br
+    div.row(style='margin:0px')
+      div.col-12.col-md-6.det_card
         div.row
-          div.col-6 Run History        
-          div.col-6
+          div.col-12
+            strong Run History &nbsp;&nbsp;        
             div.btn-group.btn-group-toggle#pie_button(data-toggle="buttons")
               label.btn.btn-secondary
                 input(type="radio" name="options" id="option1" autocomplete="off" value=10) 
@@ -67,10 +66,12 @@ block content
 
         div#pie_box
       div.col-12.col-md-6
-        h5 Who's on Shift
-        div#shift_box
-
-    div#treant(style="width:100%;height:100%;margin:0")
+        div.det_card(style='height:100%')
+          h5 Who's on Shift
+          div#shift_box
+            div(style='text-align:center') Nobody on shift. Direct all requests to localhost.
+    //
+      div#treant(style="width:100%;height:100%;margin:0")
     //
       canvas#d3_canvas(style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);")
       div#graph_canvas(style="width:100%;min-width:600px;height:65%;min-height:800px;")

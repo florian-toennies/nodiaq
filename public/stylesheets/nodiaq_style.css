@@ -22,20 +22,14 @@
     z-index: 100;
 }
 
+
 .det_card{
-    color: white;
     padding: 10px;
-    border-radius: 20px;
+    background-color: white;
+    color: #333333;
+    
 }
-.tpc_card{
-    background-color: #0c1178;
-}
-.muon_veto_card{
-    background-color: #06d6a0;
-}
-.neutron_veto_card{
-    background-color: #ef476f;
-}
+
 /*div.dataTables_length {
     display: none;
 }*/
@@ -168,13 +162,14 @@
 /* I put myself into a bit of a hole. Default state is 'active' */
 #errorbar.active{
     display:block;
-    height: 40px;
+    /*height: 40px;*/
     width:calc(100%+11px);
     background-color: #cc0505;
     margin-left: -5px;
     margin-right: -5px;
     color: #eeeeee;
     padding-top: 5px;
+    padding-bottom: 5px;
     padding-left: 10px;
 }
 #errorbar{
