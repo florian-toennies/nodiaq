@@ -27,7 +27,7 @@
     padding: 10px;
     background-color: white;
     color: #333333;
-    
+    border: solid 1px #cccccc;
 }
 
 /*div.dataTables_length {

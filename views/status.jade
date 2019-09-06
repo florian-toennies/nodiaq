@@ -10,16 +10,16 @@ block extrahead
   script(src="javascripts/solid-gauge.js", type='text/javascript')
     
 block content
-  - var readers = ["reader0_reader_0", 'reader1_reader_0', 'reader2_reader_0'];
-  - var controllers = ["reader0_controller_0"];
-  - var brokers = [];  // ["fdaq00_broker_0_tpc", "fdaq00_broker_0_muon_veto", "fdaq00_broker_0_neutron_veto"];
+  - var tpc_readers = [["reader0", "reader0_reader_0"], ["reader1", 'reader1_reader_0'], ["reader2", 'reader2_reader_0']];
+  - var tpc_controllers = [["TPC controller", "reader0_controller_0"]];
+
   - var atts = ['active', 'comment', 'detector', 'hosts', 'crate_controller', 'diagnosis', 'mode', 'number', 'started_at', 'status', 'stop_after', 'user'];
   - var controller_atts = ['host', 'status', 'checkin'];
   - var controller_labels = ['Host', 'Status', 'Check-in'];
-  div.main-container.container-fluid
+  div.main-container(style='background-color:#eeeeee;margin:-5px;padding:15px;height:100vh')
 
-      div.row(style="width:100%")
-        div.fullsizechart
+      div.row(style='margin:0')
+        div.fullsizechart.det_card
           div.chart_header(style='font-size:12px')
             strong(style='font-size:22px') Status History
             &nbsp;&nbsp;
@@ -49,43 +49,54 @@ block content
             button.btn.btn-info#update_button(style="height:80%;padding-top:3px" onclick="RedrawRatePlot()") Update
           div.chart_body#rate_chart(style="height:300px")
       div.row(style="width:100%;margin:0;padding-top:5px")
-        div.col-sm-12.col-md-12.col-lg-6#reader_panel(style="padding:5px")
-        div.col-sm-12.col-md-12.col-lg-6(style="padding:5px")
-          h5(style='background-color:#151675;color:white;padding:3px;padding-left:5px;width:100%') Crate Controller
-          each controller in controllers                    
-            strong(id="#{controller}_host")
-            span : &nbsp;&nbsp;
-            strong(id="#{controller}_status")
-            span &nbsp;(
-            span(id="#{controller}_checkin")
-            span ) &nbsp;&nbsp;
-            span(id="#{controller}_devices")
+        each reader in tpc_readers
+          div.col-3.col-xs-6(style='padding-left:0;padding-right:0')
+            div.det_card(id='#{reader[1]}_statdiv')
+              strong #{reader[0]} is &nbsp;
+              span(id='#{reader[1]}_status')
+              p(style='margin-bottom:5px')
+                span(id='#{reader[1]}_rate' style='font-size:40px')
+                strong &nbsp; MB/s
+              p(style='margin-bottom:-5px;font-size:10px;color:#888888')
+                span Checked in &nbsp;
+                span(id='#{reader[1]}_check-in')
+                span &nbsp; seconds ago
+        each controller in tpc_controllers
+          div.col-3.col-xs-6(style='padding-left:0;padding-right:0')
+            div.det_card
+              strong #{controller[0]} is &nbsp;
+              span(id='#{controller[1]}_status')
+              p
+                div(id='#{controller[1]}_devices')
+              p(style='margin-bottom:-5px;font-size:10px;color:#888888')
+                span Checked in &nbsp;
+                span(id='#{controller[1]}_checkin')
+                span &nbsp; seconds ago
+
         div.col-sm-12.col-md-12.col-lg-6(style="padding:5px;border:0px solid #ccc;")
           div(style="width:100%;border-bottom:1px solid #ccc;background-color:#151675;color:white;padding-left:5px;")
             h5 Recent Dispatcher Commands
           div.panel-group#command_panel(style="font-size:14px")
         div.col-sm-12.col-md-12.col-lg-6(style="padding:5px;border:0px solid #ccc;")
-          div(style="width:100%;border-bottom:1px solid #ccc;background-color:#151675;color:white;padding-left:5px;")
-            h5 Ceph Status
-          div.row
-            div.col-3#ceph_chartdiv
-            div.col-9
-              div(style="width:100%")
-                a(href="") Ceph Admin Dashboard (doesn't exist yet)
-              div(style="width:100%")
-                strong Storage Total
-                span#ceph_storage_total
-              div(style="width:100%")
-                strong Storage Free
-                span#ceph_storage_free
-              div(style="width:100%")
-                strong Storage Available
-                span#ceph_storage_available
+          div.det_card
+            a(href="https://ceph.io")
+              img(src="images/ceph_logo.png" style="height:35px")
+            span(style='font-size:12px')
+              span(style='align:left')&nbsp;&nbsp;
+              strong(style='align:left')#ceph_status
+              span(style='align:left')&nbsp; Occupancy: &nbsp;
+              span(style='aligh:left')#ceph_filltext
+            div.row#osd_div
+            //
+              div.col-4
+                div#ceph_chartdiv(style="height:150px")
+                span#ceph_filltext(style='font-size:10px;color:#333333')
+              div.col-8.row#osd_div
+
           div(style="width:100%;border-bottom:1px solid #ccc;background-color:#151675;color:white;padding-left:5px;")
             h5 Live Processing Nodes
       
   script.
-    var readers = ["fdaq00_reader_0", "fdaq00_reader_1"];
     $(document).ready(function () {
       //FYouButton('update_button');
       RedrawRatePlot();

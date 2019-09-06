@@ -22,7 +22,7 @@ block extrahead
 
 block content     
   div.main-container(style='background-color:#eeeeee;margin:-5px;padding:15px;height:100vh')
-    div(style='background-color:white;padding:20px;')
+    div.det_card
         span.fontscale Welcome #{user.first_name}, feel free to look around but careful touching anything! This is an alpha-level preview. Also, it will be rebooted randomly, go down for days, change colors, crash your browser, mine bitcoin in the background, install funny cookies, and do all kinds of crazy stuff. So don't be surprised.
     br
 
@@ -40,13 +40,13 @@ block content
               span(style='font-size:40px' id="#{val[0]}_rate")
               strong &nbsp; MB/s
             p(style='font-size:10px')              
-              strong Run &nbsp;
-              span(id="#{val[0]}_run")
-              strong ,&nbsp;
-              span(id="#{val[0]}_mode")
-              strong &nbsp; ( &nbsp;
-              span(id="#{val[0]}_readers")
-              strong &nbsp; ) &nbsp;
+              span Run &nbsp;
+              strong(id="#{val[0]}_run")
+              span &nbsp; in &nbsp;
+              strong(id="#{val[0]}_mode")
+              span &nbsp; mode with &nbsp;
+              strong(id="#{val[0]}_readers")
+              span &nbsp; nodes &nbsp;
     br
     div.row(style='margin:0px')
       div.col-12.col-md-6.det_card

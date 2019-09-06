@@ -143,6 +143,7 @@ function DrawInitialRatePlot(){
 }
 
 function DrawInitialStatus(){
+    return;
     var readers = ["reader0_reader_0", 'reader1_reader_0', 'reader2_reader_0'];
     html = "<h5 style='width:100%;background-color:#151675;color:white;padding:3px;padding-left:5px;'>Readout Node Status</h5>";
     for(var i in readers){
@@ -168,14 +169,14 @@ function UpdateStatusPage(){
     setTimeout(UpdateStatusPage, 5000);
 }
 
-function MakeCephGauge(){
+/*function MakeCephGauge(){
 
     document.ceph_chart = Highcharts.chart('ceph_chartdiv', Highcharts.merge(
 	{
 	    chart: { type: 'solidgauge'},
 	    title: null,
 	    pane: {
-		center: ['50%', '85%'],
+		center: ['50%', '90%'],
 		size: '140%',
 		startAngle: -90,
 		endAngle: 90,
@@ -241,24 +242,71 @@ function MakeCephGauge(){
 
     }));
 }
-
+*/
 function UpdateCeph(){
     $.getJSON("hosts/get_host_status?host=ceph",
 	      function(data){
-		  if(document.ceph_chart == null){
-		      MakeCephGauge();
-		  }
-		  document.getElementById("ceph_storage_total").innerHTML =
-		      "  " + (data['ceph_size']/1e12).toFixed(2) + "TB";
-		  document.getElementById("ceph_storage_free").innerHTML =
-		      "  " + (data['ceph_free']/1e12).toFixed(2) + "TB";
-		  document.getElementById("ceph_storage_available").innerHTML =
-		      "  " + (data['ceph_available']/1e12).toFixed(2) + "TB";
-
-		  document.ceph_chart.series[0].addPoint(
-		      [100*(data['ceph_size']-data['ceph_available'])/data['ceph_size']], true, true);
+		  //if(document.ceph_chart == null){
+		   //   MakeCephGauge();
+		 // }
+		  document.getElementById("ceph_filltext").innerHTML = 
+		      ((data['ceph_size']-data['ceph_free'])/1e12).toFixed(2) + "/" +
+		      + (data['ceph_size']/1e12).toFixed(2) + "TB";
+		  document.getElementById('ceph_status').innerHTML = data['health'];
+		  if(data['health'] == 'HEALTH_OK')
+		      $("#ceph_status").css("color", "green");
+		  else
+		      $("#ceph_status").css("color", "red");
 		  
+		  //document.ceph_chart.series[0].addPoint(
+		  //[100*(data['ceph_size']-data['ceph_available'])/data['ceph_size']], true, true);
+
+		  var osds = data['osds'];		  
+		  osds = osds.sort((a, b) => parseFloat(a.id) - parseFloat(b.id));
+		  tot_html = "";
+		  if(document.getElementById('osd_div').innerHTML == ""){
+		      for(var i in osds){
+			  var html = "<div class='col-xs-12 col-sm-6' style='height:30px'><strong style='float:left'>OSD " + osds[i]['id'] + "&nbsp; </strong>";
+			  html += "<span style='font-size:10px'>Rd: ";
+			  html += "<span id='osd_"+i+"_rd'></span> (";
+			  html += "<span id='osd_"+i+"_rd_bytes'></span>)";
+			  html += "&nbsp;Wrt: <span id='osd_"+i+"_wr'></span> (";
+			  html += "<span id='osd_"+i+"_wr_bytes'></span>/s)</span>";
+			  
+			  html += '<div class="progress" style="height:5px;">'
+			  html += '<div id="osd_' + i + '_capacity" class="progress-bar" role="progressbar" style="width:0%"></div></div></div>';
+			  tot_html += html;
+		      }
+		      document.getElementById('osd_div').innerHTML = tot_html;
+		  }
+		  UpdateOSDs(data);
 	      });
+}
+
+function ToHumanBytes(number){
+    if(number > 1e12)
+	return (number/1e12).toFixed(2) + " TB";
+    if(number > 1e9)
+	return (number/1e9).toFixed(2) + " GB";
+    if(number > 1e6)
+	return (number/1e6).toFixed(2) + " MB";
+    if(number > 1e3)
+	return (number/1e3).toFixed(2) + " kB";
+    return number + " B";
+}
+
+function UpdateOSDs(data){
+    for(var i in data['osds']){
+	var j = data['osds'][i]['id'];
+	$("#osd_" + j + "_rd").text(data['osds'][i]['rd ops']);
+	$("#osd_" + j + "_rd_bytes").text(ToHumanBytes(data['osds'][i]['rd data']));
+	$("#osd_" + j + "_wr").text(data['osds'][i]['wr ops']);
+	$("#osd_" + j + "_wr_bytes").text(ToHumanBytes(data['osds'][i]['wr data']));
+	$("#osd_" + j + "_capacity").width(parseInt(100*data['osds'][i]['used'] /
+						    (data['osds'][i]['used'] +
+						     data['osds'][i]['avail']))+"%");
+    }
+
 }
 
 function UpdateFromReaders(readers){
@@ -274,8 +322,8 @@ function UpdateFromReaders(readers){
 	    else
 		$("#"+rd+"_statdiv").css('color', 'black');
             document.getElementById(rd+"_status").innerHTML = GetStatus(data['status'], data['checkin']);
-            document.getElementById(rd+"_rate").innerHTML   = data['rate'].toFixed(2) + " MB/s";
-            document.getElementById(rd+"_buffer").innerHTML = data['buffer_length'].toFixed(2) + " MB";
+            document.getElementById(rd+"_rate").innerHTML   = data['rate'].toFixed(2);// + " MB/s";
+//            document.getElementById(rd+"_buffer").innerHTML = data['buffer_length'].toFixed(2) + " MB";
             //document.getElementById(rd+"_mode").innerHTML   = data['run_mode'];
             //document.getElementById(rd+"_run").innerHTML    = data['current_run_id'];
             document.getElementById(rd+"_check-in").innerHTML   = data['checkin'];
@@ -310,12 +358,13 @@ function UpdateCrateControllers(controllers){
         var controller = controllers[i];
         $.getJSON("status/get_controller_status?controller="+controller, 
 		  (function(c){ return function(data) {
-		      atts = ['checkin', 'host', 'status'];
-		      list_atts = ['type', 'run_number', 'pulser_freq'];
+		      atts = ['checkin', 'status'];
+		      //list_atts = ['type', 'run_number', 'pulser_freq'];
 	              bool_atts = ['s_in', 'muon_veto', 'neutron_veto', 'led_trigger'];
 		      for (var i in atts){
 			  att = atts[i];
-			  
+
+			  console.log(c + "_" + att);
 			  if(att!='status')
 			      document.getElementById(c+"_"+att).innerHTML = data[att];
 			  else{		
@@ -327,13 +376,13 @@ function UpdateCrateControllers(controllers){
 			  html += "<strong>"+data['active'][i]['type']+': </strong> ';
 			  for(var j in bool_atts){
 			      if(data['active'][i][bool_atts[j]]==0)
-				  html += '<i data-toggle="tooltip" title="'+bool_atts[j]+' inactive" style="color:red" class="fas fa-times-circle"></i> &nbsp; ';
+				  html += '<i data-toggle="tooltip" title="'+bool_atts[j]+' inactive" style="color:red" class="fas fa-times-circle"></i> ';
 			      else if(data['active'][i][bool_atts[j]] == 1)
-				  html += '<i data-toggle="tooltip" title="'+bool_atts[j]+' active" style="color:green" class="fas fa-check-circle"></i> &nbsp; ';
+				  html += '<i data-toggle="tooltip" title="'+bool_atts[j]+' active" style="color:green" class="fas fa-check-circle"></i> ';
 			      else
 				  html += " ? ";
 			  }
-			  html += "<strong>(" + data['active'][i]['pulser_freq'] + "Hz Trigger)</strong>";
+			  html += "<strong>(" + data['active'][i]['pulser_freq'] + "Hz)</strong>";
 		      }
 		      if(html=="") html="no devices active";
 		      document.getElementById(c+"_devices").innerHTML=html;
