@@ -11,90 +11,85 @@ block extrahead
     
 block content
   - var tpc_readers = [["reader0", "reader0_reader_0"], ["reader1", 'reader1_reader_0'], ["reader2", 'reader2_reader_0']];
-  - var tpc_controllers = [["TPC controller", "reader0_controller_0"]];
+  - var tpc_controllers = [["TPC aux", "reader0_controller_0"]];
 
   - var atts = ['active', 'comment', 'detector', 'hosts', 'crate_controller', 'diagnosis', 'mode', 'number', 'started_at', 'status', 'stop_after', 'user'];
   - var controller_atts = ['host', 'status', 'checkin'];
   - var controller_labels = ['Host', 'Status', 'Check-in'];
-  div.main-container(style='background-color:#eeeeee;margin:-5px;padding:15px;height:100vh')
+  //
+    div.main-container(style='background-color:#eeeeee;margin:-5px;padding:15px;height:100vh')
 
-      div.row(style='margin:0')
-        div.fullsizechart.det_card
-          div.chart_header(style='font-size:12px')
-            strong(style='font-size:22px') Status History
-            &nbsp;&nbsp;
-            strong(style='font-size:12px') Time: &nbsp;
-            select.cselect#menu_history_s(style="width:100px")
-              option(value=172800) 48h
-              option(value=129600) 36h
-              option(value=86400 selected) 24h
-              option(value=43200) 12h
-              option(value=21600) 6h
-              option(value=3600) 1h
-            &nbsp;&nbsp;
-            strong(style='font-size:12px') Resolution: &nbsp;
-            select.cselect#menu_resolution_s(style="width:100px")
-              option(value=1) 1s (max)
-              option(value=10) 10s
-              option(value=30) 30s
-              option(value=60 selected) 1m
-              option (value=300) 5m
-              option(value=600) 10m
-            &nbsp;&nbsp;
-            strong(style='font-size:12px') Variable: &nbsp;
-            select.cselect#menu_variable_s(style="width:100px")
-              option(value='rate') Data Rate
-              option(value='buff') Buffer Size
-            &nbsp;&nbsp;
-            button.btn.btn-info#update_button(style="height:80%;padding-top:3px" onclick="RedrawRatePlot()") Update
-          div.chart_body#rate_chart(style="height:300px")
-      div.row(style="width:100%;margin:0;padding-top:5px")
-        each reader in tpc_readers
-          div.col-3.col-xs-6(style='padding-left:0;padding-right:0')
-            div.det_card(id='#{reader[1]}_statdiv')
-              strong #{reader[0]} is &nbsp;
-              span(id='#{reader[1]}_status')
-              p(style='margin-bottom:5px')
-                span(id='#{reader[1]}_rate' style='font-size:40px')
-                strong &nbsp; MB/s
-              p(style='margin-bottom:-5px;font-size:10px;color:#888888')
-                span Checked in &nbsp;
-                span(id='#{reader[1]}_check-in')
-                span &nbsp; seconds ago
-        each controller in tpc_controllers
-          div.col-3.col-xs-6(style='padding-left:0;padding-right:0')
-            div.det_card
-              strong #{controller[0]} is &nbsp;
-              span(id='#{controller[1]}_status')
-              p
-                div(id='#{controller[1]}_devices')
-              p(style='margin-bottom:-5px;font-size:10px;color:#888888')
-                span Checked in &nbsp;
-                span(id='#{controller[1]}_checkin')
-                span &nbsp; seconds ago
+  div.row(style='margin:0')
+    div.fullsizechart.det_card
+      div.chart_header(style='font-size:12px')
+        strong(style='font-size:22px') Status History
+        &nbsp;&nbsp;
+        strong(style='font-size:12px') Time: &nbsp;
+        select.cselect#menu_history_s(style="width:100px")
+          option(value=172800) 48h
+          option(value=129600) 36h
+          option(value=86400 selected) 24h
+          option(value=43200) 12h
+          option(value=21600) 6h
+          option(value=3600) 1h
+        &nbsp;&nbsp;
+        strong(style='font-size:12px') Resolution: &nbsp;
+        select.cselect#menu_resolution_s(style="width:100px")
+          option(value=1) 1s (max)
+          option(value=10) 10s
+          option(value=30) 30s
+          option(value=60 selected) 1m
+          option (value=300) 5m
+          option(value=600) 10m
+        &nbsp;&nbsp;
+        strong(style='font-size:12px') Variable: &nbsp;
+        select.cselect#menu_variable_s(style="width:100px")
+          option(value='rate') Data Rate
+          option(value='buff') Buffer Size
+        &nbsp;&nbsp;
+        button.btn.btn-info#update_button(style="height:80%;padding-top:3px" onclick="RedrawRatePlot()") Update
+      div.chart_body#rate_chart(style="height:300px")
+  div.row(style="width:100%;margin:0;padding-top:5px")
+    each reader in tpc_readers
+      div.col-xs-6.col-sm-6.col-md-3(style='padding-left:0;padding-right:0')
+        div.det_card(id='#{reader[1]}_statdiv')
+          strong #{reader[0]} is &nbsp;
+          span(id='#{reader[1]}_status')
+          p(style='margin-bottom:5px')
+            span(id='#{reader[1]}_rate' style='font-size:40px')
+            strong &nbsp; MB/s
+          p(style='margin-bottom:-5px;font-size:10px;color:#888888')
+            span Checked in &nbsp;
+            span(id='#{reader[1]}_check-in')
+            span &nbsp; seconds ago
+    each controller in tpc_controllers
+      div.col-xs-6.col-sm-6.col-md-3(style='padding-left:0;padding-right:0')
+        div.det_card
+          strong #{controller[0]} is &nbsp;
+          span(id='#{controller[1]}_status')
+          p
+            div(id='#{controller[1]}_devices' style='font-size:10px')
+          p(style='margin-bottom:-5px;font-size:10px;color:#888888')
+            span Checked in &nbsp;
+            span(id='#{controller[1]}_checkin')
+            span &nbsp; seconds ago
+    div.col-sm-12.col-md-12.col-lg-6(style="padding:0px;padding-top:5px;padding-bottom:5px;border:0px solid #ccc;")
+      div.det_card_noheight
+        a(href="https://ceph.io")
+          img(src="images/ceph_logo.png" style="height:35px")
+        span(style='font-size:12px')
+          span(style='align:left')&nbsp;&nbsp;
+          strong(style='align:left')#ceph_status
+          span(style='align:left')&nbsp; Occupancy: &nbsp;
+          span(style='aligh:left')#ceph_filltext
+        div.row#osd_div
+    div.col-sm-12.col-md-12.col-lg-6(style="padding:5px;border:0px solid #ccc;")
+      div(style="width:100%;border-bottom:1px solid #ccc;background-color:#151675;color:white;padding-left:5px;")
+        h5 Recent Dispatcher Commands
+      div.panel-group#command_panel(style="font-size:14px")
 
-        div.col-sm-12.col-md-12.col-lg-6(style="padding:5px;border:0px solid #ccc;")
-          div(style="width:100%;border-bottom:1px solid #ccc;background-color:#151675;color:white;padding-left:5px;")
-            h5 Recent Dispatcher Commands
-          div.panel-group#command_panel(style="font-size:14px")
-        div.col-sm-12.col-md-12.col-lg-6(style="padding:5px;border:0px solid #ccc;")
-          div.det_card
-            a(href="https://ceph.io")
-              img(src="images/ceph_logo.png" style="height:35px")
-            span(style='font-size:12px')
-              span(style='align:left')&nbsp;&nbsp;
-              strong(style='align:left')#ceph_status
-              span(style='align:left')&nbsp; Occupancy: &nbsp;
-              span(style='aligh:left')#ceph_filltext
-            div.row#osd_div
-            //
-              div.col-4
-                div#ceph_chartdiv(style="height:150px")
-                span#ceph_filltext(style='font-size:10px;color:#333333')
-              div.col-8.row#osd_div
-
-          div(style="width:100%;border-bottom:1px solid #ccc;background-color:#151675;color:white;padding-left:5px;")
-            h5 Live Processing Nodes
+      div(style="width:100%;border-bottom:1px solid #ccc;background-color:#151675;color:white;padding-left:5px;")
+        h5 Live Processing Nodes
       
   script.
     $(document).ready(function () {

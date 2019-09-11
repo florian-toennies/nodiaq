@@ -1,5 +1,6 @@
 var CHECKIN_TIMEOUT=30;
 document.ceph_chart = null;
+document.last_time_charts = {};
 
 function GetStatus(i, checkin){
     var STATUSES = [
@@ -28,7 +29,6 @@ function FYouButton(buttonid){
     $("#"+buttonid).mouseover(function(){
 	var t = $(window).height()*Math.random();
 	var l = $(window).width()*Math.random();
-	console.log(t);
 	$("#"+buttonid).css({'z-index': 10, 'height': '31px', 
 			     'top': t, 'left': l, 'position':'absolute'});
     });
@@ -100,8 +100,7 @@ function DrawInitialRatePlot(){
     //{"type": "area", "name": "transfer rate", "data": data[host]['rates'], 'color': colors['rate']},
     //{"type": "area", "name": "buffered data", "data": data[host]['buffs'], 'color': colors['buff']}
     
-    console.log("BAM");
-    console.log(series);
+
     var chart_opts = {
         chart: {
             zoomType: 'xy',
@@ -136,7 +135,6 @@ function DrawInitialRatePlot(){
 	},
 	series: series,
     };
-    console.log(chart_opts);
     var div = 'rate_chart';
     document.RatePlot = Highcharts.chart(div, chart_opts);
 
@@ -266,14 +264,16 @@ function UpdateCeph(){
 		  tot_html = "";
 		  if(document.getElementById('osd_div').innerHTML == ""){
 		      for(var i in osds){
-			  var html = "<div class='col-xs-12 col-sm-6' style='height:30px'><strong style='float:left'>OSD " + osds[i]['id'] + "&nbsp; </strong>";
+			  var html = "<div class='col-xs-12 col-sm-6' style='height:30px'>"; 
+			  html += "<strong style='float:left'>OSD " +
+			      osds[i]['id'] + "&nbsp; </strong>";
 			  html += "<span style='font-size:10px'>Rd: ";
 			  html += "<span id='osd_"+i+"_rd'></span> (";
 			  html += "<span id='osd_"+i+"_rd_bytes'></span>)";
 			  html += "&nbsp;Wrt: <span id='osd_"+i+"_wr'></span> (";
 			  html += "<span id='osd_"+i+"_wr_bytes'></span>/s)</span>";
 			  
-			  html += '<div class="progress" style="height:5px;">'
+			  html += '<div class="progress" style="height:5px;" id="osd_' + i + '_progress">';
 			  html += '<div id="osd_' + i + '_capacity" class="progress-bar" role="progressbar" style="width:0%"></div></div></div>';
 			  tot_html += html;
 		      }
@@ -305,6 +305,9 @@ function UpdateOSDs(data){
 	$("#osd_" + j + "_capacity").width(parseInt(100*data['osds'][i]['used'] /
 						    (data['osds'][i]['used'] +
 						     data['osds'][i]['avail']))+"%");
+	console.log("OSD");
+	console.log(data['osds'][i]);
+	$("#osd_" + j + "_progress").prop('title', ToHumanBytes(data['osds'][i]['used']) + " used of " + ToHumanBytes(data['osds'][i]['used'] + data['osds'][i]['avail']));
     }
 
 }
@@ -315,8 +318,6 @@ function UpdateFromReaders(readers){
         var reader = readers[i];
         $.getJSON("status/get_reader_status?reader="+reader, function(data){
             var rd = data['host'];
-	    console.log(rd);
-	    console.log(reader);
 	    if(data['checkin'] > CHECKIN_TIMEOUT)
 		$("#"+rd+"_statdiv").css('color', 'red');
 	    else
@@ -328,7 +329,8 @@ function UpdateFromReaders(readers){
             //document.getElementById(rd+"_run").innerHTML    = data['current_run_id'];
             document.getElementById(rd+"_check-in").innerHTML   = data['checkin'];
 
-            if(document.last_time_charts[rd] != data['ts']){
+            if(document.last_time_charts[rd] == undefined ||
+	       document.last_time_charts[rd] != data['ts']){
                 document.last_time_charts[rd] = data['ts'];
 		
 		// Chart auto update
@@ -364,7 +366,6 @@ function UpdateCrateControllers(controllers){
 		      for (var i in atts){
 			  att = atts[i];
 
-			  console.log(c + "_" + att);
 			  if(att!='status')
 			      document.getElementById(c+"_"+att).innerHTML = data[att];
 			  else{		
@@ -410,9 +411,6 @@ function UpdateCommandPanel(){
     $.getJSON("status/get_command_queue?limit=20&id="+recent, function(data){
         var fillHTML="";
 
-	console.log("COMMANDS");
-	console.log(data);
-	console.log(document.local_command_queue);
         for(var i in data){	    
             doc = data[i];
             var timestamp = parseInt(doc['_id'].substr(0,8), 16)*1000
@@ -425,7 +423,7 @@ function UpdateCommandPanel(){
 		$("#"+doc['_id']).remove();
 	    }
     
-            fillHTML += '<div class="panel panel-default" id="'+doc['_id']+'"><div class="panel-heading panel-hover" data-toggle="collapse" href="#collapse'+doc['_id'];
+            fillHTML += '<div class="command_panel_entry panel panel-default" id="'+doc['_id']+'"><div class="panel-heading panel-hover" data-toggle="collapse" href="#collapse'+doc['_id'];
             fillHTML += '" style="padding:5px;border-bottom:0px solid #ccc"><div class="panel-title"><span data-toggle="collapse" style="color:black" ';
             fillHTML += 'href="#collapse'+doc['_id']+'">';
             fillHTML += moment(date).utc().format('DD. MMM. HH:mm') + ' UTC: ';

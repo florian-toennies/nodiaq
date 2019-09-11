@@ -145,9 +145,9 @@ router.get('/account/request_github_access', ensureAuthenticated, function(req, 
 	    "state": "active"
 	},
 	auth: owner + ":" + password,
-	headers: {
-	    "User-Agent": "Other"
-	}
+	//headers: {
+	//"User-Agent": "Other"
+	//}
 	//'Content-Type': 'application/x-www-form-urlencoded',
 	//'Content-Length': Buffer.byteLength(postData)
 	//}
@@ -297,19 +297,22 @@ function SendConfirmationMail(req, random_hash, link, callback){
 }
 
 function ConvertToDate(value){
-// The member sheet contains a lot of different date formats. 
-// We will try here to convert the string to a date object.
-var moment = require('moment');
+    // The member sheet contains a lot of different date formats. 
+    // We will try here to convert the string to a date object.
+    var moment = require('moment');
+    
+    // wtf
+    var allowedDateFormats = ['YYYY', 'MMM. YYYY', 'MMM.YYYY', 'MMM-YY', 'MMM. YY', 'MMM.YY',
+			      'MMM YYYY'];
+    if(moment(value, allowedDateFormats, true).isValid())
+	return moment(value, allowedDateFormats, true).toDate();
+    
+    // Try second time with non-strict mode
+    if(moment(value, allowedDateFormats, false).isValid())
+	return moment(value, allowedDateFormats, false).toDate();
 
-// wtf
-var allowedDateFormats = ['YYYY', 'MMM. YYYY', 'MMM.YYYY', 'MMM-YY', 'MMM. YY', 'MMM.YY',
-			 'MMM YYYY'];
-if(moment(value, allowedDateFormats, true).isValid())
-    return moment(value, allowedDateFormats, true).toDate();
-
-// Return some dummy date if you fail to make it easier to manually correct
-return moment("1999-01-01").toDate();
-
+    // I give up, maybe it's in Portuguese. Return some dummy date so querying easy.
+    return moment("1999-01-01").toDate();
 
 }
 

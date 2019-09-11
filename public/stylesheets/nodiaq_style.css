@@ -28,7 +28,16 @@
     background-color: white;
     color: #333333;
     border: solid 1px #cccccc;
+    height:120px;
+    overflow: clip;
 }
+.det_card_noheight{
+    padding: 10px;
+    background-color: white;
+    color: #333333;
+    border: solid 1px #cccccc;
+}
+
 
 /*div.dataTables_length {
     display: none;
@@ -150,6 +159,7 @@
     left: 50px;
     position: absolute;
     overflow-y: auto;
+    background-color: #eee;
 }
 #content.active{
     left: 250px;
@@ -287,6 +297,7 @@
     padding-top: 6px;
 }
 
+
 /* DESKTOP LARGER SCALE */
 @media 
 only screen and (min-width: 540px) and (max-resolution: 120dpi),
@@ -299,9 +310,10 @@ only screen and (min-width: 1081px)
       overflow-x: hidden;
   }
     .wrapper {
-    display: flex;
-    align-items: stretch;
-        }
+
+	display: flex;
+	align-items: stretch;
+    }
          .desktop_title{
         display: block;
  }

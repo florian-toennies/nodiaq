@@ -4,6 +4,15 @@
   width: 100%;
   cursor: pointer;
 }
+
+.command_panel_entry{
+    border: 1px solid #ccc;
+    background-color: #fff;
+    margin-top: -1px;
+    border-right: 0px;
+
+}
+
 #command_panel a{
   font-color: black;
 }
