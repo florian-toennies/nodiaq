@@ -20,48 +20,45 @@ block content
     - var detectors = [["tpc", "TPC"], ["muon_veto", "Muon Veto"], ["neutron_veto", "Neutron Veto"], ["lz", "LZ TPC"]];
     each det in detectors
       //div.reader_detail
-      div(style="width:100%;border:1px solid #ccc;margin-top:10px")
-        div.row(style="padding-left:5px;padding-top:5px;")
-          div.col-xs-12.col-sm-12.col-md-12.col-lg-3.col-xl-3
-            h3.fontscale_header #{det[1]}
-          if det[0] == 'tpc'
-            div.col-xs-12.col-sm-12.col-md-12.col-lg-9.col-xl-9.fontscale
-              div.float-right
+      div.det_card_noheight(style="width:100%;border:1px solid #ccc;margin-top:10px")
+        div.row
+          div.col-12
+            if det[0] == 'tpc'
+              span(style='font-size:20px;font-weight:bold;') #{det[1]}
+              div.float-right(style='display:inline-block')
+                  div.form-check-inline 
+                    label.form-check-label
+                      span Run &nbsp;
+                      input#tpc_active(type="checkbox" checked data-toggle="toggle" data-onstyle="success" data-offstyle="danger" data-on="on" data-off="off" data-size='small')
+                  div.form-check-inline 
+                    label.form-check-label
+                      span Muon Veto &nbsp;
+                      input#link_mv(type="checkbox" checked data-toggle="toggle" data-onstyle="success" data-offstyle="danger" data-on="Linked" data-off="Unlinked" data-size='small')
+                  div.form-check-inline
+                    label.form-check-label
+                      span Neutron Veto &nbsp;
+                      input#link_nv(type="checkbox" checked data-toggle="toggle" data-onstyle="success" data-offstyle="danger"  data-on="Linked" data-off="Unlinked" data-size='small')
+            else
+              span(style='font-size:20px;font-weight:bold;') #{det[1]}
+              div.float-right(style='display:inline-block')
                 div.form-check-inline 
                   label.form-check-label
                     span Run &nbsp;
-                    input#tpc_active(type="checkbox" checked data-toggle="toggle" style="height:25px" data-onstyle="success" data-offstyle="danger" data-on="on" data-off="off")
-                div.form-check-inline 
-                  label.form-check-label
-                    span Muon Veto &nbsp;
-                    input#link_mv(type="checkbox" checked data-toggle="toggle" data-onstyle="success" data-offstyle="danger" style="height:25px" data-on="Linked" data-off="Unlinked")
-                div.form-check-inline
-                  label.form-check-label
-                    span Neutron Veto &nbsp;
-                    input#link_nv(type="checkbox" checked data-toggle="toggle" data-onstyle="success" data-offstyle="danger"  data-on="Linked" data-off="Unlinked")
-          else
-            div.col-xs-12.col-sm-10.col-md-9.col-lg-9.col-xl-9
-              div.float-right
-                div.form-check-inline 
-                  label.form-check-label
-                    span Run &nbsp;
-                    input(id="#{det[0]}_active" type="checkbox" checked data-toggle="toggle" style="height:25px" data-onstyle="success" data-offstyle="danger" data-on="on" data-off="off")
-        hr(style="margin-top:8px;margin-bottom:8px")
+                    input(id="#{det[0]}_active" type="checkbox" checked data-toggle="toggle" data-onstyle="success" data-offstyle="danger" data-on="on" data-off="off" data-size='small')
+        hr(style='margin-top:3px')
         div.row(style="padding:5px")  
-          div.col-sm-12.col-md-12.col-lg-6.form-group.fontscale
-            div.row
-              div.col-sm-12.col-md-12.col-lg-6.form-group
-                label.form-label(for="user") Controller
-                input.form-control.my_name_is.fontscale(id="#{det[0]}_user" type="text" value="#{user.last_name}" name="user" readonly required)   
-              div.col-sm-12.col-md-12.col-lg-6.form-group
-                label.form-label(for="stopafter") Length (minutes)
-                input.form-control(id="#{det[0]}_stop_after" type="number" name="stop_after" min=0 max=1440 value=60)
-              div.col-sm-12.form-group
-                label.form-label(for="comment") Comment
-                textarea.form-control(id="#{det[0]}_comment" rows="2" name="comment" type='text')
-          div.col-sm-12.col-md-12.col-lg-6.form-group.fontscale
+          div.col-xs-12.col-sm-6.col-md-4.col-xl-2.form-group
+            label.form-label(for="user") Controller
+            input.form-control.my_name_is.fontscale(id="#{det[0]}_user" type="text" value="#{user.last_name}" name="user" readonly required)   
+          div.col-xs-12.col-sm-6.col-md-4.col-xl-2.form-group
+            label.form-label(for="stopafter") Length (minutes)
+            input.form-control(id="#{det[0]}_stop_after" type="number" name="stop_after" min=0 max=1440 value=60)
+          div.col-xs-12.col-sm-6.col-md-4.col-xl-4.form-group.fontscale
             label.form-label(for="mode") Run Mode
-            select.form-control(id="#{det[0]}_mode" size="6" name="run_mode" type="text" required)
+            select.form-control(id="#{det[0]}_mode" name="run_mode" type='text' required)
+          div.col-xs-12.col-sm-6.col-md-12.col-xl-4.form-group
+            label.form-label(for="comment") Comment
+            textarea.form-control(id="#{det[0]}_comment" rows="2" name="comment" type='text')
         
          
   audio#ahahah(src="images/ahahah.mp3")
