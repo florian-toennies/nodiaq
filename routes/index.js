@@ -145,21 +145,21 @@ router.get('/account/request_github_access', ensureAuthenticated, function(req, 
 	    "state": "active"
 	},
 	auth: owner + ":" + password,
-	//headers: {
-	//"User-Agent": "Other"
-	//}
+	headers: {
+	    "User-Agent": "Other"
+	}
 	//'Content-Type': 'application/x-www-form-urlencoded',
 	//'Content-Length': Buffer.byteLength(postData)
 	//}
     };
     console.log(options);
     const request = http.request(options, (response) => {
-	console.log(`STATUS: ${res.statusCode}`);
-	console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
+	//console.log(`STATUS: ${res.statusCode}`);
+	//console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
 	response.setEncoding('utf8');
 	response.on('data', (chunk) => {
-	    console.log(`BODY: ${chunk}`);
-	    return res.send(JSON.stringify(chunk));
+	    //console.log(`BODY: ${chunk}`);
+	    return response.send(JSON.stringify(chunk));
 	});
 	response.on('end', () => {
 	    console.log('No more data in response.');

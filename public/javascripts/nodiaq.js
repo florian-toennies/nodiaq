@@ -115,7 +115,7 @@ function CheckForErrors(){
 function DrawActiveLink(page){
     var pages = [
 	"#lindex", "#lplaylist", "#lstatus", "#lhosts", "#loptions", "#lruns",
-	"#llog", "#lusers", "#lhelp", "#laccount", "#lcontrol", "#lshifts", "#lmonitor"
+	"#llog", "#lusers", "#lhelp", "#laccount", "#lcontrol", "#lshifts", "#lmonitor", "#lequipment"
     ];
     for(var i in pages){
     	console.log(pages[i]);

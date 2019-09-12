@@ -253,7 +253,7 @@
 	height: 0px !important;
 	overflow: hidden;
 	background: #0c1178;  
-        color: #fff;
+        color:#fff;
 }
 #sidebar.active ul li a{
   color: #fff;
@@ -268,7 +268,7 @@
 	}
 #sidebar ul li a:hover {
     color: #7386D5;
-    background: #fff;
+    background: #eee;
     text-decoration: none;
 }
 #sidebar.active ul ul a {
@@ -376,8 +376,8 @@ only screen and (min-width: 1081px)
 }
 
  #sidebar ul li.active>a, a[aria-expanded="true"] {
-     color: #7386D5;
-     background: #fff;
+     color: #0e0e75;
+     background: #eee;
  /*color: #eee;                                                                                   
    background: #0c1178;*/
  }
