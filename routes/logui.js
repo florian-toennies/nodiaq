@@ -52,7 +52,7 @@ router.get('/getMessages', ensureAuthenticated, function(req, res){
 });
 
 
-router.post('/new_log_message', (req, res) => {
+router.post('/new_log_message', ensureAuthenticated, (req, res) => {
     var db = req.db;
     var collection = db.get("log");
     var p = 5;
@@ -68,7 +68,7 @@ router.post('/new_log_message', (req, res) => {
     return res.send(JSON.stringify(idoc));
 });
 
-router.post('/acknowledge_errors', (req, res) => {
+router.post('/acknowledge_errors', ensureAuthenticated, (req, res) => {
     var db = req.db;
     var collection = db.get("log");
     var error_codes = [2, 3, 4]; //warning, error, fatal
@@ -82,8 +82,12 @@ router.post('/acknowledge_errors', (req, res) => {
         } 
     }
     collection.update(matchdoc, updatedoc, {"multi": true},
-        function(){
-            return res.send(JSON.stringify(updatedoc));
-    })
+		      function(err, doc){
+			  if(err == null)
+			      return res.send(JSON.stringify(updatedoc));
+			  else
+			      return res.status(400).send('Failed to update DB');
+		      });
+    
 });
 module.exports = router;
