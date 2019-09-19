@@ -158,8 +158,8 @@ router.get('/account/request_github_access', ensureAuthenticated, function(req, 
 	//console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
 	response.setEncoding('utf8');
 	response.on('data', (chunk) => {
-	    //console.log(`BODY: ${chunk}`);
-	    return response.send(JSON.stringify(chunk));
+	    console.log(`BODY: ${chunk}`);
+	    //return response.send(JSON.stringify(chunk));
 	});
 	response.on('end', () => {
 	    console.log('No more data in response.');
