@@ -13,7 +13,7 @@ block extrahead
 
 block content     
   div.main-container(style="height:100%")
-    div.row#addtagrow(style="display:none;padding-left:20px;")
+    div.row.det_card_noheight#addtagrow(style="display:none;padding-left:20px;")
       div.col-md-12.col-lg-6
         div.form-group.row
           label(for="taginput") Add tags to selected: &nbsp;
@@ -31,14 +31,14 @@ block content
           input#commentinput(type="text")
           span &nbsp;
           button.btn.btn-default#add_comment_button Add Comments
-    div.row
-      div.col-10
+    div.row.det_card_noheight
+      div.col-8
         div.form-group(style="width:100%")
           label(style="margin-top:-25px") MongoDB Query: &nbsp;
           textarea#mongoquery(rows="1" cols="10" type="text" placeholder="{}")
           span &nbsp;
           button.btn.btn-default(onclick="CheckMongoQuery()" style="margin-top:-25px") Apply
-      div.col-2.align-right(style="margin-top:5px")
+      div.col-4.align-right(style="margin-top:5px")
         div.btn-group.btn-group-toggle#detectorselector(data-toggle="buttons")
           label.btn.btn-secondary.active(name='xenonnt')
             input(value="xenonnt" type="radio" autocomplete="off" checked) 
@@ -48,8 +48,8 @@ block content
             span(name='xenon1t') XENON1T
   
     br
-    div#resize_wrapper(style="height:90%;width:100%")
-      table.nowrap.table-striped.table-hover#runs_table
+    div.det_card_noheight#resize_wrapper(style="height:90%;width:100%;background-color:white;padding-top:15px")
+      table.nowrap.table-hover(style="background-color:white")#runs_table
         thead
           tr
             th Detail

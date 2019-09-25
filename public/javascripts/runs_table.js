@@ -50,7 +50,7 @@ function InitializeRunsTable(divname){
         ajax : {
             url: 'runtable/getDatatable',
             beforeSend: function ( jqXHR,  settings) {
-                      console.log(jqXHR);
+                //console.log(jqXHR);
             },
             data: function ( d ) {
                 return $.extend( {}, d, {
@@ -84,10 +84,10 @@ function InitializeRunsTable(divname){
 		  if(typeof(row) === "undefined" || typeof(row.end) === "undefined" ||
 		     typeof(row.start) === "undefined")
 		      return "not set"
-		  console.log(row);
+		    //console.log(row);
 		  tdiff = (new Date(row.end)).getTime() - (new Date(row.start)).getTime();
-		  console.log(tdiff);
-		    console.log("TDIFF");
+		    //console.log(tdiff);
+		    //console.log("TDIFF");
 		    var hours = Math.floor(tdiff/(1000*3600));
 		    var mins = Math.floor(tdiff/(1000*60)) - (60*hours);
 		    var secs = Math.floor(tdiff/(1000)) - (3600*hours + 60*mins);
@@ -141,6 +141,7 @@ function InitializeRunsTable(divname){
 	fixedColumns: true
     };
     var table = $(divname).DataTable(table_options);
+    document.table = table;
     document.datatable_options = table_options;
     document.datatable_div = divname;
     
@@ -148,15 +149,15 @@ function InitializeRunsTable(divname){
 
     $("#runs_table_wrapper .row .col-sm-6").html(filter_html);
     $('#datepicker_from').change(function() {
-	table.draw();
+	table.ajax.reload();
     });
     $('#datepicker_to').change(function() {
-        table.draw();
+        table.ajax.reload();
     });
 
 
     $(divname + ' tbody').on( 'click', 'td', function () {
-    	console.log($(this));
+    	//console.log($(this));
     	if(!$(this).hasClass("not-selectable")){
 	        $(this).parent().toggleClass('selected');
     	    $("#addtagrow").slideDown();
@@ -173,17 +174,17 @@ function InitializeRunsTable(divname){
 	    var runs = [];
 	    for(var i=0; i<table.rows('.selected')[0].length; i++)
 			runs.push(table.rows('.selected').data()[i]['number']);
-		console.log("RUNS");
-		console.log(runs);
-	    if(runs.length>0)
-	    console.log("Adding comment!")
-	    console.log(comment);
-	    console.log(runs);
+	    //console.log("RUNS");
+	    //console.log(runs);
+	    //if(runs.length>0)
+	    //console.log("Adding comment!")
+	    //console.log(comment);
+	    //console.log(runs);
 			$.ajax({
 		    	type: "POST",
 		    	url: "runsui/addcomment",
 		    	data: {"runs": runs, "comment": comment, "user": "web user"},		   
-		    	success: function(){ console.log("Redraw"); table.draw();},
+		    	success: function(){ console.log("Redraw"); table.ajax.reload();},
 		    	error:   function(jqXHR, textStatus, errorThrown) {
 				alert("Error, status = " + textStatus + ", " +
 			    	  "error thrown: " + errorThrown
@@ -206,7 +207,7 @@ function InitializeRunsTable(divname){
 		    type: "POST",
 		    url: "runsui/addtags",
 		    data: {"runs": runs, "tag": tag, "user": "web user"},		   
-		    success: function(){ console.log("Redraw"); table.draw();},
+		    success: function(){ console.log("Redraw"); table.ajax.reload();},
 		    error:   function(jqXHR, textStatus, errorThrown) {
 			alert("Error, status = " + textStatus + ", " +
 			      "error thrown: " + errorThrown
@@ -272,7 +273,7 @@ function RemoveTag(run, user, tag){
 	type: "POST",
 	url: "runsui/removetag",
 	data: {"run": run, "user": user, "tag": tag},
-	success: function(){ ShowDetail(run);},
+	success: function(){ ShowDetail(run); document.table.ajax.redraw();},
 	error: function(jqXHR, textStatus, errorThrown){
 	    alert("Error, status = " +textStatus + ", " + "error thrown: " + errorThrown);
 	}

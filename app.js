@@ -85,7 +85,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 var session = require('express-session');
 var MongoDBStore = require('connect-mongodb-session')(session);
 var dax_cstr = process.env.DAQ_MONGO_USER + ":" + process.env.DAQ_MONGO_PASSWORD + "@" + 
-			process.env.DAQ_MONGO_HOST + ":" + process.env.DAQ_MONGO_PORT + "/" + process.env.DAQ_MONGO_DB;
+    process.env.DAQ_MONGO_HOST + ":" + process.env.DAQ_MONGO_PORT + "/" +
+    process.env.DAQ_MONGO_DB;
 			
 var store = new MongoDBStore({
   uri: 'mongodb://' + dax_cstr,
@@ -141,7 +142,7 @@ app.use('/je', express.static(__dirname + '/node_modules/jsoneditor/dist/'));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-app.use(logger('dev'));
+ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());

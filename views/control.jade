@@ -26,6 +26,10 @@ block content
             if det[0] == 'tpc'
               span(style='font-size:20px;font-weight:bold;') #{det[1]}
               div.float-right(style='display:inline-block')
+                  div.form-check-inline
+                    label.form-check-label
+                      span Control &nbsp;
+                      input#tpc_remote(type="checkbox" checked data-toggle="toggle" data-onstyle="success" data-offstyle="warning" data-on="web" data-off="remote" data-size="small")
                   div.form-check-inline 
                     label.form-check-label
                       span Run &nbsp;

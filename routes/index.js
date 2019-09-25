@@ -319,7 +319,7 @@ function ConvertToDate(value){
 
 // Use Google APIs to search our membership spreadsheet
 const {google} = require('googleapis');
-let privatekey = require("../config/googleapikey.json");
+let privatekey = require("/etc/googleapikey.json");
 
 function TryToFindUser(cursor, email, collection, callback){
 

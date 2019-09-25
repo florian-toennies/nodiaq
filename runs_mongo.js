@@ -65,8 +65,8 @@ exports.getDataForDataTable = function getData (request, response) {
 	detector = request.query['detector'];
     if(typeof request.query['conditions'] !== 'undefined')
 	conditions = JSON.parse(request.query['conditions']);
-    console.log("CONDITIONS: ");
-    console.log(conditions);
+    //console.log("CONDITIONS: ");
+    //console.log(conditions);
     //console.log("QUERY");
     //console.log(request.query);
     // Date filtering
@@ -102,9 +102,9 @@ exports.getDataForDataTable = function getData (request, response) {
 		i=j;
 	if(i != -1)
 	    query.columns.splice(i, 1);
-        console.log("NEW QUERY");
-	console.log(query);
-	console.log("That was new query");
+        //console.log("NEW QUERY");
+	//console.log(query);
+	//console.log("That was new query");
 	runsModel1T.dataTable(query,  {"conditions": conditions}).then(
                             function (data) {
                                 response.send(data);

@@ -51,16 +51,20 @@ function PullServerData(callback){
 				else
 					$("#"+detector+"_"+att).val(doc[att]);
 			}
-			if(detector === "tpc"){
-				if(doc['link_mv'] === 'true')
-					$("#link_mv").bootstrapToggle('on');
-				else
-					$("#link_mv").bootstrapToggle('off');
-				if(doc['link_nv'] === 'true')
-					$("#link_nv").bootstrapToggle('on');
-				else
-					$("#link_nv").bootstrapToggle('off');
-			}
+		    if(detector === "tpc"){
+			if(doc['remote'] == 'true')
+			    $("#tpc_remote").bootstrapToggle('on');
+			else
+			    $("#tpc_remote").bootstrapToggle('off');
+			if(doc['link_mv'] === 'true')
+			    $("#link_mv").bootstrapToggle('on');
+			else
+			    $("#link_mv").bootstrapToggle('off');
+			if(doc['link_nv'] === 'true')
+			    $("#link_nv").bootstrapToggle('on');
+			else
+			    $("#link_nv").bootstrapToggle('off');
+		    }
 			
 			if(doc['active'] === "true")
 				$("#"+detector+"_active").bootstrapToggle('on');
@@ -80,31 +84,33 @@ function PullServerData(callback){
 }
 
 function PostServerData(){
-	var dets = ['tpc', 'muon_veto', 'neutron_veto'];
-	post = [];
-	var failed = false;
-	for(var i in dets){
-		var detector = dets[i];
-		var thisdet = {"detector": detector};
-		thisdet['active'] = $("#"+detector+"_active").is(":checked");
+    var dets = ['tpc', 'muon_veto', 'neutron_veto'];
+    post = [];
+    var failed = false;
+    for(var i in dets){
+	    var detector = dets[i];
+	    var thisdet = {"detector": detector};
+	    thisdet['active'] = $("#"+detector+"_active").is(":checked");
 		
-		var atts = ["stop_after", "mode", "user", "comment"];
-		for(var j in atts){
-			var att = atts[j];
-			thisdet[att] = $("#"+detector+"_"+att).val();
-			if(thisdet['active'] && thisdet[att] === null || typeof thisdet[att] === "undefined" && (att!=="comment" && att!=="stop_after")){
-				alert("You need to provide a value for "+att+" for the "+detector+", or disable that detector.");
-				failed = true;
+	    var atts = ["stop_after", "mode", "user", "comment"];
+	    for(var j in atts){
+		    var att = atts[j];
+		    thisdet[att] = $("#"+detector+"_"+att).val();
+		    if(thisdet['active'] && thisdet[att] === null || typeof thisdet[att] === "undefined" && (att!=="comment" && att!=="stop_after")){
+			    alert("You need to provide a value for "+att+" for the "+detector+", or disable that detector.");
+			    failed = true;
 			}
-		}
-		thisdet['active'] = $("#"+detector+"_active").is(":checked");
-		if(detector === "tpc"){
-			thisdet['link_mv'] = $("#link_mv").is(":checked");
-			thisdet['link_nv'] = $("#link_nv").is(":checked");
-		}
-		post.push(thisdet);
-	}
-	if(!failed){
+		}	    
+	    thisdet['active'] = $("#"+detector+"_active").is(":checked");
+	    if(detector === "tpc"){
+		thisdet['remote'] = $("#tpc_remote").is(":checked"); 
+		thisdet['link_mv'] = $("#link_mv").is(":checked");
+		thisdet['link_nv'] = $("#link_nv").is(":checked");
+	    }
+	    post.push(thisdet);
+    }
+
+    if(!failed){
 		$.ajax({
 		    type: "POST",
 	   		url: "control/set_control_docs",
