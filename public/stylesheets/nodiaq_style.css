@@ -308,8 +308,10 @@ only screen and (min-width: 540px) and (min-resolution: 120dpi),
 only screen and (min-width: 1081px) 
 {
     .main-container{
-      /*height: 100vh;*/
-      overflow-y: auto;
+	height: 100%;
+	width:100%;
+	position: absolute;
+      /*overflow-y: auto;*/
       overflow-x: hidden;
   }
     .wrapper {
