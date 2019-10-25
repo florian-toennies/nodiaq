@@ -121,9 +121,11 @@ router.post('/add_shifts', ensureAuthenticated, function(req, res){
                                   parseInt(req.body.end_date.substr(5, 2))-1,
                                   parseInt(req.body.end_date.substr(8, 2))))
 
-    console.log(req.body.start_date);
-    console.log(start);
-    console.log(end);
+
+    // You can only do this if you're the operations manager. Check permissions
+    if(typeof(req.user.groups) == "undefined" || !req.user.groups.includes("operations"))
+	return res.send(JSON.stringify({"res": "Woah, who do you think you are there buddy?"}));
+    
     var weekday = req.body.shift_change_day;
     var shift_type = req.body.shift_type;
     var credit_multiplier = req.body.credit_multiplier;
@@ -161,7 +163,11 @@ router.post('/remove_shifts', ensureAuthenticated, function(req, res){
     var end = new Date(req.body.end_date);
     var type = req.body.shift_type;
 
-    query = {"start": {"$gte": start, "$lte": end}};
+    // You can only do this if you're the operations manager. Check permissions
+    if(typeof(req.user.groups) == "undefined" || !req.user.groups.includes("operations"))
+	return res.send(JSON.stringify({"res": "Berechtigung nicht vorgewiesen. Bitte begr√nden."}));
+    
+    Query = {"start": {"$gte": start, "$lte": end}};
     if(type != "all")
 	query['type'] = type;
     collection.remove(query, {multi: true});

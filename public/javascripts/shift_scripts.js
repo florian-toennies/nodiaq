@@ -61,7 +61,7 @@ function InitializeCalendar(divname, calling_user){
 		alert("Added your shifts! Check out the calendar page.");
 	    },
 	    error: function(){
-		alert("Error adding your shifts... sorry?");
+		alert("Error adding your shifts... sorry? Hey, could it be that you don't have permission?");
 	    }
 	});
     });
@@ -75,7 +75,7 @@ function InitializeCalendar(divname, calling_user){
 		alert("Removed the specified shifts! Check out the calendar page.");
 		    },
             error: function(){
-		alert("Error removing your shifts... sorry?");
+		alert("Error removing your shifts... sorry? Hey, could it be that you don't have permission?");
             }
         });
     });
