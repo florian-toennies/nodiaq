@@ -158,6 +158,7 @@ async function GetChannelWaveforms(run, reader, channel, fspath, callback){
     // Go into the filesystem and get the largest chunk present. For simplicity we ignore
     // pre and post chunks by only taking chunks with file name length 6.
     var full_path = fspath + '/' + run;
+    console.log("Searching path ", full_path);
     items = fs.readdirSync(full_path);
     var sorted_files = items.filter(function (file) {
 	return file.length === 6 ? true : false;
@@ -195,7 +196,7 @@ router.get('/get_pulses', ensureAuthenticated, function(req, res){
     // but what else you gonna do? Just change name when you inevitably stumble
     // on this.
     console.log("Searching options");
-    options_coll.find({"name": {"$in": ['channel_map_xenon', 'xenonnt_board_definitions_working_selftrigger']}},
+    options_coll.find({"name": {"$in": ['channel_map_xenon', 'xenonnt_board_definitions_daqweek']}},
 		      {"sort": {"name": 1}}, // this is to make channel_map first!
 		      function(e, docs){
 			  console.log("Found options");

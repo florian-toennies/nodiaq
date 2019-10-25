@@ -54,6 +54,11 @@ router.post("/set_run_mode", ensureAuthenticated, function(req, res){
     console.log(doc);
     delete doc._id;
     var db = req.db;
+
+    // Check permissions
+    if(typeof(req.user.groups) == "undefined" || !req.user.groups.includes("daq"))
+	return res.send(JSON.stringify({"res": "I can't allow you to do that Dave"}));
+    
     var collection = db.get('options');
 	if(typeof doc['name'] === 'undefined')
 		return res.render("options", {title: "Options", user:req.user});
@@ -69,6 +74,11 @@ router.get("/remove_run_mode", ensureAuthenticated, function(req, res){
     var name = query.name;
     var db = req.db;
     var collection = db.get('options');
+
+    // Check permissions
+    if(typeof(req.user.groups) == "undefined" || !req.user.groups.includes("daq"))
+	return res.send(JSON.stringify({"res": "I can't allow you to do that Dave"}));
+    
     collection.remove({'name': name}, {},
 		      function(e){
 			  return res.render("options", {"title": "Options", user:req.user});

@@ -22,8 +22,6 @@ function PopulateModeList(div){
 
 function FetchMode(select_div){
     mode = $('#'+select_div).val();
-    console.log(mode);
-    console.log("FETCH");
     $.getJSON('options/options_json?name='+mode,
 	      function(data){
 		  document.jsoneditor.set(data);
@@ -31,13 +29,26 @@ function FetchMode(select_div){
 };
 
 function SubmitMode(){
-    console.log(document.jsoneditor.get());
     $.post("options/set_run_mode",
-	   {"doc": (JSON.stringify(document.jsoneditor.get()))});
-    location.reload(true);
+	   {"doc": (JSON.stringify(document.jsoneditor.get()))},
+	   function(data){
+	       try{JSON.parse(data);}
+	       catch(error){location.reload(true);}
+	       if(typeof(data) !== "undefined" && "res" in JSON.parse(data))
+		   alert(JSON.parse(data)['res']);	       
+	       else
+		   alert("Something strange has happened");
+	   });
 };
 
 function RemoveMode(select_div){
-    $.get("options/remove_run_mode?name="+$("#"+select_div).val());
-    location.reload(true);
+    $.get("options/remove_run_mode?name="+$("#"+select_div).val(),
+	  function(data, status){
+	      try{JSON.parse(data);}
+	      catch(error){location.reload(true);}
+	      if(typeof(data) !== "undefined" && "res" in JSON.parse(data))
+		  alert(JSON.parse(data)['res']);
+	      else
+		  alert("Something strange has happened");
+	  });
 }
