@@ -1,3 +1,136 @@
+function DefineButtonRules(){
+    
+    $("input").change(function(){if(document.page_ready==true){$("#confirm_div").fadeIn("fast"); $(".my_name_is").val(document.current_user);}});
+    $("select").change(function(){if(document.page_ready==true){$("#confirm_div").fadeIn("fast"); $(".my_name_is").val(document.current_user);}});
+    
+    $("#tpc_active").change(function(){
+	if(document.page_ready){
+	    document.page_ready = false;
+	    var val = 'off';
+
+	    // First, fail in case "remote" mode enabled"
+	    if(!$("#remote_tpc").is(":checked")){		
+		alert("You cannot control the TPC when it is in remote mode!");
+		$("#tpc_active").bootstrapToggle('toggle');
+		document.page_ready = true;
+		return;
+	    }
+	    
+	    if($("#tpc_active").is(":checked")) val = 'on';
+	    if($("#link_mv").is(":checked")) $("#muon_veto_active").bootstrapToggle(val);
+	    if($("#link_nv").is(":checked")) $("#neutron_veto_active").bootstrapToggle(val);
+	    document.page_ready = true;
+	}
+    });
+    $("#muon_veto_active").change(function(){
+	if(document.page_ready){
+	    document.page_ready = false;
+
+	    // First, fail in case "remote" mode enabled"
+	    if(!$("#remote_muon_veto").is(":checked")){
+		alert("You cannot control the muon veto when it is in remote mode!");
+		$("#muon_veto_active").bootstrapToggle('toggle');
+		document.page_ready = true;		
+		return;
+	    }
+	    
+	    var val = 'off';
+	    if($("#muon_veto_active").is(":checked")) val = 'on';
+	    if($("#link_mv").is(":checked")) {$("#tpc_active").bootstrapToggle(val);
+					      if($("#link_nv").is(":checked")) $("#neutron_veto_active").bootstrapToggle(val); }
+	    document.page_ready = true;
+	}
+    });
+    $("#neutron_veto_active").change(function(){
+	if(document.page_ready){
+	    document.page_ready = false;
+
+	    // First, fail in case "remote" mode enabled"
+	    if(!$("#remote_neutron_veto").is(":checked")){
+		alert("You cannot control the neutron veto when it is in remote mode!");
+		$("#neutron_veto_active").bootstrapToggle('toggle');
+		document.page_ready = true;		
+		return;
+	    }
+	    
+	    var val = 'off';
+	    if($("#neutron_veto_active").is(":checked")) val = 'on';
+	    if($("#link_nv").is(":checked")) {$("#tpc_active").bootstrapToggle(val);
+					      if($("#link_mv").is(":checked")) $("#muon_veto_active").bootstrapToggle(val); }
+	    document.page_ready = true;
+	}
+    });
+    
+    $("#link_nv").change(function(){
+	if(document.page_ready){
+	    document.page_ready = false;
+	    var val = 'off';
+	    if($("#tpc_active").is(":checked")) val = 'on';
+	    if($("#link_nv").is(":checked")) $("#neutron_veto_active").bootstrapToggle(val);
+	    document.page_ready = true;
+	}
+    });
+    $("#link_mv").change(function(){
+	if(document.page_ready){
+	    document.page_ready = false;
+	    var val = 'off';
+	    if($("#tpc_active").is(":checked")) val = 'on';
+	    if($("#link_mv").is(":checked")) $("#muon_veto_active").bootstrapToggle(val);
+	    document.page_ready = true;
+	}
+    });
+
+    // Remote mode TPC: unlink both other detectors, set TPC to IDLE
+    $("#remote_tpc").change(function(){
+	if(document.page_ready){
+	    document.page_ready = false;
+	    if(!$("#remote_tpc").is(":checked")){
+		$("#tpc_active").bootstrapToggle('off');
+		$("#link_nv").bootstrapToggle('off');
+		$("#link_mv").bootstrapToggle('off');
+	    }
+	    document.page_ready = true;
+	}
+    });
+    // Remote mode MV: unlink MV if linked, set MV to IDLE
+    $("#remote_muon_veto").change(function(){
+	if(document.page_ready){
+	    document.page_ready = false;
+	    if(!$("#remote_muon_veto").is(":checked")){
+		$("#muon_veto_active").bootstrapToggle('off');
+		$("#link_mv").bootstrapToggle('off');
+	    }
+	    document.page_ready = true;
+	}
+    });
+    // Remote mode NV: unlink NV if linked, set NV to IDLE
+    $("#remote_neutron_veto").change(function(){
+	if(document.page_ready){
+	    document.page_ready = false;
+	    if(!$("#remote_neutron_veto").is(":checked")){
+		$("#neutron_veto_active").bootstrapToggle('off');
+		$("#link_nv").bootstrapToggle('off');
+	    }
+	    document.page_ready = true;
+	}
+    });
+    $("#remote_lz").change(function(){
+	if($("#remote_lz").is(":checked")){
+	    alert("You can't stop LZ");
+	    $("#remote_lz").bootstrapToggle('off');
+	}
+    });
+    $("#lz_active").change(function(){
+	if(document.page_ready){
+	    document.page_ready = false;
+	    alert("LZ is in 'remote' mode.");
+	    $("#lz_active").bootstrapToggle("toggle");
+	    document.page_ready = true;
+	}
+	//return;
+    });
+}
+
 function PopulateRunsList(callback){
     var detectors = ['tpc', 'muon_veto', 'neutron_veto'];
     var fetched = 0;
@@ -19,7 +152,8 @@ function PopulateRunsList(callback){
 			}
 
     	}}(detector)));
-	document.getElementById("lz_mode").innerHTML = "<option value='shit'><strong>xenon leak mode</strong></option><option value='goblind'><strong>HV spark mode</strong></option><option value='blow'><strong>just explode</strong></option><option value='oops'><strong>find dark matter but it turns out not to be dark matter mode</strong></option>";
+	$("#remote_lz").bootstrapToggle('off');
+	document.getElementById("lz_mode").innerHTML = "<option value='shit'><strong>xenon leak mode</strong></option><option value='goblind'><strong>HV spark mode</strong></option><option value='oops'><strong>find dark matter but it turns out not to be dark matter mode</strong></option><option value='n'><strong>Only measure neutrons because of all our teflon mode</strong></option><option value='blow'><strong>Lots of radon mode (note, this mode cannot be turned off)</strong></option>";
 	
 	}
 }

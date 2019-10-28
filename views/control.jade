@@ -29,7 +29,7 @@ block content
                   div.form-check-inline
                     label.form-check-label
                       span Control &nbsp;
-                      input#tpc_remote(type="checkbox" checked data-toggle="toggle" data-onstyle="success" data-offstyle="warning" data-on="web" data-off="remote" data-size="small")
+                      input#remote_tpc(type="checkbox" checked data-toggle="toggle" data-onstyle="success" data-offstyle="warning" data-on="web" data-off="remote" data-size="small")
                   div.form-check-inline 
                     label.form-check-label
                       span Run &nbsp;
@@ -45,6 +45,10 @@ block content
             else
               span(style='font-size:20px;font-weight:bold;') #{det[1]}
               div.float-right(style='display:inline-block')
+                div.form-check-inline
+                  label.form-check-label
+                    span Control &nbsp;
+                    input(id="remote_#{det[0]}" type="checkbox" checked data-toggle="toggle" data-onstyle="success" data-offstyle="warning" data-on="web" data-off="remote" data-size="small")
                 div.form-check-inline 
                   label.form-check-label
                     span Run &nbsp;
@@ -70,60 +74,8 @@ block content
     $(document).ready(function(){
       //FYouButton("submit_changes");
       document.page_ready = false;
+      document.current_user = "#{user.last_name}";
       DrawActiveLink("#lcontrol");
       PopulateRunsList(PullServerData);
-      $("input").change(function(){if(document.page_ready==true){$("#confirm_div").fadeIn("fast"); $(".my_name_is").val("#{user.last_name}");}});
-      $("select").change(function(){if(document.page_ready==true){$("#confirm_div").fadeIn("fast"); $(".my_name_is").val("#{user.last_name}");}});
-      $("#tpc_active").change(function(){
-        if(document.page_ready){
-      	  document.page_ready = false;
-          var val = 'off';
-          if($("#tpc_active").is(":checked")) val = 'on';
-          if($("#link_mv").is(":checked")) $("#muon_veto_active").bootstrapToggle(val);
-          if($("#link_nv").is(":checked")) $("#neutron_veto_active").bootstrapToggle(val);
-          document.page_ready = true;
-        }
-      });
-      $("#muon_veto_active").change(function(){
-      	if(document.page_ready){
-      	  document.page_ready = false;
-          var val = 'off';
-          if($("#muon_veto_active").is(":checked")) val = 'on';
-          if($("#link_mv").is(":checked")) {$("#tpc_active").bootstrapToggle(val);
-          if($("#link_nv").is(":checked")) $("#neutron_veto_active").bootstrapToggle(val); }
-          document.page_ready = true;
-        }
-      });
-      $("#neutron_veto_active").change(function(){
-      if(document.page_ready){
-      	  document.page_ready = false;
-          var val = 'off';
-          if($("#neutron_veto_active").is(":checked")) val = 'on';
-          if($("#link_nv").is(":checked")) {$("#tpc_active").bootstrapToggle(val);
-          if($("#link_mv").is(":checked")) $("#muon_veto_active").bootstrapToggle(val); }
-          document.page_ready = true;
-        }
-      });
-      $("#link_nv").change(function(){
-      	if(document.page_ready){
-      	  document.page_ready = false;
-          var val = 'off';
-          if($("#tpc_active").is(":checked")) val = 'on';
-          if($("#link_nv").is(":checked")) $("#neutron_veto_active").bootstrapToggle(val);
-          document.page_ready = true;
-        }
-      });
-      $("#link_mv").change(function(){
-      	if(document.page_ready){
-      	  document.page_ready = false;
-          var val = 'off';
-          if($("#tpc_active").is(":checked")) val = 'on';
-          if($("#link_mv").is(":checked")) $("#muon_veto_active").bootstrapToggle(val);
-          document.page_ready = true;
-        }
-      });
-      //function PageUpdate(callback){
-      //  PopulatePlaylist("playlist_div");
-     // }
-      //PageUpdate(setTimeout(PageUpdate,5000));
+      DefineButtonRules();
     });
