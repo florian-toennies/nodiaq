@@ -2,7 +2,7 @@ var crapcha = {
 
   init: function($el) {
 
-    var html = '<div class="code"></div><div class="control"><input required type="text" maxlength="20" placeholder="Type the text above"></input><label><span class="fa fa-sync reload btn"></span><a class="fa fa-info info btn" href="https://captcha.net" target="_blank" tabindex="-1"></a> <span class="logo">C A P T C H A<sup>&trade;</sup></span></label></div>';
+    var html = '<div class="code"></div><div class="control"><input required type="text" maxlength="20" placeholder="Type any text"></input><label><span class="fa fa-sync reload btn"></span><a class="fa fa-info info btn" onclick="alert(' + "'You may type literally any text here. Yes, I think it is funny. No, I do not want to remove it.'" +')"_blank" tabindex="-1"></a> <span class="logo">C A P T C H A<sup>&trade;</sup></span></label></div>';
 
     $el.append(html)
       .children('.control')

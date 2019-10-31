@@ -144,10 +144,7 @@ block content
         span(style="font-size:12px;margin-left:15px") 
           strong * required field
         form#sign_up_form(method="POST")
-          div.modal-body(style="min-height:200px;overflow-y:auto")
-            div.bg-danger(style="color:white")
-              strong Note: &nbsp;
-              span don't use this thing yet man, it's not ready
+          div.modal-body(style="min-height:200px;overflow-y:auto")            
             br
             div.row(style="margin-top:4px")
               div.col-6
@@ -176,7 +173,7 @@ block content
                 select#id_shift_type(name="shift_type")
             div.row(style="margin-top:4px")
               div.col-6 
-                strong Will you have a car?
+                strong Will you have access to transportation?
               div.col-6
                 input#id_has_car(type="checkbox" name=has_car onchange="EnableShiftSubmit()")
                 span &nbsp; (check for yes)
@@ -195,7 +192,7 @@ block content
                     li You have the required computing accounts.
                     li You are familiar with the detector and able to operate the DAQ/SCADA systems.
                     li You are able to independently analyze data. 
-                    li You have access to a car. 
+                    li You have access to transportation. 
                     li If you have any special considerations you have contacted the operations manager already.
               div.col-12
                 strong I have read and agree to the disclaimer: &nbsp;
@@ -244,7 +241,7 @@ block content
   script.
 
     $(document).ready(function () {
-      alert("This is a test calendar and not the official one so DO NOT USE IT");
-      InitializeCalendar("calendarview", "#{user.first_name} #{user.last_name}");
+      //alert("This is a test calendar and not the official one so DO NOT USE IT");
+      InitializeCalendar("calendarview", "#{user.daq_id}");
       FillAggregates("#aggregate_table_body", "#table_head_this_year", "#{user.institute}");
     });

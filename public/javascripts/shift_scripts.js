@@ -135,6 +135,7 @@ function InitializeCalendar(divname, calling_user){
 		    
                     // Want to allow people to set as available only if allowed 
                     console.log(calEvent);
+		    console.log(calling_user);
                     if( calling_user == calEvent.shifter )
                         $('#btn_mark_available').attr("disabled", false);
 		    else
