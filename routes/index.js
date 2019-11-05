@@ -367,7 +367,10 @@ function TryToFindUser(cursor, email, collection, callback){
 		    break;
 		if(row[0] != '')
 		    institute = row[0];
-		if(row[3].toLowerCase() == email.toLowerCase()){
+		var checkmail = row[3];
+		if(row[3] == undefined)
+		    continue;
+		if(checkmail.toLowerCase() == email.toLowerCase()){
 		    //console.log(row);
 		    // New collaboration member! Put in DB
 		    var pct_xe = row[5];
