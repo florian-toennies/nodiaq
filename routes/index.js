@@ -367,7 +367,7 @@ function TryToFindUser(cursor, email, collection, callback){
 		    break;
 		if(row[0] != '')
 		    institute = row[0];
-		if(row[3] == email){
+		if(row[3].toLowerCase() == email.toLowerCase()){
 		    //console.log(row);
 		    // New collaboration member! Put in DB
 		    var pct_xe = row[5];
@@ -377,7 +377,7 @@ function TryToFindUser(cursor, email, collection, callback){
 			"last_name": row[1],
 			"first_name": row[2],
 			"institute": institute,
-			"email": email,
+			"email": email.toLowerCase(),
 			"start_date": ConvertToDate(row[6]),
 			"percent_xenon": parseInt(pct_xe),
 			"position": row[4]

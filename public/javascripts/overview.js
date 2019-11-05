@@ -5,17 +5,17 @@ console.log(this.val());
 });
 
 function PopulateShifters(shift_div){
-    var shifter_template = '<div class="row" style="margin-top:10px;"><div class="col-12" style="background-color:#e5e5e5;color:#555"><strong>{{shift_type}}</strong></div><div class="col-12">{{shifter_name}}</div><div class="col-12"><i class="fa fa-envelope"></i>&nbsp;{{shifter_email}}</div><div class="col-12"><i class="fa fa-phone"></i>&nbsp;{{shifter_phone}}</div><div class="col-12"><i class="fab fa-skype"></i>&nbsp;{{shifter_skype}}</div><div class="col-12"><i class="fab fa-github"></i>&nbsp;{{shifter_github}}</div></div>';
+    var shifter_template = '<div class="row" style="margin-top:10px;"><div style="background-color:#e5e5e5;color:#555;margin-left:5px;margin-right:5px;width:100%;"><strong style="padding-left:10px">{{shift_type}}</strong></div><div class="col-12">{{shifter_name}}</div><div class="col-12"><i class="fa fa-envelope"></i>&nbsp;{{shifter_email}}</div><div class="col-12"><i class="fa fa-phone"></i>&nbsp;{{shifter_phone}}</div><div class="col-12"><i class="fab fa-skype"></i>&nbsp;{{shifter_skype}}</div><div class="col-12"><i class="fab fa-github"></i>&nbsp;{{shifter_github}}</div></div>';
     
     $.getJSON(prefix+"/shifts/get_current_shifters", function(data){
 	
 	console.log(data);
 	var html ="";
 	for(var i in data){
-	    blank_shifts = {"shifter_name": "Kein schwein",
+	    blank_shifts = {"shifter_name": "Nobody",
                             "shifter_email": "d.trump@whitehouse.gov",
-                            "shifter_phone": "555-55555",
-                            "shifter_skype": "awesomeburger420",
+                            "shifter_phone": "",
+                            "shifter_skype": "",
                             "shifter_github": "mklinton",
                             "shift_type": "Expert shifter"
                            };
