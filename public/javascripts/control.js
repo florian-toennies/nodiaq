@@ -199,9 +199,9 @@ function PullServerData(callback){
 		    }
 
 		    if(doc['remote'] == 'true')
-			$("#remote_" + detector).bootstrapToggle('on');
-		    else
 			$("#remote_" + detector).bootstrapToggle('off');
+		    else
+			$("#remote_" + detector).bootstrapToggle('on');
 		    if(doc['active'] === "true")
 			$("#"+detector+"_active").bootstrapToggle('on');
 		    else
@@ -239,7 +239,7 @@ function PostServerData(){
 		}
 	    }	    
 	thisdet['active'] = $("#"+detector+"_active").is(":checked");
-	thisdet['remote'] = $("#remote_" + detector).is(":checked");
+	thisdet['remote'] = (!$("#remote_" + detector).is(":checked"));
 	if(detector === "tpc"){
 	    thisdet['link_mv'] = $("#link_mv").is(":checked");
 	    thisdet['link_nv'] = $("#link_nv").is(":checked");
