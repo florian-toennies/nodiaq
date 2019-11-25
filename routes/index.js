@@ -54,91 +54,30 @@ router.get('/detector_history', ensureAuthenticated, function(req, res){
 			return res.send(JSON.stringify(ret));
 		    });
 });
-/*    
-router.get('/status_history', ensureAuthenticated, function(req, res){
-    var db = req.db;
-    var collection = db.get('status');
-    var clients = ['fdaq00_reader_0', 'fdaq00_reader_1'];
 
-    // Get limit from GET options
-    var q = url.parse(req.url, true).query;
-    var limit = q.limit;
-
-    if(typeof limit == 'undefined')
-	limit=1;
-    
-    // Only works with 1 client now
-    collection.find({'host': {"$in": clients}},//"fdaq00_reader_0"},
-		    {'sort': {'_id': -1}, 'limit': parseInt(limit)},
-		    function(e, docs){			
-			ret = {"fdaq00_reader_0": [],
-			       "fdaq00_reader_1": []};
-			for(var i = docs.length-1; i>=0; i-=1){
-			    var oid = new req.ObjectID(docs[i]['_id']);
-			    var dt = Date.parse(oid.getTimestamp());
-			    rate = docs[i]["rate"];
-			    if(typeof rate == "undefined")
-				rate = 0.;
-			    ret[docs[i]['host']].push([dt, rate]);
-			}
-			return res.send(JSON.stringify(ret));
-		    });
-});
-
-router.get('/status_update', ensureAuthenticated, function(req, res){
-    var db = req.db;
-    var statuses = {
-	0: "Idle",
-	1: "Arming",
-	2: "Armed",
-	3: "Running",
-	4: "Error"
-    };
-    var q = url.parse(req.url, true).query;
-    var limit = q.client;
-
-    var collection = db.get('status');
-    //var clients = {
-    //    fdaq00_reader_0: { status: 'none', rate: 0, buffer_length: 0},
-    //    fdaq00_reader_1: { status: 'none', rate: 0, buffer_length: 0},
-    //};
-    //for (var client in clients){
-	docs = collection.find({"host": client},
-			       { "sort": {"_id": -1}, "limit" : 1 },
-			       function(e,docs){
-
-				   if(docs.length>0){
-				       var oid = new req.ObjectID(docs[0]['_id']);
-				       var dt = Date.parse(oid.getTimestamp());
-				       for(var key in docs[0]){
-					   clients[client]['status'] = statuses[docs[0].status];
-					   clients[client][key] = docs[0][key];
-				       }
-				       // Overwrite status with human readable
-				       clients[client]['status'] = statuses[docs[0].status];
-				       clients[client]['timestamp'] = dt;
-				   }
-				   return res.send(JSON.stringify(clients));
-			       });
-    //}
-
-    //    res.render('index', { clients: clients });
-});
-*/
 
 router.get('/account', ensureAuthenticated, function(req, res){
     res.render('account', { user: req.user });
 });
 
 router.get('/account/request_github_access', ensureAuthenticated, function(req, res){
-    console.log("HI");
+
     var owner = process.env.GITHUB_ADMIN_USER;
     var password = process.env.GITHUB_ADMIN_PASSWORD;
     var gid = req.user.github;
+    var q = url.parse(req.url, true).query;
+    var group = q.group;
+
+    // Just in case
+    if(group != 'xenon1t' && group != 'xenonnt'){
+	console.log(group);
+	return res.send(JSON.stringify({"error": "sneaky"}));
+    }
+
     options = {
 	hostname: 'api.github.com',
 	port: 443,
-	path: '/orgs/xenon1t/memberships/' + gid,
+	path: '/orgs/' + group + '/memberships/' + gid,
 	method: 'PUT',
 	body: {
 	    "role": "member",

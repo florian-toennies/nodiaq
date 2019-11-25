@@ -64,10 +64,14 @@ block content
     br
     br
     a(href="/") back to home page
-    div.float-right
-      a.btn.btn-block.btn-social.btn-large.btn-github(style="max-width:300px;background-color:black;color:white", onclick="ReqXenonGroup()")
-        i.fab.fa-github
-        span Request Github Access
+    div.float-right(style='margin-right:20px')
+      a.btn.btn-block.btn-social.btn-large.btn-github(style="max-width:300px;background-color:black;color:white", onclick="ReqXenonGroup('xenon1t')")
+        i.fab.fa-github &nbsp;
+        span Request XENON1T GitHub Access
+    div.float-right(style='margin-right:20px')
+      a.btn.btn-block.btn-social.btn-large.btn-github(style="max-width:300px;background-color:black;color:white;", onclick="ReqXenonGroup('xenonnt')")
+        i.fab.fa-github &nbsp;
+        span Request XENONnT GitHub Access
     div.float-right(style="margin-right:20px;")
       a.btn.btn-info#request_api_button(href="account/request_api_key", style="display:block") Request (new) API Key    
  

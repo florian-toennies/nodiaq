@@ -9,9 +9,9 @@ function FillAPIInfo(userdoc){
 	}
 }
 
-function ReqXenonGroup(){
+function ReqXenonGroup(group){
 
-    $.getJSON("account/request_github_access", function(data){
+    $.getJSON("account/request_github_access?group=" + group, function(data){
 	console.log(data);
     });
 }
