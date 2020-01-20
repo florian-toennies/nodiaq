@@ -44,8 +44,9 @@ block content
         &nbsp;&nbsp;
         strong(style='font-size:12px') Variable: &nbsp;
         select.cselect#menu_variable_s(style="width:100px")
-          option(value='rate') Data Rate
-          option(value='buff') Buffer Size
+          option(value='rate') Data rate
+          option(value='buff') Buffer size
+          option(value='strax') Strax buffer
         &nbsp;&nbsp;
         button.btn.btn-info#update_button(style="height:80%;padding-top:3px" onclick="RedrawRatePlot()") Update
       div.chart_body#rate_chart(style="height:300px")
