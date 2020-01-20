@@ -42,7 +42,7 @@ function RedrawRatePlot(){
     var readers = ["reader0_reader_0", 'reader1_reader_0', 'reader2_reader_0', "reader5_reader_0", "reader6_reader_0"];
     var controllers = ['reader0_controller_0', "reader5_controller_0", "reader6_controller_0"];
     document.reader_data = {};
-    var colors = {"rate": "#1c0877", "buff": "#df3470", "third": "#3dd89f"}
+    var colors = {"rate": "#1c0877", "buff": "#df3470", "strax": "#3dd89f"}
     DrawProgressRate(0);
     var limit = (new Date()).getTime() - parseInt(history)*1000;
     for(i in readers){
@@ -94,6 +94,10 @@ function DrawInitialRatePlot(){
 	    rates = {"type": "area", 
 		      "name": key+" buffer", 
 		      "data": document.reader_data[key]['buffs']};
+      else if($("#menu_variable_s").val() == "strax")
+            rates = {"type" : "area",
+                      "name": key+" strax",
+                      "data": document.reader_data[key]['straxs']};
 	series.push(rates);
 
     }

@@ -205,6 +205,7 @@ router.get('/get_reader_history', ensureAuthenticated, function(req,res){
 	    '_id': '$time_bin',	   
 	    'rate': { '$avg': '$rate'},
 	    'buff': { '$avg': '$buffer_length'},
+            'straxbuf' : {'$avg' : '$strax_buffer'},
 	    'host': { '$first': '$host'}
 	}},
 	{'$project': {
@@ -215,6 +216,7 @@ router.get('/get_reader_history', ensureAuthenticated, function(req,res){
 	    'rate': 1,
 	    'buff': 1,
 	    'host': 1,
+            'straxbuf': 1,
 	}},
 	{'$sort': {"time": 1}},
 	{'$group': {
@@ -222,17 +224,20 @@ router.get('/get_reader_history', ensureAuthenticated, function(req,res){
 	    'rates': {'$push': '$rate'},
 	    'buffs': {'$push': '$buff'},
 	    'times': {'$push': '$time'},
+            'straxs' : {'$push' : '$straxbuf'},
 	}},
     ], function(err, result){	
 	var ret = {};
 	if(result.length > 0){
 	    retval = result[0];
-	    ret[retval['_id']] =  {'rates': [], 'buffs': []};
+	    ret[retval['_id']] =  {'rates': [], 'buffs': [], 'straxs' : []};
 	    for(var i in retval['rates']){
 		ret[retval['_id']]['rates'].push([retval['times'][i],
 						  retval['rates'][i]]);
 		ret[retval['_id']]['buffs'].push([retval['times'][i],
 						  retval['buffs'][i]]);
+                ret[retval['_id']]['straxs'].push([retval['times'][i],
+                                                  retval['straxs'][i]]);
 	    };
 	}
 	else
