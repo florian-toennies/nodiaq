@@ -23,7 +23,8 @@ router.get('/', ensureAuthenticated, function(req, res) {
 router.get('/available_runs', ensureAuthenticated, function(req, res){
     var fspath = runs_fs_base;
     fs.readdir(fspath, function(err, items) {
-	return res.send(JSON.stringify(items));
+      items = items.sort(function(a,b) {return parseInt(b)-parseInt(a);});
+      return res.send(JSON.stringify(items));
     });
 });
 
@@ -169,7 +170,7 @@ async function GetChannelWaveforms(run, reader, channel, fspath, callback){
     if(sorted_files.length === 0)
 	callback([]);
 
-    var last_chunk_called = parseInt(sorted_files[sorted_files.length - 1]);
+    last_chunk_called = parseInt(sorted_files[sorted_files.length - 1]);
 
     var pulses =  await PullData(reader, channel, full_path, ret_pulses, n_pulses, 
 				 last_file_called, last_chunk_called);
@@ -177,11 +178,13 @@ async function GetChannelWaveforms(run, reader, channel, fspath, callback){
 
 }
 
-router.get('/get_pulses', ensureAuthenticated, function(req, res){
+router.get('/_get_pulses', ensureAuthenticated, function(req, res){
 
     // Get pulses from fspath. 
     var db = req.db;
     var options_coll = db.get('options');
+    var board_map_coll = db.get('board_map');
+    var cable_map_coll = db.get('cable_map');
     var fspath = runs_fs_base;
     var q = url.parse(req.url, true).query;
     var run = q.run;
@@ -191,59 +194,131 @@ router.get('/get_pulses', ensureAuthenticated, function(req, res){
     if(typeof run === 'undefined')
 	return JSON.stringify({"error": "no run provided"});
 
-    // Get reader who reads out this channel
-    // NOTE: I have hardcoded the options names to get here... probably bad 
-    // but what else you gonna do? Just change name when you inevitably stumble
-    // on this.
-    console.log("Searching options");
-    options_coll.find({"name": {"$in": ['channel_map_xenon', 'xenonnt_board_definitions_daqweek']}},
-		      {"sort": {"name": 1}}, // this is to make channel_map first!
-		      function(e, docs){
-			  console.log("Found options");
-			  if(docs.length !== 2)
-			      return res.send(JSON.stringify({"error": e}));
-			  if(Object.keys(docs[0]).indexOf('channels') < 0 || 
-			     Object.keys(docs[1]).indexOf('boards') < 0){
-			      return res.send(JSON.stringify({"error": "malformed doc(s)"}));
-			  }
-			  
-			  // Get the reader, module, and m_channel from doc
-			  var module = -1;
-			  var m_channel = -1;
-			  for(var mod in docs[0]['channels']){
-			      for(var i=0; i<docs[0]['channels'][mod].length; i+=1){
-				  if(docs[0]['channels'][mod][i] == parseInt(channel)){
-				      module = parseInt(mod);
-				      m_channel = parseInt(i);
-				      break;
-				  }
-			      }
-			      if(module >= 0 && channel >= 0)
-				  break;
-			  }
-			  
-			  // Fail if we didn't find mod/channel
-			  if(module <0 || channel <0)
-			      return res.send(JSON.stringify({"error": "failed to find channel in map"}));
+    cable_map_coll.find({'pmt' : channel}, function(e, docs) {
+      if (e)
+        return res.send(JSON.stringify({'error' : e.message}));
+      if (docs.length == 0)
+        return res.send(JSON.stringify({"error" : "Channel not found"}));
+      var board = docs[0]["board"];
+      var adc_channel = docs[0]["adc_channel"];
+      board_map_coll.find({"board" : board}, function(ee, docss) {
+        if (ee)
+          return res.send(JSON.stringify({'error' : ee.message}));
+        if (docss.length == 0)
+          return res.send(JSON.stringify({"error" : "Board not found"}));
+        var reader = docss[0]["host"];
 
-			  // Now get the reader for this module
-			  var reader = "";
-			  for(var i in docs[1]['boards']){
-			      if(parseInt(docs[1]['boards'][i]['board']) === module){
-				  reader = docs[1]['boards'][i]['host'];
-				  break;
-			      }
-			  }
-			  console.log("Found reader " + reader);
-			  if(reader === "")
-			      return res.send(JSON.stringify({"error": "failed to find reader with that board"}));
-			  console.log("Getting channel waveforms at " + fspath);
-			  GetChannelWaveforms(run, reader, channel, fspath, function(pulses){
-			      return res.send(JSON.stringify(pulses));
-			  });
-	
-		      });
+	console.log("Getting channel waveforms at " + fspath);
+	GetChannelWaveforms(run, reader, adc_channel, fspath, function(pulses){
+	  return res.send(JSON.stringify(pulses));
+	});
+      }); // board_map callback
+    }); // cable_map callback
 });
 
+router.get("/available_chunks", ensureAuthenticated, function(req, res) {
+  var q = url.parse(req.url, true).query;
+  var run = q.run;
+  if (typeof run === 'undefined') return res.send(JSON.stringify({message : 'Undefined input'}));
+  var fspath = runs_fs_base + '/' + run;
+    fs.readdir(fspath, function(err, items) {
+      items = items.filter(function(fn) {return fn.length == 6;}) // no pre/post
+                   .sort(function(a,b) {return parseInt(b)-parseInt(a);});
+      return res.send(JSON.stringify(items));
+    });
+});
+
+function GetReader(channel, cable_map_coll, board_map_coll, callback) {
+  cable_map_coll.find({'pmt' : parseInt(channel)}, function(e, docs) {
+    if (e)
+      callback(-1);
+    if (docs.length == 0)
+      callback(-2);
+    var board = docs[0]["board"];
+    var adc_channel = docs[0]["adc_channel"];
+    board_map_coll.find({"board" : board}, function(ee, docss) {
+      if (ee)
+        callback(-1);
+      if (docss.length == 0)
+        callback(-2);
+      var reader_id = docss[0]["host"][6]; // reader[i]
+      callback(reader_id);
+    }); // board_map
+  }); // cable_map
+}
+
+router.get('/available_threads', ensureAuthenticated, function(req, res) {
+  var db = req.db;
+  var q = url.parse(req.url, true).query;
+  var run = q.run;
+  var channel = q.channel;
+  var chunk = q.chunk;
+  var board_map_coll = db.get('board_map');
+  var cable_map_coll = db.get('cable_map');
+  if (typeof run === 'undefined' || typeof channel === 'undefined' || typeof chunk === 'undefined')
+    return res.send(JSON.stringify({message : 'Undefined input'}));
+  var fspath=runs_fs_base + '/' + run + '/' + chunk;
+  GetReader(channel, cable_map_coll, board_map_coll, function(reader_id) {
+    if (reader_id == -1 || reader_id == -2)
+      return res.send(JSON.stringify({}));
+    fs.readdir(fspath, function(err, files) {
+      var threads = files.filter(function(fn) {return fn[6] == reader_id;})
+                         .map(function(fn){return fn.slice(17);});
+      return res.send(JSON.stringify(threads));
+    }); // readdir
+  }); // GetReader
+});
+
+router.get('/get_pulses', ensureAuthenticated, function(req, res) {
+  var db = req.db;
+  var q = url.parse(req.url, true).query;
+  var run = q.run;
+  var chunk = q.chunk;
+  var thread = q.thread;
+  var channel = q.channel;
+  if (typeof run === 'undefined' || typeof chunk === 'undefined' || typeof thread === 'undefiend' || typeof channel === 'undefined')
+    return res.send(JSON.stringify({message : 'Undefined input'}));
+  channel = parseInt(channel);
+  GetReader(channel, db.get('cable_map'), db.get('board_map'), function(reader) {
+    if (reader == -1 || reader == -2)
+      return res.send(JSON.stringify({message : 'Invalid input'}));
+    var filepath = runs_fs_base + '/' + run + '/' + chunk + '/reader' + reader + '_reader_0_' + thread;
+    fs.readfile(filepath, function(err, data) {
+      if (err)
+        return res.send(JSON.stringify({message : err.message}));
+      data = lz4.decode(data);
+      var retpulses = [];
+      var idx = 0;
+      const strax_header_size=31;
+      while (idx < output.length) {
+        var frag_idx = 0;
+        var frag_channel = data.readInt16LE(idx+frag_idx);
+        frag_idx += 2;
+        var frag_dt = data.readInt16LE(idx+frag_idx);
+        frag_idx += 2;
+        var frag_time = data.readInt64LE(idx+frag_idx);
+        frag_idx += 8;
+        var frag_length = data.readInt32LE(idx+frag_idx);
+        frag_idx += 8;
+        var pulse_length = data.readInt32LE(idx+frag_idx);
+        frag_idx += 4;
+        var frag_i = data.readInt16LE(idx+frag_idx);
+        frag_idx += 5;
+        if (frag_channel != channel) {
+          idx += strax_header_size;
+          idx += frag_length*2;
+          continue;
+        }
+        wf = [];
+        for (; frag_idx < strax_header_size + frag_length*2; frag_idx += 2)
+          wf.push(data.readInt16LE(idx+frag_idx));
+        retpulses.push({time: frag_time, pulse_length: pulse_length, frag_i: frag_i,
+                        sample: wf, channel: channel});
+        idx += frag_idx;
+      } // while in chunk
+      return res.send(JSON.stringify(retpulses));
+    }); // fs.readfile
+  }); // getreader
+});
 
 module.exports = router;
