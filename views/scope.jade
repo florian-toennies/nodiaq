@@ -18,19 +18,25 @@ block content
         hr
         p
           strong Run: &nbsp;
-          select.cselect#run_select
+          select.cselect#run_select(onchange="FillChunks()")
+        p
+          strong Chunk: &nbsp;
+          select.cselect#chunk_select(onchange="FillThreads()")
         p
           strong Channel: &nbsp;
-          input#channel_select(type='number' min=0 max=248 value=0 name='channel') 
+          input#channel_select(type='number' min=0 max=494 value=0 name='channel')
+        p
+          strong Thread: &nbsp;
+          select.cselect#thread_select
         p
           button.btn.btn-info(onclick="GetData()") Get New Data
         p 
           button.btn.btn-default(onclick="Prev()") Previous
           &nbsp;
           button.btn.btn-default(onclick="Next()") Next
-       
+
       div.col-9
-        div#chartdiv(style='width:100%')   
+        div#chartdiv(style='width:100%')
 
     table(style="width:100%")
       thead
