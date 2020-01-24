@@ -23,7 +23,6 @@ router.get('/', ensureAuthenticated, function(req, res) {
 router.get('/available_runs', ensureAuthenticated, function(req, res){
     var fspath = runs_fs_base;
     fs.readdir(fspath, function(err, items) {
-      if (err) return res.send(JSON.stringify({message : err.message}));
       items = items.sort(function(a,b) {return parseInt(b)-parseInt(a);});
       return res.send(JSON.stringify(items));
     });
@@ -223,7 +222,10 @@ router.get("/available_chunks", ensureAuthenticated, function(req, res) {
   if (typeof run === 'undefined') return res.send(JSON.stringify({message : 'Undefined input'}));
   var fspath = runs_fs_base + '/' + run;
     fs.readdir(fspath, function(err, items) {
+<<<<<<< HEAD
       if (err) return res.send(JSON.stringify({message : err.message}));
+=======
+>>>>>>> Work on scope
       items = items.filter(function(fn) {return fn.length == 6;}) // no pre/post
                    .sort(function(a,b) {return parseInt(b)-parseInt(a);});
       return res.send(JSON.stringify(items));
@@ -236,14 +238,23 @@ function GetReader(channel, cable_map_coll, board_map_coll, callback) {
       callback(-1);
     if (docs.length == 0)
       callback(-2);
+<<<<<<< HEAD
     var board = docs[0]["adc"];
+=======
+    var board = docs[0]["board"];
+    var adc_channel = docs[0]["adc_channel"];
+>>>>>>> Work on scope
     board_map_coll.find({"board" : board}, function(ee, docss) {
       if (ee)
         callback(-1);
       if (docss.length == 0)
         callback(-2);
       var reader_id = docss[0]["host"][6]; // reader[i]
+<<<<<<< HEAD
       callback(parseInt(reader_id));
+=======
+      callback(reader_id);
+>>>>>>> Work on scope
     }); // board_map
   }); // cable_map
 }
@@ -252,11 +263,15 @@ router.get('/available_threads', ensureAuthenticated, function(req, res) {
   var db = req.db;
   var q = url.parse(req.url, true).query;
   var run = q.run;
+<<<<<<< HEAD
   try{
     var channel = q.channel;
   }catch(error){
     return res.send(JSON.stringify({error : 'Invalid channel'}));
   }
+=======
+  var channel = q.channel;
+>>>>>>> Work on scope
   var chunk = q.chunk;
   var board_map_coll = db.get('board_map');
   var cable_map_coll = db.get('cable_map');
@@ -264,10 +279,16 @@ router.get('/available_threads', ensureAuthenticated, function(req, res) {
     return res.send(JSON.stringify({message : 'Undefined input'}));
   var fspath=runs_fs_base + '/' + run + '/' + chunk;
   GetReader(channel, cable_map_coll, board_map_coll, function(reader_id) {
+<<<<<<< HEAD
     if (typeof reader_id === 'string' || reader_id == -1 || reader_id == -2)
       return res.send(JSON.stringify({message : reader_id.toString()}));
     fs.readdir(fspath, function(err, files) {
       if (err) return res.send(JSON.stringify({message : err.message}));
+=======
+    if (reader_id == -1 || reader_id == -2)
+      return res.send(JSON.stringify({}));
+    fs.readdir(fspath, function(err, files) {
+>>>>>>> Work on scope
       var threads = files.filter(function(fn) {return fn[6] == reader_id;})
                          .map(function(fn){return fn.slice(17);});
       return res.send(JSON.stringify(threads));
@@ -289,6 +310,7 @@ router.get('/get_pulses', ensureAuthenticated, function(req, res) {
     if (reader == -1 || reader == -2)
       return res.send(JSON.stringify({message : 'Invalid input'}));
     var filepath = runs_fs_base + '/' + run + '/' + chunk + '/reader' + reader + '_reader_0_' + thread;
+<<<<<<< HEAD
     fs.readFile(filepath, function(err, data) {
       if (err)
         return res.send(JSON.stringify({message : err.message}));
@@ -327,6 +349,29 @@ router.get('/get_pulses', ensureAuthenticated, function(req, res) {
         frag_idx += 2;
         frag_idx += 4; // skip baseline
         frag_idx += 1; // skip reduction
+=======
+    fs.readfile(filepath, function(err, data) {
+      if (err)
+        return res.send(JSON.stringify({message : err.message}));
+      data = lz4.decode(data);
+      var retpulses = [];
+      var idx = 0;
+      const strax_header_size=31;
+      while (idx < output.length) {
+        var frag_idx = 0;
+        var frag_channel = data.readInt16LE(idx+frag_idx);
+        frag_idx += 2;
+        var frag_dt = data.readInt16LE(idx+frag_idx);
+        frag_idx += 2;
+        var frag_time = data.readInt64LE(idx+frag_idx);
+        frag_idx += 8;
+        var frag_length = data.readInt32LE(idx+frag_idx);
+        frag_idx += 8;
+        var pulse_length = data.readInt32LE(idx+frag_idx);
+        frag_idx += 4;
+        var frag_i = data.readInt16LE(idx+frag_idx);
+        frag_idx += 5;
+>>>>>>> Work on scope
         if (frag_channel != channel) {
           idx += strax_header_size;
           idx += frag_length*2;
@@ -334,7 +379,11 @@ router.get('/get_pulses', ensureAuthenticated, function(req, res) {
         }
         wf = [];
         for (; frag_idx < strax_header_size + frag_length*2; frag_idx += 2)
+<<<<<<< HEAD
           wf.push(decompressed.readInt16LE(idx+frag_idx));
+=======
+          wf.push(data.readInt16LE(idx+frag_idx));
+>>>>>>> Work on scope
         retpulses.push({time: frag_time, pulse_length: pulse_length, frag_i: frag_i,
                         sample: wf, channel: channel});
         idx += frag_idx;
