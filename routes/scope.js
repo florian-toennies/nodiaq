@@ -237,13 +237,14 @@ function GetReader(channel, cable_map_coll, board_map_coll, callback) {
     if (docs.length == 0)
       callback(-2);
     var board = docs[0]["adc"];
+    var adc_channel = docs[0]["adc_channel"];
     board_map_coll.find({"board" : board}, function(ee, docss) {
       if (ee)
         callback(-1);
       if (docss.length == 0)
         callback(-2);
       var reader_id = docss[0]["host"][6]; // reader[i]
-      callback(parseInt(reader_id));
+      callback(reader_id);
     }); // board_map
   }); // cable_map
 }
@@ -252,8 +253,9 @@ router.get('/available_threads', ensureAuthenticated, function(req, res) {
   var db = req.db;
   var q = url.parse(req.url, true).query;
   var run = q.run;
+  var channel;
   try{
-    var channel = q.channel;
+    channel = q.channel;
   }catch(error){
     return res.send(JSON.stringify({error : 'Invalid channel'}));
   }
@@ -289,6 +291,7 @@ router.get('/get_pulses', ensureAuthenticated, function(req, res) {
     if (reader == -1 || reader == -2)
       return res.send(JSON.stringify({message : 'Invalid input'}));
     var filepath = runs_fs_base + '/' + run + '/' + chunk + '/reader' + reader + '_reader_0_' + thread;
+<<<<<<< HEAD
     fs.readFile(filepath, function(err, data) {
       if (err)
         return res.send(JSON.stringify({message : err.message}));
@@ -334,7 +337,7 @@ router.get('/get_pulses', ensureAuthenticated, function(req, res) {
         }
         wf = [];
         for (; frag_idx < strax_header_size + frag_length*2; frag_idx += 2)
-          wf.push(decompressed.readInt16LE(idx+frag_idx));
+          wf.push(data.readInt16LE(idx+frag_idx));
         retpulses.push({time: frag_time, pulse_length: pulse_length, frag_i: frag_i,
                         sample: wf, channel: channel});
         idx += frag_idx;
