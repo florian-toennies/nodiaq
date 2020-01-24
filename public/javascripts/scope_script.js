@@ -9,12 +9,42 @@ function PopulateAvailableRuns(divname){
     });
 }
 
+function FillChunks(){
+  var run = $('#run_select').val();
+  $.getJSON('scope/available_chunks?run='+run, function(data){
+    var html = '';
+    for (var i in data) {
+      html += "<option value="+data[i]+">"+data[i]+"</option>";
+    }
+    $("#chunk_select").html(html);
+  });
+}
+
+function FillThreads(){
+  var run = $('#run_select').val();
+  var chunk = $('#chunk_select').val();
+  var channel = $("#channel_select").val();
+  $.getJSON("scope/available_threads?run="+run+"&channel="+channel.toString()+"&chunk="+chunk, function(data) {
+    var html = '';
+    for (var i in data) {
+      html += "<option value="+data[i]+">"+data[i]+"</option>";
+    }
+    $("#thread_select").html(html);
+  });
+}
+
 function GetData(){
 
     var run = $("#run_select").val();
     var channel = $("#channel_select").val();
+    var chunk=$("#chunk_select").val();
+    var thread=$("#thread_select").val();
 
-    $.getJSON('scope/get_pulses?run='+run+'&channel='+channel.toString(), function(data){
+    $.getJSON('scope/get_pulses?run='+run+'&channel='+channel.toString()+"&chunk="+chunk+"&thread="+thread, function(data){
+        if (typeof data.message != 'undefined') {
+          alert(data.message);
+          return;
+        }
 	document.data = data;
 console.log(data);
 	document.index=0;
