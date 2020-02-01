@@ -115,7 +115,7 @@ passport.use(new GitHubStrategy({
 			  function(e, docs){
 
                               if(docs.length===0){
-                                  console.log("Couldn't find user in run DB");
+                                  console.log("Couldn't find user in run DB, un "+profile._json.login);
                                   console.log(profile._json.login);
                                   return done(null, false, "Couldn't find user in DB");
                               }
