@@ -4,7 +4,6 @@ function FYouButton(buttonid){
     $("#"+buttonid).mouseover(function(){
         var t = ($(window).height()-80)*Math.random() + 80;
         var l = ($(window).width()-40)*Math.random();
-        console.log(t);
         $("#"+buttonid).css({'z-index': 10, //'height': '31px',
                              'top': t, 'left': l, 'position':'absolute'});
 
@@ -22,9 +21,9 @@ function FYouButton(buttonid){
 var statii = ["IDLE", "ARMING", "ARMED", "RUNNING", "ERROR", "UNKNOWN"];
 
 function DetectorInfoLoop(){
-    FillDetectorInfo('tpc');
-    FillDetectorInfo('muon_veto');
-    FillDetectorInfo('neutron_veto');
+    FillDetectorInfo('tpc', function(){});
+    FillDetectorInfo('muon_veto', function(){});
+    FillDetectorInfo('neutron_veto', function(){});
     setTimeout(DetectorInfoLoop, 10000);
 }
 
@@ -51,7 +50,6 @@ function FillDetectorInfo(det, callback){
     var title_text = [' is IDLE', ' is ARMING', ' is ARMED', ' is RUNNING', ' is IN ERROR',
 		      ' is TIMING OUT', ' is UNKNOWN'];
    
-    console.log("FILLING DET INFO FOR " + det);
     $.getJSON("status/get_detector_status?detector="+det,
 	      function(data){
 		  if($("#"+det+"_status").length){
@@ -61,7 +59,6 @@ function FillDetectorInfo(det, callback){
 		      document.getElementById(det+"_rate").innerHTML = data['rate'].toFixed(2);
 		      document.getElementById(det+"_readers").innerHTML = data['readers'];
 		  }
-		  console.log(data);
 		  for(var i in status_classes)
 		      $("#"+det+"_status_icon").removeClass(status_classes[i]);
 		  $("#"+det+"_status_icon").removeClass('fa-spin');
@@ -118,7 +115,6 @@ function DrawActiveLink(page){
 	"#llog", "#lusers", "#lhelp", "#laccount", "#lcontrol", "#lshifts", "#lmonitor", "#lequipment"
     ];
     for(var i in pages){
-    	console.log(pages[i]);
 		if(pages[i] !== page)
 	    	$(pages[i]).removeClass("active");
 		else
@@ -136,9 +132,7 @@ function hexToRgb(hex) {
     } : null;
 }
 function SetNavbar(fc){
-    console.log(fc);
     var hcol = hexToRgb(fc);
-    console.log(hcol);
     if(hcol!=null){
       complement = "#eeeeee";
       if((hcol['r']+hcol['g']+hcol['b'])/3 > 128)
