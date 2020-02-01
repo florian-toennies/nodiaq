@@ -39,8 +39,8 @@ function RedrawRatePlot(){
     var resolution = $("#menu_resolution_s").val();
     var variable = $("#menu_variable_s").val();
 
-    var readers = ["reader0_reader_0", 'reader1_reader_0', 'reader2_reader_0', "reader5_reader_0", "reader4_reader_0"];
-    var controllers = ['reader0_controller_0', "reader5_controller_0", "reader4_controller_0"];
+    var readers = ["reader0_reader_0", 'reader1_reader_0', 'reader2_reader_0', "reader5_reader_0", "reader6_reader_0"];
+    var controllers = ['reader0_controller_0', "reader5_controller_0", "reader6_controller_0"];
     document.reader_data = {};
     var colors = {"rate": "#1c0877", "buff": "#df3470", "third": "#3dd89f"}
     DrawProgressRate(0);
@@ -142,7 +142,7 @@ function DrawInitialRatePlot(){
 
 function DrawInitialStatus(){
     return;
-    var readers = ["reader0_reader_0", 'reader1_reader_0', 'reader2_reader_0', "reader4_reader_0", "reader5_reader_0"];
+    var readers = ["reader0_reader_0", 'reader1_reader_0', 'reader2_reader_0', "reader6_reader_0", "reader5_reader_0"];
     html = "<h5 style='width:100%;background-color:#151675;color:white;padding:3px;padding-left:5px;'>Readout Node Status</h5>";
     for(var i in readers){
 	html += "<div id='"+readers[i]+"_statdiv' style='width:100%;'><strong>"+readers[i]+" </strong>";
@@ -156,8 +156,8 @@ function DrawInitialStatus(){
 }
 
 function UpdateStatusPage(){
-    var readers = ["reader0_reader_0", 'reader1_reader_0', 'reader2_reader_0', 'reader4_reader_0', 'reader5_reader_0'];
-    var controllers = ['reader0_controller_0', 'reader4_controller_0', 'reader5_controller_0'];
+    var readers = ["reader0_reader_0", 'reader1_reader_0', 'reader2_reader_0', 'reader6_reader_0', 'reader5_reader_0'];
+    var controllers = ['reader0_controller_0', 'reader6_controller_0', 'reader5_controller_0'];
     var brokers = []; //["fdaq00_broker_0"]; 
 
     UpdateCommandPanel();
@@ -392,7 +392,7 @@ function UpdateCrateControllers(controllers){
 }
 
 function UpdateCommandPanel(){
-    // Fill command panel                                                                            
+    // Fill command panel
     var recent = 0;
     var command_length = 20;
     if(typeof document.local_command_queue === "undefined")
@@ -415,7 +415,7 @@ function UpdateCommandPanel(){
             doc = data[i];
             var timestamp = parseInt(doc['_id'].substr(0,8), 16)*1000
             var date = new Date(timestamp);
-            //document.local_command_queue.push(doc);                                        
+            //document.local_command_queue.push(doc);
 
 	    // If this element exists then remove it cause it means
 	    // we might have an update so want to overwrite
@@ -434,7 +434,7 @@ function UpdateCommandPanel(){
                 tcol = 'orange';
             fillHTML += '<strong style="color:'+tcol+'">' + doc['command'] + '</strong> for detector <strong>' + doc['detector'] + '</strong> from <strong>' + doc['user'] + '</strong>';
 	    
-            // See which hosts responded                                                         
+            // See which hosts responded
             var col = "green";
             var nhosts =  '-';
             var nack = '-';
@@ -451,7 +451,7 @@ function UpdateCommandPanel(){
             fillHTML += '<div id="collapse'+doc['_id']+'" class="panel-collapse collapse"><div class="panel-body" style="background-color:#ccc;font-size:.75em">';
             fillHTML += JSON.stringify(doc, undefined, 4);;
             fillHTML += '</div><div class="panel-footer">';
-            //                  fillHTML += 'Panel Footer';                                      
+            //                  fillHTML += 'Panel Footer';
             fillHTML += '</div></div></div></div>';
 	    
             //try{
@@ -459,7 +459,7 @@ function UpdateCommandPanel(){
             //    document.local_command_queue.splice(document.local_command_queue.length-1, 1);
             //}
             //catch(E){
-                //                                                                               
+                //
             //}
 	}
 	
@@ -484,8 +484,8 @@ function UpdateCommandPanel(){
 
 
 function UpdateStatusPageOld(){
-    var readers = ["reader0_reader_0", 'reader1_reader_0', 'reader2_reader_0', 'reader4_reader_0', 'reader5_reader_0'];
-    var controllers = ['reader0_controller_0', 'reader4_controller_0', 'reader5_controller_0'];
+    var readers = ["reader0_reader_0", 'reader1_reader_0', 'reader2_reader_0', 'reader6_reader_0', 'reader5_reader_0'];
+    var controllers = ['reader0_controller_0', 'reader6_controller_0', 'reader5_controller_0'];
     var brokers = []; //["fdaq00_broker_0"];
     
     for(i in readers){
@@ -693,8 +693,8 @@ function UpdateChart(host, ts, rate, buff){
 function DrawInitialCharts(){
     document.charts = {};
     document.last_time_charts = {};
-    var readers = ["reader0_reader_0", 'reader1_reader_0', 'reader2_reader_0', 'reader4_reader_0', 'reader5_reader_0'];
-    var controllers = ['reader0_controller_0', 'reader4_controller_0', 'reader5_controller_0'];
+    var readers = ["reader0_reader_0", 'reader1_reader_0', 'reader2_reader_0', 'reader6_reader_0', 'reader5_reader_0'];
+    var controllers = ['reader0_controller_0', 'reader6_controller_0', 'reader5_controller_0'];
 
     var colors = {"rate": "#1c0877", "buff": "#df3470", "third": "#3dd89f"}
     for(i in readers){
