@@ -1,5 +1,5 @@
 function UpdateMonitorPage(){
-    var hosts = ['reader0', 'reader1', 'reader2', 'eb0', 'eb1', 'eb2'];
+    var hosts = ['reader0', 'reader1', 'reader2', 'eb0', 'eb1', 'eb2', 'eb3', 'eb4', 'eb5'];
     for(i in hosts){
 	var host = hosts[i];
 	$.getJSON("hosts/get_host_status?host="+host, (function(h){
@@ -78,7 +78,7 @@ function DrawMonitorCharts(){
     document.charts = {};
     document.last_time_charts = {};
 
-    var hosts = ["reader0", 'reader1', 'reader2', 'eb0', 'eb1', 'eb2'];
+    var hosts = ["reader0", 'reader1', 'reader2', 'eb0', 'eb1', 'eb2', 'eb3', 'eb4', 'eb5'];
 
     for(i in hosts){
 	var host = hosts[i];
