@@ -123,11 +123,11 @@ function GetControlDoc(collection, detector, callback) {
 }
 
 function GetDetectorStatus(collection, detector, callback) {
+  var timeout = 30;
   var now = Math.floor(new Date().getTime()/1000) - timeout;
-  var oid = ObjectId(now.toString(16) + "0000000000000000");
-  var query = {detector : detector, '_id' : {$gte : oid}};
+  var query = {detector : detector};//, '_id' : {$gte : oid}};
   var options = {sort : {'_id' : -1}, limit : 1};
-  collection.find(query, function(err, docs) {
+  collection.find(query, options, function(err, docs) {
     if (err) {
       callback(err.message, null);
     }
@@ -151,7 +151,6 @@ router.get("/getcommand/:detector", checkKey, function(req, res) {
 
 router.get("/detector_status/:detector", checkKey, function(req, res) {
   var detector = req.params.detector;
-  var timeout = 30;
   var collection = req.db.get("aggregate_status");
   GetDetectorStatus(collection, detector, function(err, doc) {
     if (err) {
