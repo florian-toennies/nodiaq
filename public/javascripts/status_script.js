@@ -1,6 +1,7 @@
 var CHECKIN_TIMEOUT=30;
 document.ceph_chart = null;
 document.last_time_charts = {};
+document.reader_data = {};
 
 function GetStatus(i, checkin){
     var STATUSES = [
@@ -45,10 +46,15 @@ function RedrawRatePlot(){
     var colors = {"rate": "#1c0877", "buff": "#df3470", "strax": "#3dd89f"}
     DrawProgressRate(0);
     var limit = (new Date()).getTime() - parseInt(history)*1000;
+    console.log(document.reader_data);
     for(i in readers){
 	var reader = readers[i];
 	$.getJSON("status/get_reader_history?limit="+limit+"&res="+resolution+"&reader="+reader, 
 		  function(data){
+			  if (typeof data.error != 'undefined') {
+				  console.log(data.error);
+				  return;
+			  }
 		      for (var key in data) {
 			  // check if the property/key is defined in the object itself, not in parent
 			  if (!data.hasOwnProperty(key)) 
@@ -309,8 +315,6 @@ function UpdateOSDs(data){
 	$("#osd_" + j + "_capacity").width(parseInt(100*data['osds'][i]['used'] /
 						    (data['osds'][i]['used'] +
 						     data['osds'][i]['avail']))+"%");
-	console.log("OSD");
-	console.log(data['osds'][i]);
 	$("#osd_" + j + "_progress").prop('title', ToHumanBytes(data['osds'][i]['used']) + " used of " + ToHumanBytes(data['osds'][i]['used'] + data['osds'][i]['avail']));
     }
 
@@ -321,16 +325,13 @@ function UpdateFromReaders(readers){
     for(i in readers){
         var reader = readers[i];
         $.getJSON("status/get_reader_status?reader="+reader, function(data){
+	    if (typeof data['host'] == 'undefined')
+	        return;
             var rd = data['host'];
-	    if(data['checkin'] > CHECKIN_TIMEOUT)
-		$("#"+rd+"_statdiv").css('color', 'red');
-	    else
-		$("#"+rd+"_statdiv").css('color', 'black');
+	    var color = data['checkin'] > CHECKIN_TIMEOUT ? 'red' : 'black';
+	    $("#"+rd+"_statdiv").css("color", color);
             document.getElementById(rd+"_status").innerHTML = GetStatus(data['status'], data['checkin']);
             document.getElementById(rd+"_rate").innerHTML   = data['rate'].toFixed(2);// + " MB/s";
-//            document.getElementById(rd+"_buffer").innerHTML = data['buffer_length'].toFixed(2) + " MB";
-            //document.getElementById(rd+"_mode").innerHTML   = data['run_mode'];
-            //document.getElementById(rd+"_run").innerHTML    = data['current_run_id'];
             document.getElementById(rd+"_check-in").innerHTML   = data['checkin'];
 
             if(document.last_time_charts[rd] == undefined ||
