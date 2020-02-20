@@ -3,8 +3,8 @@ var passport = require('passport');
 var monk = require('monk');
 var runs_cstr = process.env.USERS_URI;
 var runs_db = monk(runs_cstr, {authSource: process.env.USERS_MONGO_AUTH_DB});
-console.log("Runs db in user auth");
-console.log(runs_cstr);
+//console.log("Runs db in user auth");
+//console.log(runs_cstr);
 
 passport.serializeUser(function(user, done) {
     done(null, user);
@@ -116,7 +116,6 @@ passport.use(new GitHubStrategy({
 
                               if(docs.length===0){
                                   console.log("Couldn't find user in run DB, un "+profile._json.login);
-                                  console.log(profile._json.login);
                                   return done(null, false, "Couldn't find user in DB");
                               }
                               var doc = docs[0];
