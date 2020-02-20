@@ -11,25 +11,25 @@ var mongo = require('mongodb');
 var ObjectID = mongo.ObjectID;
 var monk = require('monk');
 var runs_cstr = process.env.RUNS_URI;
-console.log("Runs DB")
-console.log(runs_cstr);
+//console.log("Runs DB")
+//console.log(runs_cstr);
 var runs_db = monk(runs_cstr, {authSource: process.env.RUNS_MONGO_AUTH_DB});
 
 // In case different
 var users_cstr = process.env.USERS_URI;
-console.log("Users DB");
-console.log(users_cstr);
+//console.log("Users DB");
+//console.log(users_cstr);
 var users_db = monk(users_cstr, {authSource: process.env.USERS_MONGO_AUTH_DB});
 
 var dax_cstr = process.env.DAQ_URI;
-console.log("DAX DB");
-console.log(dax_cstr);
+//console.log("DAX DB");
+//console.log(dax_cstr);
 var db = monk(dax_cstr, {authSource: process.env.DAQ_MONGO_AUTH_DB});
 
 var monitor_cstr = "mongodb://"+process.env.DAQ_MONGO_USER +":"+process.env.DAQ_MONGO_PASSWORD+"@"+process.env.DAQ_MONGO_HOST+":"+process.env.DAQ_MONGO_PORT+"/"+process.env.DAQ_MONGO_DB;
 var monitor_client = new mongo.MongoClient(monitor_cstr, {authSource: process.env.DAQ_MONGO_AUTH_DB});
 var monitor_db;
-console.log(monitor_cstr);
+//console.log(monitor_cstr);
 monitor_client.connect(function(err) {
     console.log(err);
     monitor_db = monitor_client.db('daq');
@@ -143,7 +143,7 @@ app.use('/je', express.static(__dirname + '/node_modules/jsoneditor/dist/'));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
- app.use(logger('dev'));
+app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
