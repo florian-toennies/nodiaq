@@ -52,7 +52,6 @@ function checkKey(req, res, next) {
           return next();
         } */
       } // if (ret == true)
-      console.log('User ' + user + ' key ' + key + ' db ' + docs.api_key);
       return res.send(JSON.stringify({message : 'Access Denied'}));
     });
   });
