@@ -73,6 +73,7 @@ var monitorRouter = require('./routes/monitor');
 var shiftRouter = require('./routes/shifts');
 var adminRouter = require('./routes/admin');
 var equipmentRouter = require('./routes/equipment');
+var apiRouter = require('./routes/api');
 
 // Using express!
 var app = express();
@@ -183,6 +184,7 @@ app.use('/monitor', monitorRouter);
 app.use('/shifts', shiftRouter);
 app.use('/equipment', equipmentRouter);
 app.use('/admin', adminRouter);
+app.use('/api', apiRouter);
 
 
 // catch 404 and forward to error handler
