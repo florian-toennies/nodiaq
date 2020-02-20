@@ -393,7 +393,7 @@ function UpdateCrateControllers(controllers){
 }
 
 function UpdateCommandPanel(){
-    // Fill command panel                                                                            
+    // Fill command panel
     var recent = 0;
     var command_length = 20;
     if(typeof document.local_command_queue === "undefined")
@@ -416,7 +416,7 @@ function UpdateCommandPanel(){
             doc = data[i];
             var timestamp = parseInt(doc['_id'].substr(0,8), 16)*1000
             var date = new Date(timestamp);
-            //document.local_command_queue.push(doc);                                        
+            //document.local_command_queue.push(doc);
 
 	    // If this element exists then remove it cause it means
 	    // we might have an update so want to overwrite
@@ -435,7 +435,7 @@ function UpdateCommandPanel(){
                 tcol = 'orange';
             fillHTML += '<strong style="color:'+tcol+'">' + doc['command'] + '</strong> for detector <strong>' + doc['detector'] + '</strong> from <strong>' + doc['user'] + '</strong>';
 	    
-            // See which hosts responded                                                         
+            // See which hosts responded
             var col = "green";
             var nhosts =  '-';
             var nack = '-';
@@ -452,7 +452,7 @@ function UpdateCommandPanel(){
             fillHTML += '<div id="collapse'+doc['_id']+'" class="panel-collapse collapse"><div class="panel-body" style="background-color:#ccc;font-size:.75em">';
             fillHTML += JSON.stringify(doc, undefined, 4);;
             fillHTML += '</div><div class="panel-footer">';
-            //                  fillHTML += 'Panel Footer';                                      
+            //                  fillHTML += 'Panel Footer';
             fillHTML += '</div></div></div></div>';
 	    
             //try{
@@ -460,7 +460,7 @@ function UpdateCommandPanel(){
             //    document.local_command_queue.splice(document.local_command_queue.length-1, 1);
             //}
             //catch(E){
-                //                                                                               
+                //
             //}
 	}
 	
