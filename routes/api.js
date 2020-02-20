@@ -17,21 +17,21 @@ var status_enum = [
 
 function checkKey(req, res, next) {
   var q = url.parse(req.url, true).query;
-  var user = q.user;
-  var key = q.key;
+  var user = q.api_user;
+  var key = q.api_key;
   if (typeof(user) == 'undefined' || typeof(key) == 'undefined') {
     return res.send(JSON.stringify({}));
   }
   var collection = req.users_db.get("users");
-  var query = {"api_username" : user};
-  var options = {"projection" : {"api_key" : 1}};
-  collection.find(query, options, function(e, docs) {
+  var query = {api_username : user};
+  var options = {api_key : 1};
+  collection.findOne(query, options, function(e, docs) {
     if (e) {
       return res.send(JSON.stringify({message : e.message}));
     }
-    if (docs.length == 0 || typeof(docs[0].api_key) == 'undefined')
+    if (docs.length == 0 || typeof(docs.api_key) == 'undefined')
       return res.send(JSON.stringify({message : 'Access denied'}));
-    bcrypt.compare(key, docs[0]['api_key'], function(err, ret) {
+    bcrypt.compare(key, docs.api_key, function(err, ret) {
       if (err) return res.send(JSON.stringify({message : err}));
       if (ret == true) {
         return next();
@@ -52,9 +52,10 @@ function checkKey(req, res, next) {
           return next();
         } */
       } // if (ret == true)
-      console.log('User ' + user + ' key ' + key + ' db ' + docs[0]['api_key']);
+      console.log('User ' + user + ' key ' + key + ' db ' + docs.api_key);
       return res.send(JSON.stringify({message : 'Access Denied'}));
     });
+  });
 }
 
 router.get("/helloworld", checkKey, function(req, res) {
@@ -163,7 +164,7 @@ router.get("/detector_status/:detector", checkKey, function(req, res) {
 
 router.post("/setcommand/:detector", checkKey, function(req, res) {
   var q = url.parse(req.url, true).query;
-  var user = q.user;
+  var user = q.api_user;
   var data = req.body.data;
   var detector = req.params.detector;
   var ctrl_coll = req.db.get("detector_control");
@@ -236,7 +237,8 @@ router.post("/setcommand/:detector", checkKey, function(req, res) {
             if (typeof data.stop_after != 'undefined') {
               try {
                 update.stop_after = parseInt(data.stop_after);
-            } catch () {}
+              } catch (error) {}
+            }
             ctrl_coll.updateOne({detector : detector}, {$set : update}, options,
                 function(err, result) {
                   if (err) return res.send(JSON.stringify({message : err.message}));
