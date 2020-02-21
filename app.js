@@ -74,6 +74,7 @@ var shiftRouter = require('./routes/shifts');
 var adminRouter = require('./routes/admin');
 var equipmentRouter = require('./routes/equipment');
 var apiRouter = require('./routes/api');
+var TPCRouter   = require('./routes/tpc');
 
 // Using express!
 var app = express();
@@ -185,6 +186,8 @@ app.use('/shifts', shiftRouter);
 app.use('/equipment', equipmentRouter);
 app.use('/admin', adminRouter);
 app.use('/api', apiRouter);
+app.use('/tpc', TPCRouter);
+
 
 
 // catch 404 and forward to error handler

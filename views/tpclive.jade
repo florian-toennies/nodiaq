@@ -1,0 +1,65 @@
+extends layout
+
+block extrahead
+
+  script(src="javascripts/tpc_live.js", type="text/javascript")
+  link(href="stylesheets/tpc.css", rel="stylesheet")
+  
+block content     
+  div.main-container
+    h3 TPC live view
+    br
+    
+    object(type="image/svg+xml", id="svg_frame1", data="/images/tpc_layout.svg", style="width:75%;", class="tpcview")
+    
+    div.tpc-controller
+    
+        
+        button(onclick="jump_time(-10)") -10 s
+        button(onclick="jump_time(-1)")   -1 s
+        button(onclick="stop_intervals()") pause
+        button(onclick="pseudo_live()")  playback
+        button(onclick="jump_time( 1)")    +1 s
+        button(onclick="jump_time( 10)") +10 s
+        button(onclick="start_live_interval()") live
+    
+    
+        table
+            tr
+                td Set Timestamp
+                td 
+                    input(id="field_current_timestamp" value=-1 )
+                td
+                    button(onclick="jump_time('tf')") jump to Set Timestamp
+    
+            tr
+                td Start Timestamp
+                td
+                    input(id="field_history_start" value=-1 )
+                td
+                    button(onclick="usetimestamp('field_history_start')") use Set Timestamp
+            tr
+                td End Timestamp
+                td
+                    input(id="field_history_end" value=-1 )
+                td
+                    button(onclick="usetimestamp('field_history_end')") use Set Timestamp
+            tr
+                td averaging width
+                td
+                    input(id="field_history_window" value=10 )
+                td
+                    button(onclick="history_draw()") Draw PMTs
+            
+        
+        
+    object(type="image/svg+xml", id="svg_frame2", data="/images/tpc_history.svg", style="width:50%;", class="tpcview")
+    
+    
+    
+    script.
+        $(document).ready(function(){
+            setTimeout(function(){
+                initialize_pmts();
+            }, 1000);
+        });
