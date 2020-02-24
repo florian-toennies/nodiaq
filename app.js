@@ -26,7 +26,7 @@ var dax_cstr = process.env.DAQ_URI;
 //console.log(dax_cstr);
 var db = monk(dax_cstr, {authSource: process.env.DAQ_MONGO_AUTH_DB});
 
-var monitor_cstr = "mongodb://"+process.env.DAQ_MONGO_USER +":"+process.env.DAQ_MONGO_PASSWORD+"@"+process.env.DAQ_MONGO_HOST+":"+process.env.DAQ_MONGO_PORT+"/"+process.env.DAQ_MONGO_DB;
+var monitor_cstr = process.env.MONITOR_URI;
 var monitor_client = new mongo.MongoClient(monitor_cstr, {authSource: process.env.DAQ_MONGO_AUTH_DB});
 var monitor_db;
 //console.log(monitor_cstr);
