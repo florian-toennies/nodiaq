@@ -8,5 +8,27 @@ Installation:
   - npm start opens the test server on port 3000 of your machine
 
 
-I followed this tutorial to get started:
-https://closebrace.com/tutorials/2017-03-02/the-dead-simple-step-by-step-guide-for-front-end-developers-to-getting-up-and-running-with-nodejs-express-and-mongodb
+I followed this tutorial to get started: https://closebrace.com/tutorials/2017-03-02/the-dead-simple-step-by-step-guide-for-front-end-developers-to-getting-up-and-running-with-nodejs-express-and-mongodb
+
+
+
+required enironment varibales:
+
+# github key info
+GITHUB_CLIENT_ID
+GITHUB_SECRET_KEY
+
+# mongo db URIs
+RUNS_URI
+DAQ_URI
+USERS_URI
+MONITOR_URI
+
+# mongo authentification dbs
+DAQ_MONGO_AUTH_DB 
+RUNS_MONGO_AUTH_DB
+USERS_MONGO_AUTH_DB
+DAQ_MONGO_AUTH_DB
+
+# a seesion required for express (="0" ????)
+EXPRESS_SESSION
