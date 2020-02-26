@@ -122,18 +122,20 @@ router.get('/account/request_api_key', ensureAuthenticated, function(req, res){
     // Hash it
     const bcrypt = require('bcrypt-nodejs');
     const saltRounds = 10;
-    var salt = bcrypt.genSaltSync(saltRounds);
-    var hash = bcrypt.hashSync(key, salt);
-    
+    //var salt = bcrypt.genSaltSync(saltRounds);
+    //var hash = bcrypt.hashSync(key, salt);
     var db = req.runs_db;
     var collection = db.get("users");
-    collection.update({"first_name": req.user.first_name,
-		       "last_name": req.user.last_name},
-		      {"$set": {"api_username": api_username,
-				"api_key": hash}});
-    req.user.api_key = key;
-    req.user.api_username = api_username;
-    return res.redirect(gp+"/account");
+    bcrypt.hash(key, saltRounds, function(err, hash) {
+    
+        collection.update({"first_name": req.user.first_name,
+		           "last_name": req.user.last_name},
+		          {"$set": {"api_username": api_username,
+				    "api_key": hash}});
+        req.user.api_key = key;
+        req.user.api_username = api_username;
+        return res.redirect(gp+"/account");
+    });
 });
 
 router.post('/updateContactInfo', ensureAuthenticated, (req, res) => {

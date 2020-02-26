@@ -17,7 +17,7 @@ mongoose.connect(dbURI, {dbName: process.env.RUNS_MONGO_DB});//'xenonnt'});
 runsdb.on('error', console.error.bind(console, 'connection error:'));
 runsdb.once('open', function callback ()
 	{
-	    console.log('Connection has succesfully opened');
+	    //console.log('Connection has succesfully opened');
 	    var Schema = mongoose.Schema;
 	    runsTableSchema = new Schema(
 		{
