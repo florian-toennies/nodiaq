@@ -1,35 +1,50 @@
 extends layout
 
 block extrahead
-
-  script(src="javascripts/monitor_script.js", type="text/javascript")
+  
+  link(href="stylesheets/status_style.css", rel="stylesheet")
   link(href="stylesheets/custom-select.css", rel="stylesheet")
+  script(src="javascripts/highcharts-more.js", type='text/javascript')
+  script(src="javascripts/solid-gauge.js", type='text/javascript')
+    
+block content
+  - var tpc_readers = [["reader0", "reader0_reader_0"], ["reader1", 'reader1_reader_0'], ["reader2", 'reader2_reader_0'], ["Muon Veto", "reader5_reader_0"], ["Neutron Veto", "reader6_reader_0"]];
+  - var tpc_controllers = [["TPC aux", "reader0_controller_0"], ["NV aux", "reader6_controller_0"], ["MV_aux", "reader5_controller_0"]];
 
-block content     
-  div.main-container
-    h3 Data Monitoring
-    br
-    div.row(style='height:100%;max-height:600px;')
-      div.col-3
-        h5 Pulse Rates
-        hr
-        strong Choose collection to plot: 
-        select.cselect#run_select
-        br
-        select.cselect#channel_select
-        br
-        button.btn.btn-info(onclick="PlotRun()") Plot 
-        br
-        h5 Some other monitoring thing
-        hr
-        button(onclick="alert('not implemented');") Plot
-        br
-      div.col-9
-        div#chartdiv(style='height:300px')
-        div#samplediv(style='height:300px')
+  - var atts = ['active', 'comment', 'detector', 'hosts', 'crate_controller', 'diagnosis', 'mode', 'number', 'started_at', 'status', 'stop_after', 'user'];
+  - var controller_atts = ['host', 'status', 'checkin'];
+  - var controller_labels = ['Host', 'Status', 'Check-in'];
+  //
+  div.main-container(style='background-color:#eeeeee;margin:-5px;padding:15px;height:100vh')
 
-  script.
-    $(document).ready(function(){
-      DrawActiveLink("#lmonitor");
-      PopulateAvailableRuns("run_select");
-    });
+    div.row(style='margin:0')
+      strong(style='font-size:22px') Datarate
+      div.row(style="width:100%;margin:0;padding-top:5px;background-color:#ffffff;")
+        div.col
+          object(type="image/svg+xml" id="svg_frame1" data="/images/monitor_tpc_layout.svg" style="width:auto;float:left;" class="tpcview" )
+        div.col
+          object(type="image/svg+xml" id="svg_frame2" data="/images/monitor_history.svg" style="width:auto;float:left" class="historyview" )
+      div.row(style="width:100%;margin:0;padding-top:5px;background-color:#f0f0f0;")
+        div.col
+          table
+            tr
+              td time displayed
+              td
+                input(id="field_current_timestamp")
+              td
+            tr
+              td time start
+              td
+                input(id="field_history_start")
+              td
+            tr
+              td time end
+              td
+                input(id="field_history_end")
+              td
+            tr
+              td averaging time
+              td 
+                input(id="field_history_window")
+        div.col
+          h3 test

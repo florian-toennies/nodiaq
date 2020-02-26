@@ -1,0 +1,111 @@
+
+<svg id="svg2"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 475 250"
+>
+    <style>
+       .border, .axis{
+        fill:
+            none;
+        stroke:
+            black;
+        stroke-width:
+            .2;
+       }
+       .time{
+            font-size: .75em;
+            dominant-baseline:
+                middle;
+            text-anchor:
+                start;
+       }
+       
+       .axis_y{
+            font-size: .5em;
+            dominant-baseline:
+                middle;
+            text-anchor:
+                end;
+       }
+       
+       .axis_x{
+            font-size: .5em;
+            dominant-baseline:
+                hanging;
+            text-anchor:
+                center;
+       }
+    </style>
+
+    
+    <line x1="50" x2="50"  y1="225" y2="25" class="axis"/>
+    <line x1="50" x2="450" y1="225" y2="225" class="axis"/>
+    
+    <text
+        x="5"
+        y="15"
+        id="time_id"
+        class="time"
+    >0</text>
+    
+    <text
+        x="45"
+        y="25"
+        id="str_y_100"
+        class="axis_y"
+    >100 % </text>
+    
+    <text
+        x="45"
+        y="125"
+        id="str_y_050"
+        class="axis_y"
+    >50 % </text>
+    
+    <text
+        x="45"
+        y="225"
+        id="str_y_000"
+        class="axis_y"
+    >0 % </text>
+    
+    
+    
+    <text
+        x="50"
+        y="230"
+        id="str_x_000"
+        class="axis_x"
+    >0 % </text>
+        
+    <text
+        x="137.5"
+        y="230"
+        id="str_x_025"
+        class="axis_x"
+    >25 % </text>
+        
+    <text
+        x="225"
+        y="230"
+        id="str_x_050"
+        class="axis_x"
+    >50 % </text>
+        
+    <text
+        x="337.5"
+        y="230"
+        id="str_x_075"
+        class="axis_x"
+    >50 % </text>
+        
+    <text
+        x="450"
+        y="230"
+        id="str_x_100"
+        class="axis_x"
+    >100 % </text>
+
+
+
+</svg>
