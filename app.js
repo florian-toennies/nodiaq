@@ -6,6 +6,25 @@ var logger = require('morgan');
 var bodyParser = require("body-parser");
 var gp="";
 
+
+// function to show status on databases or collections
+function show_state(db_or_coll, desc = false){
+    var state = eval(db_or_coll)["_state"];
+    var colour = "\33[93m";
+    if(state == "open"){
+        colour = "\33[92m";
+    } else if(state == "closed"){
+        colour = "\33[91m";
+    }
+    if(desc != false){
+        console.log(desc);
+    }
+    
+    console.log(colour + db_or_coll + ":\n\t" + state + "\33[0m");
+    
+}
+
+
 // General MongoDB Access via monk
 var mongo = require('mongodb');
 var ObjectID = mongo.ObjectID;
@@ -86,12 +105,10 @@ app.use(bodyParser.urlencoded({extended: true}));
 // Session caching
 var session = require('express-session');
 var MongoDBStore = require('connect-mongodb-session')(session);
-var dax_cstr = process.env.DAQ_MONGO_USER + ":" + process.env.DAQ_MONGO_PASSWORD + "@" + 
-    process.env.DAQ_MONGO_HOST + ":" + process.env.DAQ_MONGO_PORT + "/" +
-    process.env.DAQ_MONGO_DB;
-			
+
+
 var store = new MongoDBStore({
-  uri: 'mongodb://' + dax_cstr,
+  uri: dax_cstr,
   collection: 'mySessions'
 });
  
@@ -163,6 +180,8 @@ app.use(function(req,res,next){
     req.monitor_db = monitor_db;
     req.ObjectID = ObjectID;
     req.detectors = detectors;
+    
+    req.show_state = show_state;
     next();
 });
 

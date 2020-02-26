@@ -8,6 +8,17 @@ router.get('/', function(req, res) {
 });
 
 
+router.get('/test', function(req,res){
+    var db = req.db;
+    
+    
+    show_state = req.show_state;
+    show_state("db", "in router tpc/test");
+    
+    res.json(db);
+});
+
+
 router.get('/updates',function(req,res){
     //res.json()
     
