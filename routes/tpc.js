@@ -1,6 +1,8 @@
-var express = require('express')
-var router = express.Router()
-var ObjectId = require('mongodb').ObjectID;
+var express = require("express");
+var url = require("url");
+var router = express.Router();
+var gp = '';
+
 
 /* GET TPC page. */
 router.get('/', function(req, res) {
@@ -15,7 +17,8 @@ router.get('/test', function(req,res){
     show_state = req.show_state;
     show_state("db", "in router tpc/test");
     
-    res.json(db);
+    //res.json(db);
+    res.send("state of db: " + db["_state"] );
 });
 
 

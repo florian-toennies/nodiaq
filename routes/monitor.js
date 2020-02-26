@@ -3,6 +3,7 @@ var url = require("url");
 var router = express.Router();
 var gp = '';
 
+
 function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) { return next(); }
     return res.redirect(gp+'/login');
