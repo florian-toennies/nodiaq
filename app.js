@@ -59,7 +59,7 @@ monitor_client.connect(function(err) {
 // For Runs DB Datatable
 var runs_mongo = require("./runs_mongo");
 
-// For email confirmations
+//// For email confirmations
 var nodemailer = require("nodemailer");
 var transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -207,7 +207,6 @@ app.use('/equipment', equipmentRouter);
 app.use('/admin', adminRouter);
 app.use('/api', apiRouter);
 app.use('/tpc', TPCRouter);
-
 
 
 // catch 404 and forward to error handler

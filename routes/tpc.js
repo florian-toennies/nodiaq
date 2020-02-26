@@ -4,18 +4,49 @@ var router = express.Router();
 var gp = '';
 
 
+var mongo = require('mongodb');
+var monk = require('monk');
+
+
+var dax_cstr = process.env.DAQ_URI;
+//console.log("DAX DB");
+//console.log(dax_cstr);
+
+
+
+
+// just for testing
+router.get('/ut',
+    function(req, res) {
+        var show_state = req.show_state;
+        var db = req.db
+        
+        
+        show_state("db", "inside router /tpc/ut");
+        
+        res.send("<br/>db state: " + db["_state"]);
+    }
+)
+
+
 /* GET TPC page. */
 router.get('/', function(req, res) {
     res.render('tpclive', { title: 'TPC live Datarate' });
 });
 
 
+
 router.get('/test', function(req,res){
-    var db = req.db;
-    
-    
     show_state = req.show_state;
+    
+    
+    var runs_db = req.runs_db;
+    var users_db = req.users_db;
+    
+    
     show_state("db", "in router tpc/test");
+    show_state("runs_db", "in router tpc/test");
+    show_state("users_db ", "in router tpc/test");
     
     //res.json(db);
     res.send("state of db: " + db["_state"] );
