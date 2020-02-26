@@ -26,7 +26,9 @@ var dax_cstr = process.env.DAQ_URI;
 //console.log(dax_cstr);
 var db = monk(dax_cstr, {authSource: process.env.DAQ_MONGO_AUTH_DB});
 
-var monitor_cstr = "mongodb://"+process.env.DAQ_MONGO_USER +":"+process.env.DAQ_MONGO_PASSWORD+"@"+process.env.DAQ_MONGO_HOST+":"+process.env.DAQ_MONGO_PORT+"/"+process.env.DAQ_MONGO_DB;
+//var monitor_cstr = "mongodb://"+process.env.DAQ_MONGO_USER +":"+process.env.DAQ_MONGO_PASSWORD+"@"+process.env.DAQ_MONGO_HOST+":"+process.env.DAQ_MONGO_PORT+"/"+process.env.DAQ_MONGO_DB;
+// use monitor uri to unify usage
+var monitor_cstr = process.env.MONITOR_URI
 var monitor_client = new mongo.MongoClient(monitor_cstr, {authSource: process.env.DAQ_MONGO_AUTH_DB});
 var monitor_db;
 //console.log(monitor_cstr);
@@ -85,12 +87,12 @@ app.use(bodyParser.urlencoded({extended: true}));
 // Session caching
 var session = require('express-session');
 var MongoDBStore = require('connect-mongodb-session')(session);
-var dax_cstr = process.env.DAQ_MONGO_USER + ":" + process.env.DAQ_MONGO_PASSWORD + "@" + 
-    process.env.DAQ_MONGO_HOST + ":" + process.env.DAQ_MONGO_PORT + "/" +
-    process.env.DAQ_MONGO_DB;
-			
+//var dax_cstr = process.env.DAQ_MONGO_USER + ":" + process.env.DAQ_MONGO_PASSWORD + "@" + 
+    //process.env.DAQ_MONGO_HOST + ":" + process.env.DAQ_MONGO_PORT + "/" +
+    //process.env.DAQ_MONGO_DB;
+    // already definied further up
 var store = new MongoDBStore({
-  uri: 'mongodb://' + dax_cstr,
+  uri: dax_cstr,
   collection: 'mySessions'
 });
  
