@@ -25,7 +25,6 @@ function FillThreads(){
   var chunk = $('#chunk_select').val();
   var channel = $("#channel_select").val();
   $.getJSON("scope/available_threads?run="+run+"&channel="+channel.toString()+"&chunk="+chunk, function(data) {
-    console.log(data);
     var html = '';
     for (var i in data) {
       html += "<option value="+data[i]+">"+data[i]+"</option>";
@@ -47,22 +46,21 @@ function GetData(){
           return;
         }
 	document.data = data;
-console.log(data);
 	document.index=0;
 
 	table_html = "";
 	for(var i in data){
-
-	    var minutes = (Math.floor(data[i]['time'] / (1e9*60))).toFixed(0);
-	    var seconds = (Math.floor((data[i]['time']/1e9) % 60)).toFixed(0);
-	    var millis = (data[i]['time']/1e6 - 
+            var frag = data[i];
+	    var minutes = (Math.floor(frag['time'] / (1e9*60))).toFixed(0);
+	    var seconds = (Math.floor((frag['time']/1e9) % 60)).toFixed(0);
+	    var millis = (frag['time']/1e6 - 
 			  ((minutes*60*1000)+seconds*1000)).toFixed(0);
 	    var human_time = minutes.padStart(2, '0') + ":" + 
 		seconds.padStart(2, '0') + ":"+millis.padStart(3, '0')+
 		" into run";
 	    table_html += "<tr id='"+i.toString()+"_row'><td>" + i.toString() + "</td><td>" +
-		data[i]['channel'] + "</td><td>" + data[i]['time'] + 
-		"</td><td>" + human_time + "</td><td>" + data[i]['pulse_length'] + "</td></tr>";
+		frag['channel'] + "</td><td>" + frag['time'] + 
+		"</td><td>" + human_time + "</td><td>" + frag['pulse_length'] + "</td></tr>";
 	}
 	document.getElementById("pulse_table").innerHTML=table_html;
 
