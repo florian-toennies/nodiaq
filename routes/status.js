@@ -198,7 +198,7 @@ router.get('/get_reader_history', ensureAuthenticated, function(req,res){
 		    ]
 		}
 	    },
-	    'insertion_time': {"$toDate": "$_id"}, "_id": 1, "rate": 1, "buffer_length": 1,
+	    'insertion_time': {"$toDate": "$_id"}, "_id": 1, "rate": 1, "buffer_length": 1, "strax_buffer" : 1,
 	    "host": 1
 	}},
 	{'$group': {

@@ -52,7 +52,7 @@ function RedrawRatePlot(){
 	$.getJSON("status/get_reader_history?limit="+limit+"&res="+resolution+"&reader="+reader, 
 		  function(data){
 			  if (typeof data.error != 'undefined') {
-				  console.log(data.error);
+				  console.log("Error: " + data.error);
 				  return;
 			  }
 		      for (var key in data) {
@@ -88,22 +88,27 @@ function DrawInitialRatePlot(){
     
     // Convert data dict to highcharts format
     var series = [];
+    var yaxis_label = "";
     for(var key in document.reader_data){
 	if(!document.reader_data.hasOwnProperty(key))
 	    continue;
 	var rates = {};
-	if($("#menu_variable_s").val() == "rate")
+	if($("#menu_variable_s").val() == "rate") {
 	    rates = {"type": "line", 
 		     "name": key+" rate", 
 		     "data": document.reader_data[key]['rates']};
-	else if($("#menu_variable_s").val() == "buff")
+            yaxis_label = "MB/s";
+        } else if($("#menu_variable_s").val() == "buff") {
 	    rates = {"type": "area", 
 		      "name": key+" buffer", 
 		      "data": document.reader_data[key]['buffs']};
-      else if($("#menu_variable_s").val() == "strax")
+            yaxis_label = "MB";
+        } else if($("#menu_variable_s").val() == "strax") {
             rates = {"type" : "area",
-                      "name": key+" strax",
+                      "name": key+" strax buffer",
                       "data": document.reader_data[key]['straxs']};
+            yaxis_label = "MB";
+        }
 	series.push(rates);
 
     }
@@ -136,7 +141,7 @@ function DrawInitialRatePlot(){
         },
         yAxis: {
             title: {
-                text: "MB/s",
+                text: yaxis_label,
 	    },	    
             min: 0,
 	},
