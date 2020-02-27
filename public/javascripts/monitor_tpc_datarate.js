@@ -51,8 +51,6 @@ function get_human_date(int_unix){
 var svgObject1  = false//document.getElementById('svg_frame1').contentDocument;
 var svgObject2  = false//document.getElementById('svg_frame2').contentDocument;
 
-update_color_scheme();
-
 
 
 function set_limits(){
@@ -138,8 +136,8 @@ function initialize_pmts(){
                 for(var i = 0; i < pmt_count_last; i += 1){
                     results_empty[i] = -1;
                 }
-                
                 pmt_add_event();
+                update_color_scheme();
                 set_limits();
                 start_live_interval();
             } else {
@@ -664,7 +662,8 @@ function history_draw(){
             "&int_time_start=" + time_start +
             "&int_time_end=" + time_end +
             "&int_time_averaging_window=" + time_width;
-        //console.log(str_url);
+        
+        console.log("str_url:" + str_url);
         xmlhttp.open("GET", str_url, true);
         xmlhttp.send();
     }
