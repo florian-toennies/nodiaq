@@ -64,6 +64,12 @@
         .hosts{
             visibility: hidden;
         }
+        line{
+            stroke:
+                black;
+            stroke-width:
+                .2;
+        }
     </style>
     
     
@@ -522,6 +528,21 @@
         class="hosts"
         style="font-size:.3em;dominant-baseline:middle;text-anchor:end;"
     >0.2</text>
+    <line
+        x1="10.0"
+        x2="98.43733333333334"
+        y1="26.000009999999996"
+        y2="26.000009999999996"
+        class="hosts"
+    />
+        
+    <line
+        x1="10.0"
+        x2="10.0"
+        y1="26.000009999999996"
+        y2="50.000009999999996"
+        class="hosts"
+    />
     
     <text
         x="20.0"
@@ -529,6 +550,21 @@
         class="hosts"
         style="font-size:.3em;dominant-baseline:middle;text-anchor:end;"
     >0.4</text>
+    <line
+        x1="10.0"
+        x2="98.43733333333334"
+        y1="73.3800557142857"
+        y2="73.3800557142857"
+        class="hosts"
+    />
+        
+    <line
+        x1="10.0"
+        x2="10.0"
+        y1="73.3800557142857"
+        y2="97.3800557142857"
+        class="hosts"
+    />
     
     <text
         x="20.0"
@@ -536,6 +572,21 @@
         class="hosts"
         style="font-size:.3em;dominant-baseline:middle;text-anchor:end;"
     >1.0</text>
+    <line
+        x1="10.0"
+        x2="98.43733333333334"
+        y1="120.76010142857143"
+        y2="120.76010142857143"
+        class="hosts"
+    />
+        
+    <line
+        x1="10.0"
+        x2="10.0"
+        y1="120.76010142857143"
+        y2="144.76010142857143"
+        class="hosts"
+    />
     
     <text
         x="108.43733333333334"
@@ -543,6 +594,21 @@
         class="hosts"
         style="font-size:.3em;dominant-baseline:middle;text-anchor:end;"
     >1.2</text>
+    <line
+        x1="98.43733333333334"
+        x2="186.87466666666668"
+        y1="43.76752714285714"
+        y2="43.76752714285714"
+        class="hosts"
+    />
+        
+    <line
+        x1="98.43733333333334"
+        x2="98.43733333333334"
+        y1="43.76752714285714"
+        y2="67.76752714285715"
+        class="hosts"
+    />
     
     <text
         x="108.43733333333334"
@@ -550,6 +616,21 @@
         class="hosts"
         style="font-size:.3em;dominant-baseline:middle;text-anchor:end;"
     >1.4</text>
+    <line
+        x1="98.43733333333334"
+        x2="186.87466666666668"
+        y1="85.22506714285714"
+        y2="85.22506714285714"
+        class="hosts"
+    />
+        
+    <line
+        x1="98.43733333333334"
+        x2="98.43733333333334"
+        y1="85.22506714285714"
+        y2="109.22506714285714"
+        class="hosts"
+    />
     
     <text
         x="108.43733333333334"
@@ -557,6 +638,21 @@
         class="hosts"
         style="font-size:.3em;dominant-baseline:middle;text-anchor:end;"
     >2.3</text>
+    <line
+        x1="98.43733333333334"
+        x2="186.87466666666668"
+        y1="132.60511285714284"
+        y2="132.60511285714284"
+        class="hosts"
+    />
+        
+    <line
+        x1="98.43733333333334"
+        x2="98.43733333333334"
+        y1="132.60511285714284"
+        y2="156.60511285714284"
+        class="hosts"
+    />
     
     <text
         x="196.87466666666668"
@@ -564,6 +660,21 @@
         class="hosts"
         style="font-size:.3em;dominant-baseline:middle;text-anchor:end;"
     >2.4</text>
+    <line
+        x1="186.87466666666668"
+        x2="275.312"
+        y1="55.612538571428566"
+        y2="55.612538571428566"
+        class="hosts"
+    />
+        
+    <line
+        x1="186.87466666666668"
+        x2="186.87466666666668"
+        y1="55.612538571428566"
+        y2="79.61253857142856"
+        class="hosts"
+    />
     
     <text
         x="196.87466666666668"
@@ -571,6 +682,21 @@
         class="hosts"
         style="font-size:.3em;dominant-baseline:middle;text-anchor:end;"
     >2.5</text>
+    <line
+        x1="186.87466666666668"
+        x2="275.312"
+        y1="97.07007857142858"
+        y2="97.07007857142858"
+        class="hosts"
+    />
+        
+    <line
+        x1="186.87466666666668"
+        x2="186.87466666666668"
+        y1="97.07007857142858"
+        y2="121.07007857142858"
+        class="hosts"
+    />
     
     <text
         x="196.87466666666668"
@@ -578,6 +704,21 @@
         class="hosts"
         style="font-size:.3em;dominant-baseline:middle;text-anchor:end;"
     >3.4</text>
+    <line
+        x1="186.87466666666668"
+        x2="275.312"
+        y1="138.52761857142858"
+        y2="138.52761857142858"
+        class="hosts"
+    />
+        
+    <line
+        x1="186.87466666666668"
+        x2="186.87466666666668"
+        y1="138.52761857142858"
+        y2="162.52761857142858"
+        class="hosts"
+    />
     
     <text
         x="73.828"

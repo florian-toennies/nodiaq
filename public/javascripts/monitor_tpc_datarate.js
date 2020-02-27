@@ -462,6 +462,8 @@ function pseudo_live(){
 function history_draw(){
     if(array_toggled_pmts.length == 0){
         var pmts = false;
+        alert("please select at least one pmt by clicking at it.")
+        return(0);
     } else {
         var pmts = array_toggled_pmts.join(",");
     }
@@ -609,12 +611,21 @@ function history_draw(){
             }
             
             
+            
+            var text_this = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            text_this.setAttribute("class", "dataline");
+            text_this.setAttribute("style", "fill:"+color_this+";font-size:.75em;text-anchor:end;");
+            text_this.setAttribute("x", 499);
+            text_this.setAttribute("y", 30 + 10*i);
+            text_this.innerHTML = pmt_id;
+            svgObject2.children[0].appendChild(text_this);
+            
+            
             var line_this = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
             line_this.setAttribute("points", str_points);
             line_this.setAttribute("fill", "none");
             line_this.setAttribute("class", "dataline");
-            line_this.setAttribute("style", "stroke:"+color_this+";stroke-width:3");
-            
+            line_this.setAttribute("style", "stroke:"+color_this+";stroke-width:3;stroke-opacity:0.7;");
             svgObject2.children[0].appendChild(line_this);
             
         }

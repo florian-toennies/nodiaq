@@ -1,7 +1,7 @@
 
 <svg id="svg2"
     xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 475 250"
+    viewBox="0 0 500 250"
 >
     <style>
        .border, .axis{
@@ -20,6 +20,14 @@
                 start;
        }
        
+       .pmtlabel{
+            font-size: .75em;
+            dominant-baseline:
+                middle;
+            text-anchor:
+                end;
+       }
+       
        .axis_y{
             font-size: .5em;
             dominant-baseline:
@@ -36,10 +44,18 @@
                 center;
        }
     </style>
-
+    
     
     <line x1="50" x2="50"  y1="225" y2="25" class="axis"/>
     <line x1="50" x2="450" y1="225" y2="225" class="axis"/>
+    
+    
+    <text
+        x="499"
+        y="15"
+        class="pmtlabel"
+    >PMT</text>
+    
     
     <text
         x="5"
