@@ -262,7 +262,7 @@ router.get('/available_threads', ensureAuthenticated, function(req, res) {
   if (typeof run === 'undefined' || typeof channel === 'undefined' || typeof chunk === 'undefined')
     return res.send(JSON.stringify({message : 'Undefined input'}));
   var fspath=runs_fs_base + '/' + run + '/' + chunk;
-  return res.send(JSON.stringify({message : 'L261'}));
+  console.log("Getting threads: " + channel + " " + chunk + " " + run);
   GetReader(channel, cable_map_coll, board_map_coll, function(reader_id) {
       var threads = files.filter(function(fn) {return fn[6] == reader_id;})
                          .map(function(fn){return fn.slice(17);});
@@ -285,6 +285,50 @@ router.get('/get_pulses', ensureAuthenticated, function(req, res) {
     if (reader == -1 || reader == -2)
       return res.send(JSON.stringify({message : 'Invalid input'}));
     var filepath = runs_fs_base + '/' + run + '/' + chunk + '/reader' + reader + '_reader_0_' + thread;
+    fs.readFile(filepath, function(err, data) {
+      if (err)
+        return res.send(JSON.stringify({message : err.message}));
+      var decompressed = Buffer.alloc(data.length*3);
+      try{
+        lz4.decodeBlock(data, decompressed);
+      }catch(error){
+        return res.send(JSON.stringify({message : "Caught error: " + error.message}));
+      }
+      var retpulses = [];
+      var idx = 0;
+      const strax_header_size=31;
+      while (idx < decompressed.length) {
+        var frag_idx = 0;
+        var frag_channel = decompressed.readInt16LE(idx+frag_idx);
+        console.log("This frag is channel " + decompressed.readInt16BE(idx+frag_idx));
+        frag_idx += 2;
+        var frag_dt = decompressed.readInt16LE(idx+frag_idx);
+        frag_idx += 2;
+        var frag_time_msb = decompressed.readInt32LE(idx+frag_idx);
+        frag_idx += 4;
+        var frag_time_lsb = decompressed.readInt32LE(idx+frag_idx);
+        frag_idx += 4;
+        //var frag_time = decompressed.readBigInt64LE(idx+frag_idx);
+        //frag_idx += 8; // node version too old
+        // can't bitshift because js is 32-bit trash
+        var frag_time = parseInt(frag_time_msb.toString(16) + frag_time_lsb.toString(16), 16);
+        var frag_length = decompressed.readInt32LE(idx+frag_idx);
+        console.log("This frag is " + frag_length + " samples long");
+        frag_idx += 4;
+        frag_idx += 4; // skip area
+        var pulse_length = decompressed.readInt32LE(idx+frag_idx);
+        frag_idx += 4;
+        var frag_i = decompressed.readInt16LE(idx+frag_idx);
+        frag_idx += 2;
+        frag_idx += 4; // skip baseline
+        frag_idx += 1; // skip reduction
+        if (frag_channel != channel) {
+          idx += strax_header_size;
+          idx += frag_length*2;
+          continue;
+        }
+        wf = [];
+        for (; frag_idx < strax_header_size + frag_length*2; frag_idx += 2)
           wf.push(data.readInt16LE(idx+frag_idx));
         retpulses.push({time: frag_time, pulse_length: pulse_length, frag_i: frag_i,
                         sample: wf, channel: channel});
