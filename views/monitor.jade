@@ -41,7 +41,8 @@ block content
       div.row(style="width:100%;margin:0;padding-top:5px;background-color:#f0f0f0;")
           table
             tr
-              td time displayed
+              td
+                span(onclick="alert_sound()") time displayed
               td
                 input(id="field_current_timestamp", value="-1")
               td
@@ -49,7 +50,8 @@ block content
                 &nbsp;
                 button.btn.btn-info(onclick="pseudo_live()") playback
             tr
-              td time start
+              td
+                span(onclick="alert_sound(true)") time start
               td
                 input(id="field_history_start", value="-1")
               td
@@ -72,7 +74,7 @@ block content
                 button.btn.btn-default(onclick="history_draw()") draw history
         
 
-
+  audio#ahahah(src="images/alertsounds/alert-00.ogg")
 
   script.
     $(document).ready(function(){
