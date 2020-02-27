@@ -16,6 +16,15 @@ block content
         div.col
           object(type="image/svg+xml" id="svg_frame2" data="/images/monitor_history.svg" style="width:auto;float:left" class="historyview" )
       div.row(style="width:100%;margin:0;padding-top:5px;background-color:#f0f0f0;")
+        button.btn.btn-default(onclick="move_all_pmt_pos('array')") show tpc geometry
+        &nbsp;
+        button.btn.btn-default(onclick="move_all_pmt_pos('adc')") sort by adc
+        &nbsp;
+        button.btn.btn-default(onclick="move_all_pmt_pos('hosts')") sort by reader
+        &nbsp;
+      
+      
+      div.row(style="width:100%;margin:0;padding-top:5px;background-color:#f0f0f0;")
         button.btn.btn-default(onclick="jump_time(-10)") -10 s
         &nbsp;
         button.btn.btn-default(onclick="jump_time(-1)") -1 s
