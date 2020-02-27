@@ -278,6 +278,7 @@ router.get('/available_threads', ensureAuthenticated, function(req, res) {
   if (typeof run === 'undefined' || typeof channel === 'undefined' || typeof chunk === 'undefined')
     return res.send(JSON.stringify({message : 'Undefined input'}));
   var fspath=runs_fs_base + '/' + run + '/' + chunk;
+  return res.send(JSON.stringify({message : 'L261'}));
   GetReader(channel, cable_map_coll, board_map_coll, function(reader_id) {
 <<<<<<< HEAD
     if (typeof reader_id === 'string' || reader_id == -1 || reader_id == -2)
