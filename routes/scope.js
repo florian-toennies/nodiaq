@@ -248,14 +248,18 @@ router.get('/available_threads', ensureAuthenticated, function(req, res) {
   var db = req.db;
   var q = url.parse(req.url, true).query;
   var run = q.run;
-  var channel = q.channel;
+  try{
+    var channel = q.channel;
+  }catch(error){
+    return res.send(JSON.stringify({error : 'Invalid channel'}));
+  }
   var chunk = q.chunk;
   var board_map_coll = db.get('board_map');
   var cable_map_coll = db.get('cable_map');
   if (typeof run === 'undefined' || typeof channel === 'undefined' || typeof chunk === 'undefined')
     return res.send(JSON.stringify({message : 'Undefined input'}));
   var fspath=runs_fs_base + '/' + run + '/' + chunk;
-  return res.send(JSON.stringify({message : 'L261'}));
+  console.log("Getting threads: " + channel + " " + chunk + " " + run);
   GetReader(channel, cable_map_coll, board_map_coll, function(reader_id) {
       var threads = files.filter(function(fn) {return fn[6] == reader_id;})
                          .map(function(fn){return fn.slice(17);});
@@ -278,14 +282,14 @@ router.get('/get_pulses', ensureAuthenticated, function(req, res) {
     if (reader == -1 || reader == -2)
       return res.send(JSON.stringify({message : 'Invalid input'}));
     var filepath = runs_fs_base + '/' + run + '/' + chunk + '/reader' + reader + '_reader_0_' + thread;
-    fs.readfile(filepath, function(err, data) {
+    fs.readFile(filepath, function(err, data) {
       if (err)
         return res.send(JSON.stringify({message : err.message}));
       data = lz4.decode(data);
       var retpulses = [];
       var idx = 0;
       const strax_header_size=31;
-      while (idx < output.length) {
+      while (idx < data.length) {
         var frag_idx = 0;
         var frag_channel = data.readInt16LE(idx+frag_idx);
         frag_idx += 2;
