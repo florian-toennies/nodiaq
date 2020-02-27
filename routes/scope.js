@@ -237,14 +237,13 @@ function GetReader(channel, cable_map_coll, board_map_coll, callback) {
     if (docs.length == 0)
       callback(-2);
     var board = docs[0]["adc"];
-    var adc_channel = docs[0]["adc_channel"];
     board_map_coll.find({"board" : board}, function(ee, docss) {
       if (ee)
         callback(-1);
       if (docss.length == 0)
         callback(-2);
       var reader_id = docss[0]["host"][6]; // reader[i]
-      callback(reader_id);
+      callback(parseInt(reader_id));
     }); // board_map
   }); // cable_map
 }
@@ -265,7 +264,7 @@ router.get('/available_threads', ensureAuthenticated, function(req, res) {
   if (typeof run === 'undefined' || typeof channel === 'undefined' || typeof chunk === 'undefined')
     return res.send(JSON.stringify({message : 'Undefined input'}));
   var fspath=runs_fs_base + '/' + run + '/' + chunk;
-  return res.send(JSON.stringify({message : 'L261'}));
+  console.log("Getting threads: " + channel + " " + chunk + " " + run);
   GetReader(channel, cable_map_coll, board_map_coll, function(reader_id) {
     if (typeof reader_id === 'string' || reader_id == -1 || reader_id == -2)
       return res.send(JSON.stringify({message : reader_id.toString()}));
@@ -292,7 +291,6 @@ router.get('/get_pulses', ensureAuthenticated, function(req, res) {
     if (reader == -1 || reader == -2)
       return res.send(JSON.stringify({message : 'Invalid input'}));
     var filepath = runs_fs_base + '/' + run + '/' + chunk + '/reader' + reader + '_reader_0_' + thread;
-<<<<<<< HEAD
     fs.readFile(filepath, function(err, data) {
       if (err)
         return res.send(JSON.stringify({message : err.message}));
@@ -308,7 +306,6 @@ router.get('/get_pulses', ensureAuthenticated, function(req, res) {
       while (idx < decompressed.length) {
         var frag_idx = 0;
         var frag_channel = decompressed.readInt16LE(idx+frag_idx);
-        console.log("This frag is channel " + decompressed.readInt16LE(idx+frag_idx));
         console.log("This frag is channel " + decompressed.readInt16BE(idx+frag_idx));
         frag_idx += 2;
         var frag_dt = decompressed.readInt16LE(idx+frag_idx);
