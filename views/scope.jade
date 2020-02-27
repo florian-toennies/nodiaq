@@ -20,13 +20,13 @@ block content
           strong 1. Select a run: &nbsp;
           select.cselect#run_select(onchange="FillChunks()")
         p
-          strong 2. Select a chunk: &nbsp;
+          strong 2. Select a chunk (time into run): &nbsp;
           select.cselect#chunk_select
         p
           strong 3. Select a channel: &nbsp;
           input#channel_select(type='number' min=0 max=494 value=0 name='channel' onchange="FillThreads()")
         p
-          strong 4. Select a thread: &nbsp;
+          strong 4. Select a thread (a random number): &nbsp;
           select.cselect#thread_select
         p
           button.btn.btn-info(onclick="GetData()") 5. Get New Data
