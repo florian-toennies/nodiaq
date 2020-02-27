@@ -12,24 +12,19 @@ router.get('/', ensureAuthenticated, function(req, res) {
     res.render('monitor', { title: 'Monitor', user: req.user });
 });
 
-router.get('/available_runs', ensureAuthenticated, function(req, res){
+
+router.get('/get_limits', ensureAuthenticated, function(req, res){
     var db = req.monitor_db;
-    db.listCollections().toArray(function(err, collInfos) {	
-        collInfos = collInfos.sort(function(a, b){
-            return parseInt(a['name'].substr(0, 6)) - parseInt(b['name'].substr(0, 6));
-        });
-	    return res.send(JSON.stringify(collInfos));
-    });
+    console.log(db)
+    
+    var collection = runs_db.get("status");
+    console.log(collection)
+    
+    res.send("bla")
 });
 
-router.get('/get_run_data', ensureAuthenticated, function(req, res){
-    var db = req.monitor_db;
-    var q = url.parse(req.url, true).query;
-    var coll = q.coll;
 
-    db.collection(coll).find({}).sort({'chunk': 1}).toArray(function(err, arr){
-	 return res.send(JSON.stringify(arr));
-    });
-});
+
+
 
 module.exports = router;
