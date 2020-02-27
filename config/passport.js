@@ -172,7 +172,7 @@ passport.use(new LdapStrategy(OPTS,
 
 
 //For testing it's pretty useful to have local auth as well. We'll use email/pw and ensure the email is in our DB
-/*var auth = require('passport-local-authenticate');
+var auth = require('passport-local-authenticate');
 var LocalStrategy = require('passport-local').Strategy;
 passport.use(new LocalStrategy({
                 usernameField: 'email',
@@ -217,4 +217,3 @@ passport.use(new LocalStrategy({
     });                                                                                                  
   }                                                                                                      
 ));                                                                                                      
-*/
