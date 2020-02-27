@@ -675,3 +675,18 @@ function history_draw(){
 function usetimestamp(field_id){
     document.getElementById(field_id).value = document.getElementById("field_current_timestamp").value
 }
+
+
+
+function alert_sound(random = false){
+    var ahahah = document.getElementById("ahahah");
+    if(random == true){
+        var new_file = Math.ceil(Math.random()*8);
+        console.log("alert is now "+ new_file);
+        ahahah.src = "images/alertsounds/alert-0"+new_file+".mp3";
+    } else{
+        ahahah.src = "images/alertsounds/alert-00.ogg";
+    }
+        
+    ahahah.play();
+}
