@@ -25,7 +25,6 @@ function FillThreads(){
   var chunk = $('#chunk_select').val();
   var channel = $("#channel_select").val();
   $.getJSON("scope/available_threads?run="+run+"&channel="+channel.toString()+"&chunk="+chunk, function(data) {
-    console.log(data);
     var html = '';
     for (var i in data) {
       html += "<option value="+data[i]+">"+data[i]+"</option>";
