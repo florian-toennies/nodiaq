@@ -262,7 +262,6 @@ router.get('/available_threads', ensureAuthenticated, function(req, res) {
   if (typeof run === 'undefined' || typeof channel === 'undefined' || typeof chunk === 'undefined')
     return res.send(JSON.stringify({message : 'Undefined input'}));
   var fspath=runs_fs_base + '/' + run + '/' + chunk;
-  console.log("Getting threads: " + channel + " " + chunk + " " + run);
   GetReader(channel, cable_map_coll, board_map_coll, function(reader_id) {
       var threads = files.filter(function(fn) {return fn[6] == reader_id;})
                          .map(function(fn){return fn.slice(17);});
@@ -300,7 +299,7 @@ router.get('/get_pulses', ensureAuthenticated, function(req, res) {
       while (idx < decompressed.length) {
         var frag_idx = 0;
         var frag_channel = decompressed.readInt16LE(idx+frag_idx);
-        console.log("This frag is channel " + decompressed.readInt16BE(idx+frag_idx));
+        console.log("This frag is channel " + decompressed.readInt16LE(idx+frag_idx));
         frag_idx += 2;
         var frag_dt = decompressed.readInt16LE(idx+frag_idx);
         frag_idx += 2;
@@ -329,7 +328,7 @@ router.get('/get_pulses', ensureAuthenticated, function(req, res) {
         }
         wf = [];
         for (; frag_idx < strax_header_size + frag_length*2; frag_idx += 2)
-          wf.push(data.readInt16LE(idx+frag_idx));
+          wf.push(decompressed.readInt16LE(idx+frag_idx));
         retpulses.push({time: frag_time, pulse_length: pulse_length, frag_i: frag_i,
                         sample: wf, channel: channel});
         idx += frag_idx;
