@@ -280,7 +280,8 @@ router.get('/get_history', ensureAuthenticated,function(req,res){
 
 
 // returns cable_map (used to generate new tpc svg)
-router.get('/update_map', ensureAuthenticated,function(req,res){
+// no authentintification as python will need to access these functions
+router.get('/get_cable_map', function(req,res){
     var runs_db = req.runs_db;
     var collection = runs_db.get('cable_map');
     
@@ -289,14 +290,32 @@ router.get('/update_map', ensureAuthenticated,function(req,res){
     })
 });
 
-// returns board_map (used to generate new tpc svg)
-router.get('/update_boards', ensureAuthenticated,function(req,res){
-    var runs_db = req.runs_db;
-    var collection = runs_db.get('board_map');
+// returns board layout to update svg
+// no authentintification as python will need to access these functions
+router.get('/get_options_map', function(req,res){
     
-    collection.find({},{sort:-1},function(e,docs){
-        res.json(docs);
-    })
+    var regex = req.query.regex;
+    var mongo_match = {};
+    var mongo_filter = {}//{sort:{_id:-1}, limit:10};
+    
+    if(regex != undefined){
+        mongo_match = {"name": {$regex: regex, $options:"i"}};
+    }
+    
+    console.log(mongo_match);
+    console.log(mongo_filter);
+    
+    
+    var runs_db = req.runs_db;
+    var collection = runs_db.get('options');
+    
+    collection.find(
+        mongo_match,
+        mongo_match,
+        function(e,docs){
+            res.json(docs);
+        }
+    )
 });
 
 // get last update on individual reader

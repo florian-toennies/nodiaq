@@ -51,6 +51,8 @@ function get_human_date(int_unix){
 var svgObject1  = false//document.getElementById('svg_frame1').contentDocument;
 var svgObject2  = false//document.getElementById('svg_frame2').contentDocument;
 
+update_color_scheme();
+
 
 
 function set_limits(){
@@ -136,8 +138,8 @@ function initialize_pmts(){
                 for(var i = 0; i < pmt_count_last; i += 1){
                     results_empty[i] = -1;
                 }
+                
                 pmt_add_event();
-                update_color_scheme();
                 set_limits();
                 start_live_interval();
             } else {
@@ -229,9 +231,9 @@ function PMT_setcolour(json_result, timestamp){
             console.log("stopping auto load");
             stop_intervals();
             no_data_counter = 0;
-            svgObject1.getElementById("str_legend_tme").textContent = "it seems no live/playback data is available";
+            svgObject1.getElementById("str_legend_log").textContent = "it seems no live/playback data is available";
         } else {
-            svgObject1.getElementById("str_legend_tme").textContent = "trying to get data ("+no_data_counter+")";
+            svgObject1.getElementById("str_legend_log").textContent = "trying to get data ("+no_data_counter+")";
         }
         return(false);
     } else if(no_data_counter > 0){
@@ -313,7 +315,11 @@ function PMT_setcolour(json_result, timestamp){
     svgObject1.getElementById("str_legend_000").textContent = pmt_rate_000;
     
     
-    svgObject1.getElementById("str_legend_tme").textContent = timestamps_txt.join(": ");
+    timestamps_txt.sort()
+
+    svgObject1.getElementById("str_reader_time_1").textContent = timestamps_txt[0];
+    svgObject1.getElementById("str_reader_time_2").textContent = timestamps_txt[1];
+    svgObject1.getElementById("str_reader_time_3").textContent = timestamps_txt[2];
     
     return(true);
 };
@@ -417,7 +423,7 @@ function toggle_pmt(pmt_id){
         
     }
     
-    svgObject1.getElementById("str_legend_tme").textContent = global_colors_available.length + " colors left";
+    svgObject1.getElementById("str_legend_log").textContent = global_colors_available.length + " colors left";
     console.log(array_toggled_pmts);
     console.log(global_colors_use);
     
@@ -462,8 +468,6 @@ function pseudo_live(){
 function history_draw(){
     if(array_toggled_pmts.length == 0){
         var pmts = false;
-        alert("please select at least one pmt by clicking at it.")
-        return(0);
     } else {
         var pmts = array_toggled_pmts.join(",");
     }
@@ -611,7 +615,6 @@ function history_draw(){
             }
             
             
-            
             var text_this = document.createElementNS("http://www.w3.org/2000/svg", "text");
             text_this.setAttribute("class", "dataline");
             text_this.setAttribute("style", "fill:"+color_this+";font-size:.75em;text-anchor:end;");
@@ -620,13 +623,13 @@ function history_draw(){
             text_this.innerHTML = pmt_id;
             svgObject2.children[0].appendChild(text_this);
             
-            
             var line_this = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+            line_this.setAttribute("class", "dataline");
             line_this.setAttribute("points", str_points);
             line_this.setAttribute("fill", "none");
-            line_this.setAttribute("class", "dataline");
-            line_this.setAttribute("style", "stroke:"+color_this+";stroke-width:3;stroke-opacity:0.7;");
+            line_this.setAttribute("style", "stroke:"+color_this+";stroke-width:3");
             svgObject2.children[0].appendChild(line_this);
+            
             
         }
     }
@@ -646,7 +649,7 @@ function history_draw(){
     )
     
     if(isNaN(time_start) || isNaN(time_end) || isNaN(time_width)){
-        svgObject1.getElementById("str_legend_tme").textContent = "please check your values";
+        svgObject1.getElementById("str_legend_log").textContent = "please check your values";
         return(0);
     }
     
@@ -673,8 +676,7 @@ function history_draw(){
             "&int_time_start=" + time_start +
             "&int_time_end=" + time_end +
             "&int_time_averaging_window=" + time_width;
-        
-        console.log("str_url:" + str_url);
+        console.log(str_url);
         xmlhttp.open("GET", str_url, true);
         xmlhttp.send();
     }
@@ -685,19 +687,4 @@ function history_draw(){
 
 function usetimestamp(field_id){
     document.getElementById(field_id).value = document.getElementById("field_current_timestamp").value
-}
-
-
-
-function alert_sound(random = false){
-    var ahahah = document.getElementById("ahahah");
-    if(random == true){
-        var new_file = Math.ceil(Math.random()*8);
-        console.log("alert is now "+ new_file);
-        ahahah.src = "images/alertsounds/alert-0"+new_file+".mp3";
-    } else{
-        ahahah.src = "images/alertsounds/alert-00.ogg";
-    }
-        
-    ahahah.play();
 }
