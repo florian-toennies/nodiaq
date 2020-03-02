@@ -40,14 +40,12 @@ block content
       div.row(style="width:100%;margin:0;padding-top:5px;background-color:#f0f0f0;")
           table
             tr
-              td
-                span(onclick="alert_sound()") time displayed
+              td time displayed
               td
                 input(id="field_current_timestamp", value="-1")
               td
                 button.btn.btn-default(onclick="get_TPC_data(document.getElementById('field_current_timestamp').value)") 👀
-              td
-                set maximum datarate
+              td set maximum datarate
               td
                 input(id="field_input_max_datarate", value="-1")
               td
@@ -55,15 +53,14 @@ block content
               
             tr
               td
-                span(onclick="alert_sound(true)") time start
+                span(onclick="add_sounds_to_all_BUTTons()") time start
               td
                 input(id="field_history_start", value="-1")
               td
                 button.btn.btn-default(onclick="get_TPC_data(document.getElementById('field_history_start').value)") 👀
                 &nbsp;
                 button.btn.btn-default(onclick="usetimestamp('field_history_start')") ⏎
-              td
-                set minimum datarate
+              td set minimum datarate
               td
                 input(id="field_input_min_datarate", value="-1")
               td
@@ -85,7 +82,7 @@ block content
                 button.btn.btn-default(onclick="history_draw()") draw history
         
 
-  audio#ahahah(src="images/alertsounds/alert-00.ogg")
+  audio#alertsound(src="images/alertsounds/alert-00.ogg")
 
   script.
     $(document).ready(function(){

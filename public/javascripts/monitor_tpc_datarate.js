@@ -7,6 +7,7 @@ var timestamps      = [];
 var timestamps_txt  = [];
 var timestamp_current = -1;
 var timestamp_playback = -1;
+var acoustic_button_feedback=false;
 
 var id_live_interval;
 var id_playback_interval;
@@ -27,6 +28,8 @@ var pmt_diff_base = 10;
 var pmt_diff;
 
 var global_tmp;
+var alertsound;
+var alertsound_last=new Date();
 
 //var global_colors_available = ["aliceblue", "antiquewhite", "aqua", "aquamarine", "azure", "beige", "bisque", "black", "blanchedalmond", "blue", "blueviolet", "brown", "burlywood", "cadetblue", "chartreuse", "chocolate", "coral", "cornflowerblue", "cornsilk", "crimson", "cyan", "darkblue", "darkcyan", "darkgoldenrod", "darkgray", "darkgreen", "darkgrey", "darkkhaki", "darkmagenta", "darkolivegreen", "darkorange", "darkorchid", "darkred", "darksalmon", "darkseagreen", "darkslateblue", "darkslategray", "darkslategrey", "darkturquoise", "darkviolet", "deeppink", "deepskyblue", "dimgray", "dimgrey", "dodgerblue", "firebrick", "floralwhite", "forestgreen", "fuchsia", "gainsboro", "ghostwhite", "gold", "goldenrod", "greenyellow", "honeydew", "hotpink", "indianred", "indigo", "ivory", "khaki", "lavender", "lavenderblush", "lawngreen", "lemonchiffon", "lightblue", "lightcoral", "lightcyan", "lightgoldenrodyellow", "lightgray", "lightgreen", "lightgrey", "lightpink", "lightsalmon", "lightseagreen", "lightskyblue", "lightslategrey", "lightsteelblue", "lightyellow", "limegreen", "linen", "magenta", "maroon", "mediumaquamarine", "mediumblue", "mediumorchid", "mediumpurple", "mediumseagreen", "mediumslateblue", "mediumspringgreen", "mediumturquoise", "mediumvioletred", "midnightblue", "mintcream", "mistyrose", "moccasin", "navajowhite", "navy", "oldlace", "olive", "olivedrab", "orange", "orangered", "orchid", "palegoldenrod", "palegreen", "paleturquoise", "palevioletred", "papayawhip", "peachpuff", "peru", "pink", "plum", "powderblue", "purple", "red", "rosybrown", "royalblue", "saddlebrown", "salmon", "sandybrown", "seagreen", "seashell", "sienna", "silver", "skyblue", "slateblue", "slategray", "slategrey", "snow", "springgreen", "steelblue", "tan", "teal", "thistle", "tomato", "turquoise", "violet", "wheat", "white", "whitesmoke", "yellow", "yellowgreen"];
 var global_colors_available = ["#b00000", "#00b000", "#0000b0", "#b0b000", "#b000b0", "#00b0b0", "#b0b0b0"];
@@ -164,6 +167,7 @@ function initialize_pmts(){
     var obj_legend_max = svgObject1.getElementById("str_legend_100");
     obj_legend_min.addEventListener("click", function(){min_legend_set()});
     obj_legend_max.addEventListener("click", function(){max_legend_set()});
+    
     
     
     // function that gets called once all pmts are counted
@@ -788,14 +792,44 @@ function usetimestamp(field_id){
 
 
 function alert_sound(random = false){
-    var ahahah = document.getElementById("ahahah");
-    if(random == true){
-        var new_file = Math.ceil(Math.random()*8);
-        console.log("alert is now "+ new_file);
-        ahahah.src = "images/alertsounds/alert-0"+new_file+".mp3";
-    } else{
-        ahahah.src = "images/alertsounds/alert-00.ogg";
+    // play only one alert at a time
+    
+    now = new Date()
+    if((now - alertsound_last ) > 2000){
+        alertsound = document.getElementById("alertsound");
+        
+        if(random == true){
+            var new_file = Math.ceil(Math.random()*8);
+            alertsound.src = "images/alertsounds/alert-0"+new_file+".mp3";
+        } else{
+            alertsound.src = "images/alertsounds/alert-00.ogg";
+        }
+        alertsound_last = now;
+        alertsound.play();
     }
+}
+function alert_sound_BUTTon(){
+    alert_sound(random=true);
+}
 
-    ahahah.play();
+
+function add_sounds_to_all_BUTTons(){
+    var BUTTons = document.getElementsByTagName('button');   
+    if(acoustic_button_feedback == false){
+        for (var i = 0; i < BUTTons.length; i++) {
+            var BUTT = BUTTons[i];
+            BUTT.addEventListener("click", alert_sound_BUTTon);
+        }
+        acoustic_button_feedback = true
+        svgObject1.getElementById("str_legend_log").textContent = "acoustic BUTTon activation verification enabled"
+        console.log("acoustic BUTTon activation verification enabled")
+    } else {
+        for (var i = 0; i < BUTTons.length; i++) {
+            var BUTT = BUTTons[i];
+            BUTT.removeEventListener("click", alert_sound_BUTTon);
+        }
+        acoustic_button_feedback = false
+        svgObject1.getElementById("str_legend_log").textContent = "acoustic BUTTon activation verification disabled"
+        console.log("acoustic BUTTon activation verification disabled")
+    }
 }
