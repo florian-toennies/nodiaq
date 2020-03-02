@@ -224,6 +224,7 @@ function initialize_pmts(){
                     results_empty[i] = -1;
                 }
                 
+                alertsound = document.getElementById("alertsound");
                 pmt_add_event();
                 set_limits();
                 start_live_interval();
@@ -792,11 +793,10 @@ function usetimestamp(field_id){
 
 
 function alert_sound(random = false){
-    // play only one alert at a time
     
-    now = new Date()
-    if((now - alertsound_last ) > 2000){
-        alertsound = document.getElementById("alertsound");
+    // play only one alert at a time
+    var now = new Date()
+    if( now.getTime() > (alertsound_last.getTime() + alertsound.duration*1000) ){
         
         if(random == true){
             var new_file = Math.ceil(Math.random()*8);
@@ -804,9 +804,12 @@ function alert_sound(random = false){
         } else{
             alertsound.src = "images/alertsounds/alert-00.ogg";
         }
+        
         alertsound_last = now;
         alertsound.play();
+        
     }
+    
 }
 function alert_sound_BUTTon(){
     alert_sound(random=true);
