@@ -4,6 +4,10 @@
     viewBox="0 0 500 250"
 >
     <style>
+        text{
+            font-family:
+                Verdana, Helvetica, Arial, sans-serif;
+        }
        .border, .axis{
         fill:
             none;

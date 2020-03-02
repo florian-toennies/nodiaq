@@ -16,15 +16,17 @@ block content
         div.col
           object(type="image/svg+xml" id="svg_frame2" data="/images/monitor_history.svg" style="width:auto;float:left" class="historyview" )
       div.row(style="width:100%;margin:0;padding-top:5px;background-color:#f0f0f0;")
+        button.btn.btn-info(onclick="whiten_all_pmts()") reset colour
+        &nbsp;
         button.btn.btn-default(onclick="move_all_pmt_pos('array')") show tpc geometry
-        //&nbsp;
-        //button.btn.btn-default(onclick="move_all_pmt_pos('adc')") sort by adc
         &nbsp;
         button.btn.btn-default(onclick="move_all_pmt_pos('hosts')") sort by reader
         &nbsp;
-      
-      
+        button.btn.btn-info(onclick="start_live_interval()") show live data
+        
       div.row(style="width:100%;margin:0;padding-top:5px;background-color:#f0f0f0;")
+        button.btn.btn-info(onclick="stop_intervals()") stop auto update
+        &nbsp;
         button.btn.btn-default(onclick="jump_time(-10)") -10 s
         &nbsp;
         button.btn.btn-default(onclick="jump_time(-1)") -1 s
@@ -33,10 +35,7 @@ block content
         &nbsp;
         button.btn.btn-default(onclick="jump_time(10)") +10 s
         &nbsp;
-        &nbsp;
-        button.btn.btn-info(onclick="stop_intervals()") stop auto update
-        &nbsp;
-        button.btn.btn-info(onclick="start_live_interval()") show live data
+        button.btn.btn-info(onclick="pseudo_live()") playback
         
       div.row(style="width:100%;margin:0;padding-top:5px;background-color:#f0f0f0;")
           table
@@ -47,8 +46,6 @@ block content
                 input(id="field_current_timestamp", value="-1")
               td
                 button.btn.btn-default(onclick="get_TPC_data(document.getElementById('field_current_timestamp').value)") 👀
-                &nbsp;
-                button.btn.btn-info(onclick="pseudo_live()") playback
             tr
               td
                 span(onclick="alert_sound(true)") time start

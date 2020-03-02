@@ -21,21 +21,63 @@ var pmt_rate_unit = " kB/s";
 var pmt_rate_unit_total = " MB/s";
 var pmt_default_style;
 
-var pmt_max_rate;
-var pmt_min_rate;
-var pmt_diff_base;
+var pmt_min_rate = 16;
+var pmt_max_rate = 160;
+var pmt_diff_base = 10;
 var pmt_diff;
+
+var global_tmp;
 
 //var global_colors_available = ["aliceblue", "antiquewhite", "aqua", "aquamarine", "azure", "beige", "bisque", "black", "blanchedalmond", "blue", "blueviolet", "brown", "burlywood", "cadetblue", "chartreuse", "chocolate", "coral", "cornflowerblue", "cornsilk", "crimson", "cyan", "darkblue", "darkcyan", "darkgoldenrod", "darkgray", "darkgreen", "darkgrey", "darkkhaki", "darkmagenta", "darkolivegreen", "darkorange", "darkorchid", "darkred", "darksalmon", "darkseagreen", "darkslateblue", "darkslategray", "darkslategrey", "darkturquoise", "darkviolet", "deeppink", "deepskyblue", "dimgray", "dimgrey", "dodgerblue", "firebrick", "floralwhite", "forestgreen", "fuchsia", "gainsboro", "ghostwhite", "gold", "goldenrod", "greenyellow", "honeydew", "hotpink", "indianred", "indigo", "ivory", "khaki", "lavender", "lavenderblush", "lawngreen", "lemonchiffon", "lightblue", "lightcoral", "lightcyan", "lightgoldenrodyellow", "lightgray", "lightgreen", "lightgrey", "lightpink", "lightsalmon", "lightseagreen", "lightskyblue", "lightslategrey", "lightsteelblue", "lightyellow", "limegreen", "linen", "magenta", "maroon", "mediumaquamarine", "mediumblue", "mediumorchid", "mediumpurple", "mediumseagreen", "mediumslateblue", "mediumspringgreen", "mediumturquoise", "mediumvioletred", "midnightblue", "mintcream", "mistyrose", "moccasin", "navajowhite", "navy", "oldlace", "olive", "olivedrab", "orange", "orangered", "orchid", "palegoldenrod", "palegreen", "paleturquoise", "palevioletred", "papayawhip", "peachpuff", "peru", "pink", "plum", "powderblue", "purple", "red", "rosybrown", "royalblue", "saddlebrown", "salmon", "sandybrown", "seagreen", "seashell", "sienna", "silver", "skyblue", "slateblue", "slategray", "slategrey", "snow", "springgreen", "steelblue", "tan", "teal", "thistle", "tomato", "turquoise", "violet", "wheat", "white", "whitesmoke", "yellow", "yellowgreen"];
 var global_colors_available = ["#b00000", "#00b000", "#0000b0", "#b0b000", "#b000b0", "#00b0b0", "#b0b0b0"];
 var global_colors_use = [];
 
-function update_color_scheme(min=16, max=160, base=10){
+function min_legend_set(){
+    new_value = parseFloat(window.prompt("new lower bound (in kB/s)", pmt_min_rate));
+    if(new_value > 0){
+        update_color_scheme(min = new_value);
+    }
+}
+
+function max_legend_set(){
+    new_value = parseFloat(window.prompt("new upper bound (in kB/s)", pmt_max_rate));
+    if(new_value > 0){
+        update_color_scheme(min = pmt_min_rate, max = new_value);
+    }
+}
+
+
+
+
+function update_color_scheme(min=pmt_min_rate, max=pmt_max_rate){
     pmt_min_rate = min;
     pmt_max_rate = max;
-    pmt_diff_base = base;
-    pmt_diff = Math.log(max/min)/Math.log(base);
-    console.log("updating color scheme:\nmin:  " + min +"\nmx:  " + max + "\nbase: " + base+"\n\nusage: update_color_scheme(min=16, max=1600, base=10)");
+    pmt_diff = Math.log(pmt_max_rate/pmt_min_rate)/Math.log(pmt_diff_base);
+    
+    
+    
+    console.log("updating color scheme:"+
+        "\n  min: "  + pmt_min_rate +
+        "\n  max: "  + pmt_max_rate + 
+        "\n\nusage: update_color_scheme(min=16, max=1600, base=10)"
+    );
+    
+    var pmt_rate_100 = color_scheme_inverse(1.00).toFixed(2);
+    var pmt_rate_075 = color_scheme_inverse(0.75).toFixed(2);
+    var pmt_rate_050 = color_scheme_inverse(0.50).toFixed(2);
+    var pmt_rate_025 = color_scheme_inverse(0.25).toFixed(2);
+    var pmt_rate_000 = color_scheme_inverse(0.00).toFixed(2);
+    
+    
+    svgObject1.getElementById("str_legend_100").textContent = pmt_rate_100;
+    svgObject1.getElementById("str_legend_075").textContent = pmt_rate_075;
+    svgObject1.getElementById("str_legend_050").textContent = pmt_rate_050;
+    svgObject1.getElementById("str_legend_025").textContent = pmt_rate_025;
+    svgObject1.getElementById("str_legend_000").textContent = pmt_rate_000;
+    
+    if(global_pmt_rates != undefined){
+        PMT_setcolour(global_pmt_rates)
+    }
 }
 
 
@@ -51,8 +93,6 @@ function get_human_date(int_unix){
 var svgObject1  = false//document.getElementById('svg_frame1').contentDocument;
 var svgObject2  = false//document.getElementById('svg_frame2').contentDocument;
 
-update_color_scheme();
-
 
 
 function set_limits(){
@@ -63,7 +103,7 @@ function set_limits(){
             var limits = JSON.parse(this.responseText);
             limits = [limits[0]["first"]["unixtime"], limits[0]["last"]["unixtime"]];
             
-            document.getElementById("field_current_timestamp").value = Math.min(...limits);
+            //document.getElementById("field_current_timestamp").value = Math.min(...limits);
             document.getElementById("field_history_start").value = Math.min(...limits);
             document.getElementById("field_history_end").value   = Math.max(...limits);
             
@@ -90,6 +130,17 @@ function color_scheme_inverse(x){
     return(pmt_min_rate*pmt_diff_base**(pmt_diff*x));
 }
 
+function whiten_all_pmts(){
+    
+    for(var i = 0; i <= max_pmt_id; i = i + 1){
+            var pmt_string = "pmt"+i;
+            
+            var obj_pmt = svgObject1.getElementById(pmt_string);
+            obj_pmt.style.fill = "white";
+            
+    }
+}
+
 
 
 
@@ -106,6 +157,12 @@ function initialize_pmts(){
     var pmt_count_last = svgObject1.querySelectorAll("circle.pmt").length;
     var id_initialize_interval;
     
+    // initialize legend, eg. make min and max clickable 
+    
+    var obj_legend_min = svgObject1.getElementById("str_legend_000");
+    var obj_legend_max = svgObject1.getElementById("str_legend_100");
+    obj_legend_min.addEventListener("click", function(){min_legend_set()});
+    obj_legend_max.addEventListener("click", function(){max_legend_set()});
     
     
     // function that gets called once all pmts are counted
@@ -122,6 +179,7 @@ function initialize_pmts(){
         }
         console.log("pmts initialized: " + pmt_count_last);
         pmt_default_style = obj_pmt.style;
+        update_color_scheme();
     }
     
 
@@ -225,18 +283,24 @@ function PMT_setcolour(json_result, timestamp){
         }
     }
     
+    global_tmp = tmp;
+    
+    svgObject1.getElementById("str_legend_log").textContent = ""
     if(got_updates == false){
         no_data_counter += 1;
         if(no_data_counter >= max_data_misses){
             console.log("stopping auto load");
             stop_intervals();
-            no_data_counter = 0;
-            svgObject1.getElementById("str_legend_log").textContent = "it seems no live/playback data is available";
+            if(timestamp  != false){
+                svgObject1.getElementById("str_legend_log").textContent = "it seems no data is available for " + timestamp;
+            } else {
+                svgObject1.getElementById("str_legend_log").textContent = "it seems no live data is available";
+            }
         } else {
             svgObject1.getElementById("str_legend_log").textContent = "trying to get data ("+no_data_counter+")";
         }
         return(false);
-    } else if(no_data_counter > 0){
+    }else if(no_data_counter > 0){
         console.log("data found, resetting counter")
         no_data_counter = 0
     }
@@ -248,16 +312,8 @@ function PMT_setcolour(json_result, timestamp){
     }
     
     
-    
-    var pmt_rate_100 = color_scheme_inverse(1.00).toFixed(2) + pmt_rate_unit;
-    var pmt_rate_075 = color_scheme_inverse(0.75).toFixed(2) + pmt_rate_unit;
-    var pmt_rate_050 = color_scheme_inverse(0.50).toFixed(2) + pmt_rate_unit;
-    var pmt_rate_025 = color_scheme_inverse(0.25).toFixed(2) + pmt_rate_unit;
-    var pmt_rate_000 = color_scheme_inverse(0.00).toFixed(2) + pmt_rate_unit;
-    
-    
-    
-    
+    var pmt_rate_min = Infinity;
+    var pmt_rate_max = 0;
     var pmt_rate_sum = 0;
     
     for (var i of Object.keys(pmt_rates)) {
@@ -272,6 +328,16 @@ function PMT_setcolour(json_result, timestamp){
         
         var svg  = svgObject1.getElementById(pmt_id);
         var svg2 = svgObject1.getElementById(pmt_txt2_id);
+        
+        // check if new value is larger or smaller thatn old ones
+        if(pmt_rate > -1 ){
+            if(pmt_rate < pmt_rate_min){
+                pmt_rate_min = pmt_rate
+            }
+            if(pmt_rate > pmt_rate_max){
+                pmt_rate_max = pmt_rate
+            }
+        }
         
         if(pmt_rate >= 0){
             var rgb_r = color_scheme(pmt_rate);
@@ -303,16 +369,15 @@ function PMT_setcolour(json_result, timestamp){
         svg2.innerHTML = "rate: " + pmt_rate_txt;
     }
     
+    var pmt_rate_min = "min: " + (pmt_rate_min).toFixed(2) + pmt_rate_unit;
+    var pmt_rate_max = "max: " + (pmt_rate_max).toFixed(2) + pmt_rate_unit;
     var pmt_rate_tot = "total: " + (pmt_rate_sum/1000).toFixed(2) + pmt_rate_unit_total;
+    
+    svgObject1.getElementById("str_legend_min").textContent = pmt_rate_min;
+    svgObject1.getElementById("str_legend_max").textContent = pmt_rate_max;
     svgObject1.getElementById("str_legend_tot").textContent = pmt_rate_tot;
     
     
-    
-    svgObject1.getElementById("str_legend_100").textContent = pmt_rate_100;
-    svgObject1.getElementById("str_legend_075").textContent = pmt_rate_075;
-    svgObject1.getElementById("str_legend_050").textContent = pmt_rate_050;
-    svgObject1.getElementById("str_legend_025").textContent = pmt_rate_025;
-    svgObject1.getElementById("str_legend_000").textContent = pmt_rate_000;
     
     
     timestamps_txt.sort()
