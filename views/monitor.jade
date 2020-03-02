@@ -46,6 +46,13 @@ block content
                 input(id="field_current_timestamp", value="-1")
               td
                 button.btn.btn-default(onclick="get_TPC_data(document.getElementById('field_current_timestamp').value)") 👀
+              td
+                set maximum datarate
+              td
+                input(id="field_input_max_datarate", value="-1")
+              td
+                button.btn.btn-default(onclick="max_legend_set(document.getElementById('field_input_max_datarate').value)") set 
+              
             tr
               td
                 span(onclick="alert_sound(true)") time start
@@ -55,6 +62,13 @@ block content
                 button.btn.btn-default(onclick="get_TPC_data(document.getElementById('field_history_start').value)") 👀
                 &nbsp;
                 button.btn.btn-default(onclick="usetimestamp('field_history_start')") ⏎
+              td
+                set minimum datarate
+              td
+                input(id="field_input_min_datarate", value="-1")
+              td
+                button.btn.btn-default(onclick="min_legend_set(document.getElementById('field_input_min_datarate').value)") set 
+                
             tr
               td time end
               td

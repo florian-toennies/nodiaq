@@ -32,21 +32,19 @@ var global_tmp;
 var global_colors_available = ["#b00000", "#00b000", "#0000b0", "#b0b000", "#b000b0", "#00b0b0", "#b0b0b0"];
 var global_colors_use = [];
 
-function min_legend_set(){
-    new_value = parseFloat(window.prompt("new lower bound (in kB/s)", pmt_min_rate));
+function min_legend_set(new_value){
+    new_value = parseFloat(new_value) || parseFloat(window.prompt("new lower bound (in kB/s)", pmt_min_rate));
     if(new_value > 0){
         update_color_scheme(min = new_value);
     }
 }
 
-function max_legend_set(){
-    new_value = parseFloat(window.prompt("new upper bound (in kB/s)", pmt_max_rate));
+function max_legend_set(new_value){
+    new_value = parseFloat(new_value) || parseFloat(window.prompt("new upper bound (in kB/s)", pmt_max_rate));
     if(new_value > 0){
         update_color_scheme(min = pmt_min_rate, max = new_value);
     }
 }
-
-
 
 
 function update_color_scheme(min=pmt_min_rate, max=pmt_max_rate){
@@ -74,6 +72,9 @@ function update_color_scheme(min=pmt_min_rate, max=pmt_max_rate){
     svgObject1.getElementById("str_legend_050").textContent = pmt_rate_050;
     svgObject1.getElementById("str_legend_025").textContent = pmt_rate_025;
     svgObject1.getElementById("str_legend_000").textContent = pmt_rate_000;
+    
+    document.getElementById("field_input_min_datarate").value = pmt_min_rate
+    document.getElementById("field_input_max_datarate").value = pmt_max_rate
     
     if(global_pmt_rates != undefined){
         PMT_setcolour(global_pmt_rates)
@@ -180,6 +181,28 @@ function initialize_pmts(){
         console.log("pmts initialized: " + pmt_count_last);
         pmt_default_style = obj_pmt.style;
         update_color_scheme();
+        
+        // add function call to enter press on min/max datarate input fields
+        document.getElementById("field_input_max_datarate").addEventListener("keyup", function(event) {
+            if (event.keyCode === 13){
+                max_legend_set(document.getElementById("field_input_max_datarate").value)
+            }
+        })
+
+        document.getElementById("field_input_min_datarate").addEventListener("keyup", function(event) {
+            if (event.keyCode === 13){
+                min_legend_set(document.getElementById("field_input_min_datarate").value)
+            }
+        })
+        
+        // also to time displayed field
+        // also to time displayed field
+        document.getElementById("field_current_timestamp").addEventListener("keyup", function(event) {
+            if (event.keyCode === 13){
+                get_TPC_data(document.getElementById("field_current_timestamp").value)
+            }
+        })
+        
     }
     
 
@@ -483,7 +506,7 @@ function toggle_pmt(pmt_id){
         var color_id = Math.round(Math.random()*global_colors_available.length)-1;
         var color = global_colors_available.splice(color_id,1)[0]
         
-        obj_pmt.setAttribute("style", "fill:"+fill_color+";stroke:"+color+";stroke-width:1;");
+        obj_pmt.setAttribute("style", "fill:"+color+";stroke:"+color+";stroke-width:1;");
         global_colors_use.push(color)
         
     }
@@ -546,10 +569,10 @@ function history_draw(){
     var time_list = [];
     
     var x_steps = 4;
-    var x0 = 50;
-    var x1 = 450;
-    var y0 = 225;
-    var y1 = 25;
+    var x0 = parseFloat(svgObject2.getElementById("str_x_000").getAttribute("x"));
+    var x1 = parseFloat(svgObject2.getElementById("str_x_100").getAttribute("x"));
+    var y0 = parseFloat(svgObject2.getElementById("str_y_000").getAttribute("y"));
+    var y1 = parseFloat(svgObject2.getElementById("str_y_100").getAttribute("y"));
     var dx_ = x1 - x0;
     var dy_ = y1 - y0;
     
@@ -569,14 +592,14 @@ function history_draw(){
     }
     function y(value_y){
         return(
-            y0 + (value_y * dy_ / dy())
+            y0 + Math.min(value_y * dy_ / dy(), 0)
         )
     }
     var t0  = 0
     var min_time = Infinity;
     var max_time = 0;
     var min_rate = 0//Infinity;
-    var max_rate = 0;
+    var max_rate = 1;
     
     // prepare data
     function prepare_data(){
@@ -679,22 +702,28 @@ function history_draw(){
                 }
             }
             
+            var group_this = document.createElementNS("http://www.w3.org/2000/svg", "g");
+            group_this.setAttribute("class", "dataline")
             
             var text_this = document.createElementNS("http://www.w3.org/2000/svg", "text");
             text_this.setAttribute("class", "dataline");
             text_this.setAttribute("style", "fill:"+color_this+";font-size:.75em;text-anchor:end;");
-            text_this.setAttribute("x", 499);
-            text_this.setAttribute("y", 30 + 10*i);
+            text_this.setAttribute("x", parseFloat(svgObject2.getElementById("pmtlabel").getAttribute("x")));
+            text_this.setAttribute("y", parseFloat(svgObject2.getElementById("pmtlabel").getAttribute("y")) + 15*(i+1));
             text_this.innerHTML = pmt_id;
-            svgObject2.children[0].appendChild(text_this);
+            group_this.appendChild(text_this)
             
             var line_this = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
             line_this.setAttribute("class", "dataline");
             line_this.setAttribute("points", str_points);
             line_this.setAttribute("fill", "none");
-            line_this.setAttribute("style", "stroke:"+color_this+";stroke-width:3");
-            svgObject2.children[0].appendChild(line_this);
+            line_this.setAttribute("style", "stroke:"+color_this+";");
+            group_this.appendChild(line_this)
             
+            
+            svgObject2.children[0].appendChild(group_this);
+            //svgObject2.children[0].appendChild(text_this);
+            //svgObject2.children[0].appendChild(line_this);
             
         }
     }
@@ -703,9 +732,12 @@ function history_draw(){
     //var svgDocument = document.getElementById('svg_frame2').getElementById('svg2')
     
     
-    var time_start = parseInt(document.getElementById('field_history_start' ).value);
-    var time_end   = parseInt(document.getElementById('field_history_end'   ).value);
+    var t0 = parseInt(document.getElementById('field_history_start' ).value);
+    var t1 = parseInt(document.getElementById('field_history_end'   ).value);
     var time_width = parseInt(document.getElementById('field_history_window').value);
+    
+    time_start = Math.min(t0, t1);
+    time_end   = Math.max(t0, t1);
     
     console.log(
         "\ntime_start:" + time_start + 

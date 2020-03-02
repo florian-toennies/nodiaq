@@ -1,21 +1,43 @@
 
 <svg id="svg2"
     xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 500 250"
+    viewBox="0 0 425 260"
 >
     <style>
         text{
             font-family:
                 Verdana, Helvetica, Arial, sans-serif;
         }
+        
+        .grid{
+            stroke:
+                darkgrey;
+            stroke-width:
+                .5;
+        }
+        
+        text.dataline, polyline.dataline{
+            cursor:
+                pointer;
+        }
+        g:hover text.dataline, g:hover polyline.dataline{
+            font-weight:
+                bold;
+            stroke-width:
+                4;
+            text-decoration:
+                underline;
+        }
+        
        .border, .axis{
-        fill:
-            none;
-        stroke:
-            black;
-        stroke-width:
-            .2;
+            fill:
+                none;
+            stroke:
+                black;
+            stroke-width:
+                1;
        }
+       
        .time{
             font-size: .75em;
             dominant-baseline:
@@ -26,8 +48,8 @@
        
        .pmtlabel{
             font-size: .75em;
-            dominant-baseline:
-                middle;
+            alignment-baseline:
+                baseline;
             text-anchor:
                 end;
        }
@@ -45,86 +67,161 @@
             dominant-baseline:
                 hanging;
             text-anchor:
-                center;
+                middle;
+       }
+       .dataline{
+            alignment-baseline:
+                hanging;
        }
     </style>
     
+    // y-axis
+    <line
+        x1="45"
+        x2="45"
+        y1="230"
+        y2="30"
+        class="axis"
+    />
+    <line
+        x1="128.75"
+        x2="128.75"
+        y1="230"
+        y2="30"
+        class="grid"
+    />
+    <line
+        x1="212.5"
+        x2="212.5"
+        y1="230"
+        y2="30"
+        class="grid"
+    />
+    <line
+        x1="296.25"
+        x2="296.25"
+        y1="230"
+        y2="30"
+        class="grid"
+    />
+    <line
+        x1="380.0"
+        x2="380.0"
+        y1="230"
+        y2="30"
+        class="grid"
+    />
     
-    <line x1="50" x2="50"  y1="225" y2="25" class="axis"/>
-    <line x1="50" x2="450" y1="225" y2="225" class="axis"/>
+    // x-axis
+    <line
+        x1="45"
+        x2="380"
+        y1="230"
+        y2="230"
+        class="axis"
+    />
+    <line
+        x1="45"
+        x2="380"
+        y1="180.0"
+        y2="180.0"
+        class="grid"
+    />
+    <line
+        x1="45"
+        x2="380"
+        y1="130.0"
+        y2="130.0"
+        class="grid"
+    />
+    <line
+        x1="45"
+        x2="380"
+        y1="80.0"
+        y2="80.0"
+        class="grid"
+    />
+    <line
+        x1="45"
+        x2="380"
+        y1="30.0"
+        y2="30.0"
+        class="grid"
+    />
     
     
     <text
-        x="499"
-        y="15"
+        id="pmtlabel"
+        x="417.5"
+        y="30"
         class="pmtlabel"
     >PMT</text>
     
     
     <text
-        x="5"
-        y="15"
+        x="7.5"
+        y="7.5"
         id="time_id"
         class="time"
     >0</text>
     
     <text
-        x="45"
-        y="25"
+        x="42.0"
+        y="30.0"
         id="str_y_100"
         class="axis_y"
-    >100 % </text>
+    >100 %</text>
     
     <text
-        x="45"
-        y="125"
+        x="42.0"
+        y="130.0"
         id="str_y_050"
         class="axis_y"
-    >50 % </text>
+    >50 %</text>
     
     <text
-        x="45"
-        y="225"
+        x="42.0"
+        y="230.0"
         id="str_y_000"
         class="axis_y"
-    >0 % </text>
+    >0 %</text>
     
     
     
     <text
-        x="50"
-        y="230"
+        x="45.0"
+        y="233.0"
         id="str_x_000"
         class="axis_x"
-    >0 % </text>
+    >0 s</text>
         
     <text
-        x="137.5"
-        y="230"
+        x="128.75"
+        y="233.0"
         id="str_x_025"
         class="axis_x"
-    >25 % </text>
+    >1 s</text>
         
     <text
-        x="225"
-        y="230"
+        x="212.5"
+        y="233.0"
         id="str_x_050"
         class="axis_x"
-    >50 % </text>
+    >2 s</text>
         
     <text
-        x="337.5"
-        y="230"
+        x="296.25"
+        y="233.0"
         id="str_x_075"
         class="axis_x"
-    >50 % </text>
+    >3 s</text>
         
     <text
-        x="450"
-        y="230"
+        x="380.0"
+        y="233.0"
         id="str_x_100"
         class="axis_x"
-    >100 % </text>
+    >4 s</text>
 
 
 
