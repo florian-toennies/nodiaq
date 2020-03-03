@@ -31,9 +31,16 @@ var global_tmp;
 var alertsound;
 var alertsound_last=new Date();
 
+
+
+// styles for both svg frames
+var frame_styles = ["width:50%;max-width:700px;", "width:75%;", "width:100%;", "width:25%;", "width:50%;"]
+
 //var global_colors_available = ["aliceblue", "antiquewhite", "aqua", "aquamarine", "azure", "beige", "bisque", "black", "blanchedalmond", "blue", "blueviolet", "brown", "burlywood", "cadetblue", "chartreuse", "chocolate", "coral", "cornflowerblue", "cornsilk", "crimson", "cyan", "darkblue", "darkcyan", "darkgoldenrod", "darkgray", "darkgreen", "darkgrey", "darkkhaki", "darkmagenta", "darkolivegreen", "darkorange", "darkorchid", "darkred", "darksalmon", "darkseagreen", "darkslateblue", "darkslategray", "darkslategrey", "darkturquoise", "darkviolet", "deeppink", "deepskyblue", "dimgray", "dimgrey", "dodgerblue", "firebrick", "floralwhite", "forestgreen", "fuchsia", "gainsboro", "ghostwhite", "gold", "goldenrod", "greenyellow", "honeydew", "hotpink", "indianred", "indigo", "ivory", "khaki", "lavender", "lavenderblush", "lawngreen", "lemonchiffon", "lightblue", "lightcoral", "lightcyan", "lightgoldenrodyellow", "lightgray", "lightgreen", "lightgrey", "lightpink", "lightsalmon", "lightseagreen", "lightskyblue", "lightslategrey", "lightsteelblue", "lightyellow", "limegreen", "linen", "magenta", "maroon", "mediumaquamarine", "mediumblue", "mediumorchid", "mediumpurple", "mediumseagreen", "mediumslateblue", "mediumspringgreen", "mediumturquoise", "mediumvioletred", "midnightblue", "mintcream", "mistyrose", "moccasin", "navajowhite", "navy", "oldlace", "olive", "olivedrab", "orange", "orangered", "orchid", "palegoldenrod", "palegreen", "paleturquoise", "palevioletred", "papayawhip", "peachpuff", "peru", "pink", "plum", "powderblue", "purple", "red", "rosybrown", "royalblue", "saddlebrown", "salmon", "sandybrown", "seagreen", "seashell", "sienna", "silver", "skyblue", "slateblue", "slategray", "slategrey", "snow", "springgreen", "steelblue", "tan", "teal", "thistle", "tomato", "turquoise", "violet", "wheat", "white", "whitesmoke", "yellow", "yellowgreen"];
 var global_colors_available = ["#B0000088", "#00B00088", "#0000B088", "#B0B00088", "#B000B088", "#00B0B088", "#b0b0b0"];
 var global_colors_use = [];
+
+
 
 function min_legend_set(new_value){
     new_value = parseFloat(new_value) || parseFloat(window.prompt("new lower bound (in kB/s)", pmt_min_rate));
@@ -845,3 +852,10 @@ function add_sounds_to_all_BUTTons(){
 
 
 
+function change_frame_sizes(frame_id){
+    var current_frame_style = document.getElementById(frame_id).getAttribute("style");
+    var next_style_id = (frame_styles.indexOf(current_frame_style) + 1)%frame_styles.length;
+    
+    document.getElementById(frame_id).setAttribute("style", frame_styles[next_style_id]);
+    
+}

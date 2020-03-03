@@ -11,8 +11,8 @@ block content
   div.main-container(style='background-color:#eeeeee;margin:-5px;padding:15px;height:100vh')
     div.row(style='margin:0')
       
-      object(type="image/svg+xml" id="svg_frame1" data="/images/monitor_tpc_layout.svg" style="width:75%;max-width:700px;" class="tpcview" )
-      object(type="image/svg+xml" id="svg_frame2" data="/images/monitor_history.svg" style="width:75%;max-width:700px;" class="historyview" )
+      object(type="image/svg+xml" id="svg_frame1" data="/images/monitor_tpc_layout.svg" style="width:50%;max-width:700px;" class="tpcview" )
+      object(type="image/svg+xml" id="svg_frame2" data="/images/monitor_history.svg" style="width:50%;max-width:700px;" class="historyview" )
       div.noprint
           div.row(style="width:100%;margin:0;padding-top:5px;background-color:#f0f0f0;")
             button.btn.btn-info(onclick="whiten_all_pmts()") reset colour
@@ -85,6 +85,13 @@ block content
                     button.btn.btn-default(onclick="history_draw()") draw history
                     &nbsp;
                     button.btn.btn-default(onclick='print()') print
+                    
+                tr
+                  td
+                    button.btn.btn-default(onclick="change_frame_sizes('svg_frame1')") resize PMT view
+                    &nbsp;
+                    button.btn.btn-default(onclick="change_frame_sizes('svg_frame2')") resize trend view
+                  
   audio#alertsound(src="images/alertsounds/alert-00.ogg")
 
   script.
