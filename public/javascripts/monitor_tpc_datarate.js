@@ -32,7 +32,7 @@ var alertsound;
 var alertsound_last=new Date();
 
 //var global_colors_available = ["aliceblue", "antiquewhite", "aqua", "aquamarine", "azure", "beige", "bisque", "black", "blanchedalmond", "blue", "blueviolet", "brown", "burlywood", "cadetblue", "chartreuse", "chocolate", "coral", "cornflowerblue", "cornsilk", "crimson", "cyan", "darkblue", "darkcyan", "darkgoldenrod", "darkgray", "darkgreen", "darkgrey", "darkkhaki", "darkmagenta", "darkolivegreen", "darkorange", "darkorchid", "darkred", "darksalmon", "darkseagreen", "darkslateblue", "darkslategray", "darkslategrey", "darkturquoise", "darkviolet", "deeppink", "deepskyblue", "dimgray", "dimgrey", "dodgerblue", "firebrick", "floralwhite", "forestgreen", "fuchsia", "gainsboro", "ghostwhite", "gold", "goldenrod", "greenyellow", "honeydew", "hotpink", "indianred", "indigo", "ivory", "khaki", "lavender", "lavenderblush", "lawngreen", "lemonchiffon", "lightblue", "lightcoral", "lightcyan", "lightgoldenrodyellow", "lightgray", "lightgreen", "lightgrey", "lightpink", "lightsalmon", "lightseagreen", "lightskyblue", "lightslategrey", "lightsteelblue", "lightyellow", "limegreen", "linen", "magenta", "maroon", "mediumaquamarine", "mediumblue", "mediumorchid", "mediumpurple", "mediumseagreen", "mediumslateblue", "mediumspringgreen", "mediumturquoise", "mediumvioletred", "midnightblue", "mintcream", "mistyrose", "moccasin", "navajowhite", "navy", "oldlace", "olive", "olivedrab", "orange", "orangered", "orchid", "palegoldenrod", "palegreen", "paleturquoise", "palevioletred", "papayawhip", "peachpuff", "peru", "pink", "plum", "powderblue", "purple", "red", "rosybrown", "royalblue", "saddlebrown", "salmon", "sandybrown", "seagreen", "seashell", "sienna", "silver", "skyblue", "slateblue", "slategray", "slategrey", "snow", "springgreen", "steelblue", "tan", "teal", "thistle", "tomato", "turquoise", "violet", "wheat", "white", "whitesmoke", "yellow", "yellowgreen"];
-var global_colors_available = ["#b00000", "#00b000", "#0000b0", "#b0b000", "#b000b0", "#00b0b0", "#b0b0b0"];
+var global_colors_available = ["#B0000088", "#00B00088", "#0000B088", "#B0B00088", "#B000B088", "#00B0B088", "#b0b0b0"];
 var global_colors_use = [];
 
 function min_legend_set(new_value){
@@ -495,11 +495,14 @@ function toggle_pmt(pmt_id){
         console.log("toggled off: " + pmt_id)
         index_pmt = array_toggled_pmts.indexOf(pmt_id)
         
+        
         var dump = array_toggled_pmts.splice( index_pmt, 1 );
         var dump_color = global_colors_use.splice( index_pmt, 1 );
         
+        if(dump_color != "#00000088"){
+            global_colors_available.push(dump_color[0]);
+        }
         
-        global_colors_available.push(dump_color[0]);
         obj_pmt.setAttribute("style", pmt_default_style);
         obj_pmt.setAttribute("style", "fill:white;");
         
@@ -507,9 +510,12 @@ function toggle_pmt(pmt_id){
         console.log("toggled on: " + pmt_id)
         array_toggled_pmts.push(pmt_id);
     
-
-        var color_id = Math.round(Math.random()*global_colors_available.length)-1;
-        var color = global_colors_available.splice(color_id,1)[0]
+        if(global_colors_available.length == 0){
+            var color = "#00000088"
+        } else {
+            var color = global_colors_available.splice(0,1)[0]
+        }
+        
         
         obj_pmt.setAttribute("style", "fill:"+color+";stroke:"+color+";stroke-width:1;");
         global_colors_use.push(color)
@@ -659,7 +665,7 @@ function history_draw(){
     
     function history_prepare_axis(){
         // time field
-        svgObject2.getElementById("time_id").textContent = "start: " + get_human_date(t0);
+        svgObject2.getElementById("time_id").textContent = "time since " + get_human_date(t0);
         
         // y axis
         svgObject2.getElementById("str_y_100").textContent = max_rate + pmt_rate_unit;
@@ -836,3 +842,6 @@ function add_sounds_to_all_BUTTons(){
         console.log("acoustic BUTTon activation verification disabled")
     }
 }
+
+
+

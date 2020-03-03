@@ -1,7 +1,7 @@
 
 <svg id="svg2"
     xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 425 260"
+    viewBox="0 0 475 250"
 >
     <style>
         text{
@@ -79,35 +79,35 @@
     <line
         x1="45"
         x2="45"
-        y1="230"
+        y1="220"
         y2="30"
         class="axis"
     />
     <line
-        x1="128.75"
-        x2="128.75"
-        y1="230"
+        x1="141.25"
+        x2="141.25"
+        y1="220"
         y2="30"
         class="grid"
     />
     <line
-        x1="212.5"
-        x2="212.5"
-        y1="230"
+        x1="237.5"
+        x2="237.5"
+        y1="220"
         y2="30"
         class="grid"
     />
     <line
-        x1="296.25"
-        x2="296.25"
-        y1="230"
+        x1="333.75"
+        x2="333.75"
+        y1="220"
         y2="30"
         class="grid"
     />
     <line
-        x1="380.0"
-        x2="380.0"
-        y1="230"
+        x1="430.0"
+        x2="430.0"
+        y1="220"
         y2="30"
         class="grid"
     />
@@ -115,35 +115,35 @@
     // x-axis
     <line
         x1="45"
-        x2="380"
-        y1="230"
-        y2="230"
+        x2="430"
+        y1="220"
+        y2="220"
         class="axis"
     />
     <line
         x1="45"
-        x2="380"
-        y1="180.0"
-        y2="180.0"
+        x2="430"
+        y1="172.5"
+        y2="172.5"
         class="grid"
     />
     <line
         x1="45"
-        x2="380"
-        y1="130.0"
-        y2="130.0"
+        x2="430"
+        y1="125.0"
+        y2="125.0"
         class="grid"
     />
     <line
         x1="45"
-        x2="380"
-        y1="80.0"
-        y2="80.0"
+        x2="430"
+        y1="77.5"
+        y2="77.5"
         class="grid"
     />
     <line
         x1="45"
-        x2="380"
+        x2="430"
         y1="30.0"
         y2="30.0"
         class="grid"
@@ -152,73 +152,77 @@
     
     <text
         id="pmtlabel"
-        x="417.5"
+        x="467.5"
         y="30"
         class="pmtlabel"
     >PMT</text>
     
-    
     <text
-        x="7.5"
-        y="7.5"
-        id="time_id"
-        class="time"
-    >0</text>
+        x="42.0"
+        y="10.0"
+        class="axis_y"
+    >datarate</text>
     
     <text
         x="42.0"
         y="30.0"
         id="str_y_100"
         class="axis_y"
-    >100 %</text>
+    >100 kB/s</text>
     
     <text
         x="42.0"
-        y="130.0"
+        y="125.0"
         id="str_y_050"
         class="axis_y"
-    >50 %</text>
+    >50 kB/s</text>
     
     <text
         x="42.0"
-        y="230.0"
+        y="220.0"
         id="str_y_000"
         class="axis_y"
-    >0 %</text>
+    >0 kB/s</text>
     
     
     
     <text
+        x="237.5"
+        y="235"
+        id="time_id"
+        class="axis_x"
+    >time since start</text>
+    <text
         x="45.0"
-        y="233.0"
+        y="223.0"
         id="str_x_000"
         class="axis_x"
     >0 s</text>
         
     <text
-        x="128.75"
-        y="233.0"
+        x="141.25"
+        y="223.0"
         id="str_x_025"
         class="axis_x"
     >1 s</text>
         
     <text
-        x="212.5"
-        y="233.0"
+        x="237.5"
+        y="223.0"
         id="str_x_050"
         class="axis_x"
     >2 s</text>
         
     <text
-        x="296.25"
-        y="233.0"
+        x="333.75"
+        y="223.0"
         id="str_x_075"
         class="axis_x"
     >3 s</text>
         
     <text
-        x="380.0"
-        y="233.0"
+        x="430.0"
+        y="223.0"
         id="str_x_100"
         class="axis_x"
     >4 s</text>
