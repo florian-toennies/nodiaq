@@ -9,10 +9,12 @@ block extrahead
   
 block content
   div.main-container(style='background-color:#eeeeee;margin:-5px;padding:15px;height:100vh')
-    div.row(style='margin:0')
+    div
       
       object(type="image/svg+xml" id="svg_frame1" data="/images/monitor_tpc_layout.svg" style="width:50%;max-width:700px;" class="tpcview" )
+      
       object(type="image/svg+xml" id="svg_frame2" data="/images/monitor_history.svg" style="width:50%;max-width:700px;" class="historyview" )
+      
       div.noprint
           div.row(style="width:100%;margin:0;padding-top:5px;background-color:#f0f0f0;")
             button.btn.btn-info(onclick="whiten_all_pmts()") reset colour
