@@ -859,3 +859,44 @@ function change_frame_sizes(frame_id){
     document.getElementById(frame_id).setAttribute("style", frame_styles[next_style_id]);
     
 }
+
+
+
+
+function saveAsPng(svgObject){
+
+    var svgString = new XMLSerializer().serializeToString(svgObject);
+
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    var img = new Image();
+    var svg = new Blob([svgString], {type: "image/svg+xml;charset=utf-8"});
+    
+    var DOMURL = self.URL || self.webkitURL || self;
+    var url = DOMURL.createObjectURL(svg);
+    
+    img.onload = function() {
+        console.log("resetting canvas")
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0);
+        var png = canvas.toDataURL("image/png");
+        document.querySelector('#png-container').innerHTML = '<img src="'+png+'"/>';
+        DOMURL.revokeObjectURL(png);
+
+
+    };
+    img.src = url;
+    
+    setTimeout(
+        () => {
+            var link = document.createElement('a');
+            link.download = 'trend.png';
+            link.href = canvas.toDataURL()
+            link.click();
+        },
+        100
+    );
+
+
+}

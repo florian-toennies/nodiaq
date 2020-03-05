@@ -88,15 +88,17 @@ block content
                     input(id="field_history_window", value="10")
                   td
                     button.btn.btn-default(onclick="history_draw()") draw trendlines
+                    &nbsp;
+                    button.btn.btn-default(onclick='saveAsPng(svgObject2)') 💾
                     
                 
           div.row(style="width:100%;margin:0;padding-top:5px;background-color:#f0f0f0;")
             button.btn.btn-default(onclick="change_frame_sizes('svg_frame1')") resize PMT view
             &nbsp;
             button.btn.btn-default(onclick="change_frame_sizes('svg_frame2')") resize trend view
-            &nbsp;
-            button.btn.btn-default(onclick='print()') 🖨
-                  
+            
+        
+        canvas#canvas(width="800", height="400" style='visibility:hidden;height:0px;')
   audio#alertsound(src="images/alertsounds/alert-00.ogg")
 
   script.
