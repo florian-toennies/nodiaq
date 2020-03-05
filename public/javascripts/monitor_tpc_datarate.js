@@ -885,8 +885,8 @@ function saveAsPng(svgObject){
     var svg = new Blob([svgString], {type: "image/svg+xml;charset=utf-8"});
     
     // set canvas size  to svg viewbox size
-    canvas.setAttribute("width", svgObject.firstElementChild.viewBox.baseVal.width*2);
-    canvas.setAttribute("height", svgObject.firstElementChild.viewBox.baseVal.height*2);
+    canvas.setAttribute("width", svgObject.firstElementChild.viewBox.baseVal.width*4);
+    canvas.setAttribute("height", svgObject.firstElementChild.viewBox.baseVal.height*4);
     
     
     // set url
