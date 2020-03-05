@@ -863,35 +863,55 @@ function change_frame_sizes(frame_id){
 
 
 
-function saveAsPng(svgObject){
-
+function saveAsPng(svgObject){    
     var svgString = new XMLSerializer().serializeToString(svgObject);
-
+    
+    // check which svg is chosen and generate filname
+    var str_id_svgObject = svgObject.firstChild.id;
+    var filename = "image";
+    if(str_id_svgObject == "svg1"){
+        filename = "pmt-view";
+    } else if(str_id_svgObject == "svg2"){
+        filename = "trend-view";
+    }
+    // add unique string to filename
+    filename = filename + "_" +  (new Date).getTime() + ".png";
+    
+    
+    // prepare canvas 
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
     var img = new Image();
     var svg = new Blob([svgString], {type: "image/svg+xml;charset=utf-8"});
     
+    // set canvas size  to svg viewbox size
+    canvas.setAttribute("width", svgObject.firstElementChild.viewBox.baseVal.width*2);
+    canvas.setAttribute("height", svgObject.firstElementChild.viewBox.baseVal.height*2);
+    
+    
+    // set url
     var DOMURL = self.URL || self.webkitURL || self;
     var url = DOMURL.createObjectURL(svg);
     
+    
+    // it does not work withut this
     img.onload = function() {
-        console.log("resetting canvas")
         ctx.fillStyle = "white";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(img, 0, 0);
         var png = canvas.toDataURL("image/png");
-        document.querySelector('#png-container').innerHTML = '<img src="'+png+'"/>';
         DOMURL.revokeObjectURL(png);
 
 
     };
     img.src = url;
     
+    
+    // download after some time (1/10 of a second should hopefully be long engough....)
     setTimeout(
         () => {
             var link = document.createElement('a');
-            link.download = 'trend.png';
+            link.download = filename;
             link.href = canvas.toDataURL()
             link.click();
         },
