@@ -28,8 +28,6 @@ var pmt_diff_base = 10;
 var pmt_diff;
 
 var global_tmp;
-var alertsound;
-var alertsound_last=new Date();
 
 
 
@@ -231,7 +229,6 @@ function initialize_pmts(){
                     results_empty[i] = -1;
                 }
                 
-                alertsound = document.getElementById("alertsound");
                 pmt_add_event();
                 set_limits();
                 start_live_interval();
@@ -802,52 +799,6 @@ function history_draw(){
 
 function usetimestamp(field_id){
     document.getElementById(field_id).value = document.getElementById("field_current_timestamp").value
-}
-
-
-function alert_sound(random = false){
-    
-    // play only one alert at a time
-    var now = new Date()
-    if( now.getTime() > (alertsound_last.getTime() + alertsound.duration*1000) ){
-        
-        if(random == true){
-            var new_file = Math.ceil(Math.random()*8);
-            alertsound.src = "images/alertsounds/alert-0"+new_file+".mp3";
-        } else{
-            alertsound.src = "images/alertsounds/alert-00.ogg";
-        }
-        
-        alertsound_last = now;
-        alertsound.play();
-        
-    }
-    
-}
-function alert_sound_BUTTon(){
-    alert_sound(random=true);
-}
-
-
-function add_sounds_to_all_BUTTons(){
-    var BUTTons = document.getElementsByTagName('button');   
-    if(acoustic_button_feedback == false){
-        for (var i = 0; i < BUTTons.length; i++) {
-            var BUTT = BUTTons[i];
-            BUTT.addEventListener("click", alert_sound_BUTTon);
-        }
-        acoustic_button_feedback = true
-        svgObject1.getElementById("str_legend_log").textContent = "acoustic BUTTon activation verification enabled"
-        console.log("acoustic BUTTon activation verification enabled")
-    } else {
-        for (var i = 0; i < BUTTons.length; i++) {
-            var BUTT = BUTTons[i];
-            BUTT.removeEventListener("click", alert_sound_BUTTon);
-        }
-        acoustic_button_feedback = false
-        svgObject1.getElementById("str_legend_log").textContent = "acoustic BUTTon activation verification disabled"
-        console.log("acoustic BUTTon activation verification disabled")
-    }
 }
 
 
