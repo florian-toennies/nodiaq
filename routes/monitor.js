@@ -23,7 +23,7 @@ router.get('/get_limits', ensureAuthenticated, function(req, res){
     // only take reader 0 to 2 and non empty channel entries
     mongo_pipeline.push({
         "$match":{
-            "host": {$regex:"reader[0-2]_reader_0", $options:"$i" },
+            "host": {$regex:"reader[0-3]_reader_0", $options:"$i" },
             "channels":{$exists: true, $ne: {}},
         }
     });
@@ -81,7 +81,7 @@ router.get('/get_updates', ensureAuthenticated,function(req,res){
     
     // start mongo pipeline with empty array
     var mongo_pipeline = []
-    mongo_pipeline.push({"$match":{"host":{$regex:"reader[0-2]_reader_0", $options:"$i" }}});
+    mongo_pipeline.push({"$match":{"host":{$regex:"reader[0-3]_reader_0", $options:"$i" }}});
     mongo_pipeline.push({"$sort": {"_id":-1}});
     mongo_pipeline.push({"$limit": 15});
     mongo_pipeline.push({"$group": {_id: "$host", lastid:{"$last": "$_id"}, channels:{"$last":"$channels"}}});
@@ -196,7 +196,7 @@ router.get('/get_history', ensureAuthenticated,function(req,res){
     mongo_pipeline.push(
     {"$match":{
         "_id":{"$gt": oid_time_start,"$lt": oid_time_end},
-        "host":{$regex:"reader[0-2]_reader_0", $options:"$i" }}
+        "host":{$regex:"reader[0-3]_reader_0", $options:"$i" }}
     });
     
     // create time in seconds and kick out unnecesarry pmts
@@ -277,46 +277,6 @@ router.get('/get_history', ensureAuthenticated,function(req,res){
     
 });
 
-
-
-// returns cable_map (used to generate new tpc svg)
-// no authentintification as python will need to access these functions
-router.get('/get_cable_map', function(req,res){
-    var runs_db = req.runs_db;
-    var collection = runs_db.get('cable_map');
-    
-    collection.find({},{},function(e,docs){
-        res.json(docs);
-    })
-});
-
-// returns board layout to update svg
-// no authentintification as python will need to access these functions
-router.get('/get_options_map', function(req,res){
-    
-    var regex = req.query.regex;
-    var mongo_match = {};
-    var mongo_filter = {}//{sort:{_id:-1}, limit:10};
-    
-    if(regex != undefined){
-        mongo_match = {"name": {$regex: regex, $options:"i"}};
-    }
-    
-    console.log(mongo_match);
-    console.log(mongo_filter);
-    
-    
-    var runs_db = req.runs_db;
-    var collection = runs_db.get('options');
-    
-    collection.find(
-        mongo_match,
-        mongo_match,
-        function(e,docs){
-            res.json(docs);
-        }
-    )
-});
 
 // get last update on individual reader
 router.get('/update/:reader', ensureAuthenticated,function(req,res){
