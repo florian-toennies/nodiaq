@@ -3,8 +3,7 @@ var passport = require('passport');
 var monk = require('monk');
 var runs_cstr = process.env.USERS_URI;
 var runs_db = monk(runs_cstr, {authSource: process.env.USERS_MONGO_AUTH_DB});
-//console.log("Runs db in user auth");
-//console.log(runs_cstr);
+//console.log("Runs db in user auth " + runs_cstr);
 
 passport.serializeUser(function(user, done) {
     done(null, user);

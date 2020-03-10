@@ -1,8 +1,7 @@
 var mongoose = require('mongoose');
 var DataTable = require('mongoose-datatable').default;
 var runsModel;
-var dbURI = "mongodb://" + process.env.RUNS_MONGO_USER + ":" + process.env.RUNS_MONGO_PASSWORD + '@' +
- 			process.env.RUNS_MONGO_HOST + ":" + process.env.RUNS_MONGO_PORT + "/" + process.env.RUNS_MONGO_AUTH_DB;
+var dbURI = process.env.RUNS_URI;
 var runsdb = mongoose.connection;
 var runs;
 var runsTableSchema;
@@ -11,7 +10,7 @@ var xenon1t_runs_collection = 'runs_new';
 
 DataTable.configure({ verbose: true, debug : true });
 mongoose.plugin(DataTable.init);
-mongoose.connect(dbURI, {dbName: process.env.RUNS_MONGO_DB});//'xenonnt'});
+mongoose.connect(dbURI, {authSource : process.env.RUNS_MONGO_AUTH_DB});
 
 
 runsdb.on('error', console.error.bind(console, 'connection error:'));
