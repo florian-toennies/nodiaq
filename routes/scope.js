@@ -313,25 +313,20 @@ router.get('/get_pulses', ensureAuthenticated, function(req, res) {
         frag_idx += 4;
         var frag_time_lsb = decompressed.readInt32LE(idx+frag_idx);
         frag_idx += 4;
-        var frag_time_msb = decompressed.readInt32LE(idx+frag_idx);
-        frag_idx += 4;
-        var frag_time = parseInt(frag_time_msb.toString(16) + frag_time_lsb.toString(16), 16);
         //var frag_time = decompressed.readBigInt64LE(idx+frag_idx);
         //frag_idx += 8; // node version too old
         // can't bitshift because js is 32-bit trash
-        var pulse_length = decompressed.readInt32LE(idx+frag_idx);
-        frag_idx += 4;
-        var frag_dt = decompressed.readInt16LE(idx+frag_idx);
-        frag_idx += 2;
-        var frag_channel = decompressed.readInt16LE(idx+frag_idx);
-        console.log("This frag is channel " + frag_channel);
-        frag_idx += 2;
+        var frag_time = parseInt(frag_time_msb.toString(16) + frag_time_lsb.toString(16), 16);
         var frag_length = decompressed.readInt32LE(idx+frag_idx);
         console.log("This frag is " + frag_length + " samples long");
+        frag_idx += 4;
+        frag_idx += 4; // skip area
+        var pulse_length = decompressed.readInt32LE(idx+frag_idx);
+        frag_idx += 4;
         var frag_i = decompressed.readInt16LE(idx+frag_idx);
         frag_idx += 2;
-        var baseline = decompressed.readInt16LE(idx+frag_idx);
-        frag_idx += 4;
+        frag_idx += 4; // skip baseline
+        frag_idx += 1; // skip reduction
         if (frag_channel != channel) {
           idx += strax_header_size;
           idx += frag_length*2;
