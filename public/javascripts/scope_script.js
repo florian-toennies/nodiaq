@@ -1,7 +1,5 @@
 function PopulateAvailableRuns(divname){
     $.getJSON('scope/available_runs', function(data){
-      console.log("FILLRUNS");
-      console.log(data);
         if (typeof data.message != 'undefined') {
             alert(data.message);
             return;
@@ -11,6 +9,7 @@ function PopulateAvailableRuns(divname){
             alert("No runs available");
             return;
         }
+        data.sort();
 	for(var i in data){
 	    html += "<option value="+data[i]+">"+data[i]+"</option>";
 	}
@@ -21,8 +20,6 @@ function PopulateAvailableRuns(divname){
 function FillTargets() {
     var run = $("#run_select").val();
     $.getJSON('scope/available_targets?run=' + run, function(data) {
-      console.log("FILLTARGETS");
-      console.log(data);
         if (typeof data.message != 'undefined') {
             alert(data.message);
             return;
@@ -36,10 +33,12 @@ function FillTargets() {
             html += "<option value=" + data[i] + ">" + data[i] + "</option>";
         }
         $("#target_select").html(html);
-    }
+    });
 }
 
 function GetData(){
+    alert("Congratulations on getting this far, but this isn't quite ready yet");
+    return;
 
     var run = $("#run_select").val();
     var target = $("#target_select").val();
@@ -83,10 +82,10 @@ function GetData(){
             var ns = ts % 1000;
             var us = (Math.floor((ts % 1000000)/1000)).toFixed(0);
             var human_time = d.getUTCFullYear() + '-';
-            human_time += d.getUTCMonth().padStart(2, '0' + '-';
-            human_time += d.getUTCDate().padStart(2, '0' + ' ';
-            human_time += d.getUTCHours().padStart(2, '0' + ':';
-            human_time += d.getUTCMinutes().padStart(2, '0' + ':';
+            human_time += d.getUTCMonth().padStart(2, '0') + '-';
+            human_time += d.getUTCDate().padStart(2, '0') + ' ';
+            human_time += d.getUTCHours().padStart(2, '0') + ':';
+            human_time += d.getUTCMinutes().padStart(2, '0') + ':';
             human_time += d.getUTCSeconds().padStart(2, '0') + '.';
             human_time += d.getUTCMilliseconds().padStart(3, '0') + ' ';
             human_time += us.padStart(3, '0') + ' ';

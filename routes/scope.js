@@ -18,7 +18,7 @@ router.get('/', ensureAuthenticated, function(req, res) {
 
 router.get('/available_runs', ensureAuthenticated, function(req, res){
   var collection = req.runs_db.get(process.env.RUNS_MONGO_COLLECTION);
-  var query = {'data.type' : /eb[0-5]\.xenon\.local/};
+  var query = {'data.host' : /eb[0-5]\.xenon\.local/};
   var options = {};
   collection.distinct('number', query, options, function(err, docs) {
     if (err) return res.send(JSON.stringify({message : err.message}));
@@ -32,19 +32,20 @@ router.get("/available_targets", ensureAuthenticated, function(req, res) {
     if (typeof run === 'undefined') return res.send(JSON.stringify({message : 'Invalid run'}));
     var collection = req.runs_db.get(process.env.RUNS_MONGO_COLLECTION);
     try {
-      var query = {number : NumberInt(run)};
+      var query = {number : parseInt(run)};
     }catch(err){
       return res.send(JSON.stringify({message : err.message}));
     }
-    var options = {
-        'projection' : {'data' : 1}
+    var options = { data : 1
+        //projection : {data : 1}
     };
-    collection.findOne(query, options, function(err, docs) {
+    collection.findOne(query, options, function(err, doc) {
       if (err) return res.send(JSON.stringify({message : err.message}));
-      if (docs.length == 0) return res.send(JSON.stringify({message : 'No run found'}));
+      if (typeof doc.data === 'undefined')
+        return res.send(JSON.stringify({message : 'No run found'}));
       var ret = [];
-      for (var i in docs[0]['data']) {
-        var datadoc = docs[0]['data'][i];
+      for (var i in doc['data']) {
+        var datadoc = doc['data'][i];
         if (datadoc['host'] == 'rucio-catalog' || datadoc['type'] == 'live')
           continue;
         ret.push(datadoc['type']);
