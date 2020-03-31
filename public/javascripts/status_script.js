@@ -40,10 +40,10 @@ function RedrawRatePlot(){
     var resolution = $("#menu_resolution_s").val();
     var variable = $("#menu_variable_s").val();
 
-    var readers = ["reader0_reader_0", 'reader1_reader_0', 'reader2_reader_0', "reader5_reader_0", "reader6_reader_0"];
+    var readers = ["reader0_reader_0", 'reader1_reader_0', 'reader2_reader_0', "reader5_reader_0" ];
     var controllers = ['reader0_controller_0', "reader5_controller_0", "reader6_controller_0"];
     document.reader_data = {};
-    var colors = {"rate": "#1c0877", "buff": "#df3470", "strax": "#3dd89f"}
+    var colors = {"rate": "#1c0877", "buff": "#df3470", "strax": "#3dd89f"};
     DrawProgressRate(0);
     var limit = (new Date()).getTime() - parseInt(history)*1000;
     console.log(document.reader_data);

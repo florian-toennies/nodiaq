@@ -64,6 +64,5 @@ router.get("/available_chunks", ensureAuthenticated, function(req, res) {
                    .sort(function(a,b) {return parseInt(b)-parseInt(a);});
       return res.send(JSON.stringify(items));
     });
-});
 
 module.exports = router;

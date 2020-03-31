@@ -45,6 +45,8 @@ function GetData(){
     var target = $("#target_select").val();
     var max_n = $("#num_select").val();
     var channel = $("#channel_select").val();
+    var chunk=$("#chunk_select").val();
+    var thread=$("#thread_select").val();
 
     if (run.search(/[0-9]{6}/) == -1) {
         alert("That isn't a valid run id");
