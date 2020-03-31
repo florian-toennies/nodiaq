@@ -7,11 +7,9 @@ block extrahead
   script(src="javascripts/dygraph.min.js", type="text/javascript")
   link(href="stylesheets/dygraph.css", rel="stylesheet")
 
-block content     
+block content
   div.main-container
-    h3 Pulse Viewer
-    div.alert.alert-danger This doesn't work yet. Yes yes. Grumble grumble. If the year is currently 2020 it will probably never work. Otherwise maybe it's being worked on.
-    br
+    h3 The Viewer of Stuff
     div.row(style='width:100%')
       div.col-3
         h5 Options
@@ -21,7 +19,7 @@ block content
           select.cselect#run_select(onchange="FillTargets()")
         p
           strong Select a data type: &nbsp;
-          select.cselect#target_select
+          select.cselect#target_select(onchange="DisableChannelInput()")
         p
           strong Select a channel: &nbsp;
           input#channel_select(type='number' min=-1 max=494 value=0 name='channel')

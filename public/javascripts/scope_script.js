@@ -9,8 +9,7 @@ function PopulateAvailableRuns(divname){
             alert("No runs available");
             return;
         }
-        data.sort();
-	for(var i in data){
+	for(var i in data.reverse()){
 	    html += "<option value="+data[i]+">"+data[i]+"</option>";
 	}
 	document.getElementById(divname).innerHTML = html;
@@ -34,6 +33,13 @@ function FillTargets() {
         }
         $("#target_select").html(html);
     });
+}
+
+function DisableChannelInput() {
+  if ($("#target_select").val().search(/records/) == -1)
+    $("#channel_select").attr("disabled", true);
+  else
+    $("#channel_select").attr("disabled", false);
 }
 
 function GetData(){
