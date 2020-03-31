@@ -17,20 +17,20 @@ block content
         h5 Options
         hr
         p
-          strong 1. Select a run: &nbsp;
-          select.cselect#run_select(onchange="FillChunks()")
+          strong Select a run: &nbsp;
+          select.cselect#run_select(onchange="FillTargets()")
         p
-          strong 2. Select a chunk (time into run): &nbsp;
-          select.cselect#chunk_select
+          strong Select a data type: &nbsp;
+          select.cselect#target_select
         p
-          strong 3. Select a channel: &nbsp;
-          input#channel_select(type='number' min=0 max=494 value=0 name='channel' onchange="FillThreads()")
+          strong Select a channel: &nbsp;
+          input#channel_select(type='number' min=-1 max=494 value=0 name='channel')
         p
-          strong 4. Select a thread (a random number): &nbsp;
-          select.cselect#thread_select
+          strong Select the max number of entries: &nbsp;
+          select.cselect#num_select(type='number' min=1 max=1000 value=1 name='num_select')
         p
-          button.btn.btn-info(onclick="GetData()") 5. Get New Data
-        p 
+          button.btn.btn-info(onclick="GetData()") Get Data
+        p
           button.btn.btn-default(onclick="Prev()") Previous &nbsp;
           button.btn.btn-default(onclick="Next()") Next
 
@@ -38,29 +38,15 @@ block content
         div#chartdiv(style='width:100%')
 
     table(style="width:100%")
-      thead
-        tr
-          th Index (in query)
-          th Channel
-          th Time
-          th Human time min:sec:ms
-          th Length (samples)
-      tbody#pulse_table
+      thead#scopetab_head
+      tbody#scopetab_body
 
     div.row
       div.col-4
         span
-          strong Channel: &nbsp;
-        span#channel_id
-      div.col-4
+          strong A note on the y-axis: &nbsp;
         span
-          strong Time: &nbsp;
-        span#time_id
-      div.col-4
-        span
-          strong Length:
-        span#length_id
-
+          If you're looking at records or raw_records, the amplitude is in ADC counts, otherwise it's PE/bin
 
   script.
     $(document).ready(function(){
