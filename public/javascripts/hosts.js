@@ -1,10 +1,10 @@
 function UpdateMonitorPage(){
-    var hosts = ['reader0', 'reader1', 'reader2', 'eb0', 'eb1', 'eb2', 'eb3', 'eb4', 'eb5'];
+    var hosts = ['reader0', 'reader1', 'reader2', 'reader3', 'eb0', 'eb1', 'eb2', 'eb3', 'eb4', 'eb5'];
     for(i in hosts){
 	var host = hosts[i];
 	$.getJSON("hosts/get_host_status?host="+host, (function(h){
 	    return function(data){
-		console.log(data);
+		//console.log(data);
 		// Set attributes
 		atts = [['cpu_percent', 'CPU %'], ['cpu_count', 'Num CPUs'],
 			    ['cpu_count_logical', 'Num cores']] 
@@ -23,7 +23,7 @@ function UpdateMonitorPage(){
 		document.getElementById(h+"_swap").innerHTML = (data['swap_memory']['total']/1e9).toFixed(2) + " GB";
 		var html = "";
 		for(j in data['disk']){
-		    console.log(j);
+		    //console.log(j);
 		    html += "<div class='col-12' style='font-size:14px'><strong>";
 		    html += j + " (" + data['disk'][j]['device'] + ")</strong></div>";		    
 		    html += "<div class='col-4' style='font-size:12px'><strong>Total: </strong></div>";
@@ -40,8 +40,8 @@ function UpdateMonitorPage(){
 		var timestamp = data['_id'].toString().substring(0,8);
 		//var ts = new Date( parseInt( timestamp, 16 ) * 1000 );
 		var ts = parseInt(timestamp, 16) * 1000;
-		console.log(ts);
-		console.log(document.last_time_charts[h]);
+		//console.log(ts);
+		//console.log(document.last_time_charts[h]);
 		if(typeof(document.last_time_charts) != "undefined" &&
 		   h in document.last_time_charts &&
 		   !isNaN(ts) && document.last_time_charts[h] != ts){
@@ -78,13 +78,13 @@ function DrawMonitorCharts(){
     document.charts = {};
     document.last_time_charts = {};
 
-    var hosts = ["reader0", 'reader1', 'reader2', 'eb0', 'eb1', 'eb2', 'eb3', 'eb4', 'eb5'];
+    var hosts = ["reader0", 'reader1', 'reader2', 'reader3', 'eb0', 'eb1', 'eb2', 'eb3', 'eb4', 'eb5'];
 
     for(i in hosts){
 	var host = hosts[i];
 	$.getJSON("hosts/get_host_history?limit=1000&host="+host, (function(h){
 	    return function(data){
-		console.log(data);
+		//console.log(data);
 
 		// Can update style here
 		for(var i in data){
@@ -115,7 +115,8 @@ function DrawMonitorCharts(){
 			    title: {
 				text: "%",
 			    },
-			    min: 0,
+			    min: 0
+                            //max: 110
 			},
 			plotOptions:{
 			    series: {
