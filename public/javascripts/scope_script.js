@@ -41,23 +41,19 @@ function FillTargets() {
 
 function GetData(){
 
-    var run = (''+$("#run_select").val()).padStart(6, '0');
+    var run = $("#run_select").val();
     var target = $("#target_select").val();
     var max_n = $("#num_select").val();
     var channel = $("#channel_select").val();
     var chunk=$("#chunk_select").val();
     var thread=$("#thread_select").val();
 
-    if (run.search(/[0-9]{6}/) == -1) {
-        alert("That isn't a valid run id");
-        return;
-    }
     if (max_n > 1000) {
         alert("You can't ask for that many entries");
         return;
     }
 
-    var url = "http://eb2:8888/get_data";
+    var url = "http://eb2:8000/get_data";
     var query = "?run_id="+run+"&target="+target+"&max_n="+max_n+"&selection_str=channel=="+channel;
 
     $.getJSON(url+query, function(data){
