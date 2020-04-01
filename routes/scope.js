@@ -67,4 +67,33 @@ router.get("/available_chunks", ensureAuthenticated, function(req, res) {
     });
 });
 
+router.get("/get_data", ensureAuthenticated, function(req, res) {
+  var q = url.parse(req.url, true).query;
+  var run = q.run;
+  var target = q.target;
+  var max_n = q.max_n;
+  var channel = q.channel;
+  if (typeof run === 'undefined' || typeof target === 'undefined' || typeof max_n === 'undefined')
+    return res.json({message : "Invalid input"});
+  try {
+    run = parseInt(run);
+    max_n = parseInt(max_n);
+    channel = parseInt(channel);
+  }catch(err){
+    return res.json({message : 'Invalid input: ' + err.message});
+  }
+  var url = "http://eb2:8000/get_data?";
+  url += "run_id=" + run + "&target=" + target + "&max_n=" + max_n;
+  if (target.search(/records/) != -1 || target === 'veto_regions' || target === 'lone_hits')
+    url += "&selection_str=channel==" + channel;
+  console.log("GETTING DATA WITH URL " + url);
+  fetch(url).then((response) => {
+    return response.json();
+  }).then((data) => {
+    return res.json(data);
+  }).catch((err) => {
+    return res.json({message : "Caught error: " + err.message});
+  });
+});
+
 module.exports = router;

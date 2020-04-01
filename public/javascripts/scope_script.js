@@ -36,10 +36,11 @@ function FillTargets() {
 }
 
 function DisableChannelInput() {
-  if ($("#target_select").val().search(/records/) == -1)
-    $("#channel_select").attr("disabled", true);
-  else
+  var target = $("#target_select").val();
+  if (target.search(/records/) != -1 || target === 'veto_regions' || target === 'lone_hits')
     $("#channel_select").attr("disabled", false);
+  else
+    $("#channel_select").attr("disabled", true);
 }
 
 function GetData(){
@@ -58,8 +59,8 @@ function GetData(){
         return;
     }
 
-    var url = "http://eb2:8000/get_data";
-    var query = "?run_id="+run+"&target="+target+"&max_n="+max_n+"&selection_str=channel=="+channel;
+    var url = "/get_data";
+    var query = "?run_id="+run+"&target="+target+"&max_n="+max_n+"&channel="+channel;
 
     $.getJSON(url+query, function(data){
         if (typeof data.error != 'undefined') {
