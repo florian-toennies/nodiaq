@@ -11,30 +11,22 @@ var mongo = require('mongodb');
 var ObjectID = mongo.ObjectID;
 var monk = require('monk');
 var runs_cstr = process.env.RUNS_URI;
-//console.log("Runs DB")
-//console.log(runs_cstr);
-var runs_db = monk(runs_cstr, {authSource: process.env.RUNS_MONGO_AUTH_DB});
+
+console.log("");
+console.log("NOW: " + new Date());
+console.log("");
+
+//console.log("Runs DB " + runs_cstr);
+var runs_db = monk(runs_cstr, {authSource : process.env.RUNS_MONGO_AUTH_DB});
 
 // In case different
 var users_cstr = process.env.USERS_URI;
-//console.log("Users DB");
-//console.log(users_cstr);
+//console.log("Users DB " + users_cstr);
 var users_db = monk(users_cstr, {authSource: process.env.USERS_MONGO_AUTH_DB});
 
 var dax_cstr = process.env.DAQ_URI;
-//console.log("DAX DB");
-//console.log(dax_cstr);
+//console.log("DAX DB " + dax_cstr);
 var db = monk(dax_cstr, {authSource: process.env.DAQ_MONGO_AUTH_DB});
-
-var monitor_cstr = "mongodb://"+process.env.DAQ_MONGO_USER +":"+process.env.DAQ_MONGO_PASSWORD+"@"+process.env.DAQ_MONGO_HOST+":"+process.env.DAQ_MONGO_PORT+"/"+process.env.DAQ_MONGO_DB;
-var monitor_client = new mongo.MongoClient(monitor_cstr, {authSource: process.env.DAQ_MONGO_AUTH_DB});
-var monitor_db;
-//console.log(monitor_cstr);
-monitor_client.connect(function(err) {
-    console.log(err);
-    monitor_db = monitor_client.db('daq');
-});
-
 
 // For Runs DB Datatable
 var runs_mongo = require("./runs_mongo");
@@ -87,7 +79,7 @@ var session = require('express-session');
 var MongoDBStore = require('connect-mongodb-session')(session);
 var dax_cstr = process.env.DAQ_MONGO_USER + ":" + process.env.DAQ_MONGO_PASSWORD + "@" + 
     process.env.DAQ_MONGO_HOST + ":" + process.env.DAQ_MONGO_PORT + "/" +
-    process.env.DAQ_MONGO_DB;
+    process.env.DAQ_MONGO_AUTH_DB;
 			
 var store = new MongoDBStore({
   uri: 'mongodb://' + dax_cstr,
@@ -159,7 +151,7 @@ app.use(function(req,res,next){
     req.transporter = transporter;
     req.runs_db = runs_db;
     req.users_db = users_db;
-    req.monitor_db = monitor_db;
+    req.monitor_db = db;
     req.ObjectID = ObjectID;
     req.detectors = detectors;
     next();
