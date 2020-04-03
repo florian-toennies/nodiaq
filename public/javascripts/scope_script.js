@@ -44,8 +44,6 @@ function DisableChannelInput() {
 }
 
 function GetData(){
-    alert("Congratulations on getting this far, but this isn't quite ready yet");
-    return;
 
     var run = $("#run_select").val();
     var target = $("#target_select").val();
@@ -58,17 +56,26 @@ function GetData(){
         alert("You can't ask for that many entries");
         return;
     }
-
-    var url = "/get_data";
-    var query = "?run_id="+run+"&target="+target+"&max_n="+max_n+"&channel="+channel;
-
-    $.getJSON(url+query, function(data){
+    $("#btndata").attr("disabled", true);
+    $("#btndata").html("Getting data, please wait...");
+    $.getJSON("scope/get_data?run_id="+run+"&target="+target+"&max_n="+max_n+"&channel="+channel,
+      function(data){
+        if (typeof data.message != 'undefined') {
+          alert("Got an error: " + data.message);
+          $("#btndata").attr("disabled", false);
+          $("#btndata").html("Get data");
+          return;
+        }
         if (typeof data.error != 'undefined') {
             alert("Microstrax sent an error: " + data.error);
+            $("#btndata").attr("disabled", false);
+            $("#btndata").html("Get data");
             return;
         }
         if (data.length == 0) {
           alert("No data with those selections");
+          $("#btndata").attr("disabled", false);
+          $("#btndata").html("Get data");
           return;
         }
         document.data = data;
@@ -76,7 +83,8 @@ function GetData(){
         var tab_head_html = "<tr><th>Index</th><th>Time (strax)</th><th>Time (human-readable)</th>";
         for (var key in data[0]) {
             if (key === 'data' || key === 'time') continue;
-            tab_head_html += "<th>"+key.charAt(0).toUpperCase()+key.slice(1)+"</th>";
+            tab_head_html += "<th>"+key+"</th>";
+            //tab_head_html += "<th>"+key.charAt(0).toUpperCase()+key.slice(1)+"</th>";
         }
         tab_head_html += "</tr>";
         $("#scopetab_head").html(tab_head_html);
@@ -86,19 +94,19 @@ function GetData(){
             var frag = data[i];
             var ts = frag['time'];
             var d = new Date(ts*1e-6);
-            var ns = ts % 1000;
-            var us = (Math.floor((ts % 1000000)/1000)).toFixed(0);
+            var ns = String(ts % 1000);
+            var us = String((Math.floor((ts % 1000000)/1000)).toFixed(0));
             var human_time = d.getUTCFullYear() + '-';
-            human_time += d.getUTCMonth().padStart(2, '0') + '-';
-            human_time += d.getUTCDate().padStart(2, '0') + ' ';
-            human_time += d.getUTCHours().padStart(2, '0') + ':';
-            human_time += d.getUTCMinutes().padStart(2, '0') + ':';
-            human_time += d.getUTCSeconds().padStart(2, '0') + '.';
-            human_time += d.getUTCMilliseconds().padStart(3, '0') + ' ';
+            human_time += String(d.getUTCMonth()).padStart(2, '0') + '-';
+            human_time += String(d.getUTCDate()).padStart(2, '0') + ' ';
+            human_time += String(d.getUTCHours()).padStart(2, '0') + ':';
+            human_time += String(d.getUTCMinutes()).padStart(2, '0') + ':';
+            human_time += String(d.getUTCSeconds()).padStart(2, '0') + '.';
+            human_time += String(d.getUTCMilliseconds()).padStart(3, '0') + ' ';
             human_time += us.padStart(3, '0') + ' ';
             human_time += ns.padStart(3, '0');
             var row_html = "<tr id='"+i.toString()+"_row'><td>" + i.toString() + "</td>";
-            row_html += "<td>" + ts + "</td><td>" + human_time + "</td><td>";
+            row_html += "<td>" + ts + "</td><td>" + human_time + "</td>";
             for (var key in frag) {
                 if (key === 'time' || key === 'data') continue;
 	            row_html += "<td>" + frag[key].toString() + "</td>";
@@ -111,6 +119,8 @@ function GetData(){
 	    if(document.chart != null)
 	        document.chart.destroy();
 	    DrawChart();
+            $("#btndata").attr("disabled", false);
+            $("#btndata").html("Get data");
     }); // getJSON
 }
 
@@ -132,7 +142,6 @@ function DrawChart(){
     var dat = [];
     for(var i in document.data[document.index]['data'])
 	    dat.push([parseInt(i), parseInt(document.data[document.index]['data'][i])]);
-    //console.log(dat);
 
     for(var i =0; i<document.data.length; i+=1){
 	    if(i != document.index){

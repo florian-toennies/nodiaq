@@ -3,9 +3,12 @@
 // raw data storage and have local filesystem access to it.
 
 var express = require("express");
+var http = require("http");
 var url = require("url");
+var { URL } = require("url");
 var router = express.Router();
 var gp = '';
+const BA = "https://xenon1t-daq.lngs.infn.it";
 
 function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) { return next(); }
@@ -36,9 +39,7 @@ router.get("/available_targets", ensureAuthenticated, function(req, res) {
     }catch(err){
       return res.send(JSON.stringify({message : err.message}));
     }
-    var options = { data : 1
-        //projection : {data : 1}
-    };
+    var options = { data : 1};
     collection.findOne(query, options, function(err, doc) {
       if (err) return res.send(JSON.stringify({message : err.message}));
       if (typeof doc.data === 'undefined')
@@ -46,33 +47,23 @@ router.get("/available_targets", ensureAuthenticated, function(req, res) {
       var ret = [];
       for (var i in doc['data']) {
         var datadoc = doc['data'][i];
-        if (datadoc['host'] == 'rucio-catalog' || datadoc['type'] == 'live')
-          continue;
-        ret.push(datadoc['type']);
+        if (datadoc['host'].search(/eb[0-5]\.xenon\.local/) != -1)
+          ret.push(datadoc['type']);
       }
-      return res.send(JSON.stringify(ret));
-    });
-});
-
-router.get("/available_chunks", ensureAuthenticated, function(req, res) {
-  var q = url.parse(req.url, true).query;
-  var run = q.run;
-  if (typeof run === 'undefined') return res.send(JSON.stringify({message : 'Undefined input'}));
-  var fspath = runs_fs_base + '/' + run;
-    fs.readdir(fspath, function(err, items) {
-      if (err) return res.send(JSON.stringify({message : err.message}));
-      items = items.filter(function(fn) {return fn.length == 6;}) // no pre/post
-                   .sort(function(a,b) {return parseInt(b)-parseInt(a);});
-      return res.send(JSON.stringify(items));
+      return res.json(ret);
     });
 });
 
 router.get("/get_data", ensureAuthenticated, function(req, res) {
-  var q = url.parse(req.url, true).query;
-  var run = q.run;
-  var target = q.target;
-  var max_n = q.max_n;
-  var channel = q.channel;
+  try{
+    var sp = new URL(req.url, BA).searchParams;
+  }catch(err){
+    return res.json({message : err.message});
+  };
+  var run = sp.get('run_id');
+  var target = sp.get('target');
+  var max_n = sp.get('max_n');
+  var channel = sp.get('channel');
   if (typeof run === 'undefined' || typeof target === 'undefined' || typeof max_n === 'undefined')
     return res.json({message : "Invalid input"});
   try {
@@ -86,13 +77,15 @@ router.get("/get_data", ensureAuthenticated, function(req, res) {
   url += "run_id=" + run + "&target=" + target + "&max_n=" + max_n;
   if (target.search(/records/) != -1 || target === 'veto_regions' || target === 'lone_hits')
     url += "&selection_str=channel==" + channel;
-  console.log("GETTING DATA WITH URL " + url);
-  fetch(url).then((response) => {
-    return response.json();
-  }).then((data) => {
-    return res.json(data);
-  }).catch((err) => {
-    return res.json({message : "Caught error: " + err.message});
+  http.get(url, (resp) => {
+    let data = "";
+    resp.on('data', (chunk) => {
+      data += chunk;
+    }).on('end', () => {
+      return res.send(data);
+    }).on('error', (err) => {
+      return res.json({message : err.message});
+    });
   });
 });
 
