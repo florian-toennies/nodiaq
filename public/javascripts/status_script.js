@@ -1,4 +1,4 @@
-var CHECKIN_TIMEOUT=30;
+var CHECKIN_TIMEOUT=10;
 document.ceph_chart = null;
 document.last_time_charts = {};
 document.reader_data = {};
