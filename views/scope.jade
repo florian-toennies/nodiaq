@@ -7,57 +7,44 @@ block extrahead
   script(src="javascripts/dygraph.min.js", type="text/javascript")
   link(href="stylesheets/dygraph.css", rel="stylesheet")
 
-block content     
+block content
   div.main-container
-    h3 Pulse Viewer
-    div.alert.alert-danger This doesn't work yet. Yes yes. Grumble grumble. If the year is currently 2020 it will probably never work. Otherwise maybe it's being worked on.
-    br
+    h3 The Viewer of Stuff
     div.row(style='width:100%')
       div.col-3
         h5 Options
         hr
         p
-          strong Run: &nbsp;
-          select.cselect#run_select
+          strong Select a run: &nbsp;
+          select.cselect#run_select(onchange="FillTargets()")
         p
-          strong Channel: &nbsp;
-          input#channel_select(type='number' min=0 max=248 value=0 name='channel') 
+          strong Select a data type: &nbsp;
+          select.cselect#target_select(onchange="DisableChannelInput()")
         p
-          button.btn.btn-info(onclick="GetData()") Get New Data
-        p 
-          button.btn.btn-default(onclick="Prev()") Previous
-          &nbsp;
+          strong Select a channel: &nbsp;
+          input#channel_select(type='number' min=-1 max=494 value=0 name='channel')
+        p
+          strong Select the max number of entries: &nbsp;
+          input#num_select(type='number' min=1 max=1000 value=1 name='num_select')
+        p
+          button.btn.btn-info#btndata(onclick="GetData()") Get Data
+        p
+          button.btn.btn-default(onclick="Prev()") Previous &nbsp;
           button.btn.btn-default(onclick="Next()") Next
-       
+
       div.col-9
-        div#chartdiv(style='width:100%')   
+        div#chartdiv(style='width:100%')
 
     table(style="width:100%")
-      thead
-        tr
-          th Index (in query)
-          th Channel
-          th Time
-          th Human time min:sec:ms
-          th Length (samples)
-      tbody#pulse_table
+      thead#scopetab_head
+      tbody#scopetab_body
 
     div.row
       div.col-4
-        span 
-          strong Channel:
-        &nbsp;
-        span#channel_id 
-      div.col-4
         span
-          strong Time: 
-        &nbsp;
-        span#time_id
-      div.col-4
+          strong A note on the y-axis: &nbsp;
         span
-          strong Length: 
-        span#length_id
-
+          If you're looking at records or raw_records, the amplitude is in ADC counts, otherwise it's PE/bin
 
   script.
     $(document).ready(function(){
