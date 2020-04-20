@@ -140,8 +140,11 @@ function Prev(){
 
 function DrawChart(){
     var dat = [];
-    for(var i in document.data[document.index]['data'])
-	    dat.push([parseInt(i), parseInt(document.data[document.index]['data'][i])]);
+    for(var i in document.data[document.index]['data']) {
+      if (i >= document.data[document.index]['length'])
+        break;
+      dat.push([parseInt(i), parseInt(document.data[document.index]['data'][i])]);
+    }
 
     for(var i =0; i<document.data.length; i+=1){
 	    if(i != document.index){
