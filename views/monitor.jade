@@ -3,30 +3,29 @@ extends layout
 block extrahead
   link(rel="stylesheet" href="/stylesheets/overview.css")
   link(rel="stylesheet" href="/stylesheets/monitor.css")
-  
+
   script(src="javascripts/monitor_tpc_datarate.js", type='text/javascript')
-  
-  
+
 block content
   div.main-container(style='background-color:#eeeeee;margin:-5px;padding:15px;height:100vh')
     div
-      
+
       object(type="image/svg+xml" id="svg_frame1" data="/images/monitor_tpc_layout.svg" style="width:50%;max-width:700px;" class="tpcview" )
-      
+
       object(type="image/svg+xml" id="svg_frame2" data="/images/monitor_history.svg" style="width:50%;max-width:700px;" class="historyview" )
-      
+
       div.noprint
           div.row(style="width:100%;margin:0;padding-top:5px;background-color:#f0f0f0;")
-            button.btn.btn-info(onclick="whiten_all_pmts()") reset colour
+            button.btn.btn-info(onclick="whiten_all_pmts()") Reset color
             &nbsp;
-            button.btn.btn-default(onclick="move_all_pmt_pos('array')") show tpc geometry
+            button.btn.btn-default(onclick="move_all_pmt_pos('array')") Show TPC geometry
             &nbsp;
-            button.btn.btn-default(onclick="move_all_pmt_pos('hosts')") sort by reader
+            button.btn.btn-default(onclick="move_all_pmt_pos('hosts')") Sort by reader
             &nbsp;
-            button.btn.btn-info(onclick="start_live_interval()") show live data
-            
+            button.btn.btn-info(onclick="start_live_interval()") Show live data
+
           div.row(style="width:100%;margin:0;padding-top:5px;background-color:#f0f0f0;")
-            button.btn.btn-info(onclick="stop_intervals()") stop auto update
+            button.btn.btn-info(onclick="stop_intervals()") Stop auto update
             &nbsp;
             button.btn.btn-default(onclick="jump_time(-10)") -10 s
             &nbsp;
@@ -36,8 +35,8 @@ block content
             &nbsp;
             button.btn.btn-default(onclick="jump_time(10)") +10 s
             &nbsp;
-            button.btn.btn-info(onclick="pseudo_live()") playback
-            
+            button.btn.btn-info(onclick="pseudo_live()") Playback
+
           div.row(style="width:100%;margin:0;padding-top:5px;background-color:#f0f0f0;")
               table
                 tr
@@ -53,53 +52,53 @@ block content
                     &nbsp;
                     button.btn.btn-default(onclick='saveAsPng(svgObject1)') 💾
                   td 
-                  td time start
+                  td Start time
                   td
                     input(id="field_history_start", value="-1")
                   td
                     button.btn.btn-default(onclick="get_TPC_data(document.getElementById('field_history_start').value)") 👀
                     &nbsp;
-                    button.btn.btn-default(onclick="usetimestamp('field_history_start')") use displayed time
-                  
-                  
+                    button.btn.btn-default(onclick="usetimestamp('field_history_start')") Use displayed time
+
+
                 tr
-                  td set maximum datarate
+                  td Set maximum datarate
                   td
                     input(id="field_input_max_datarate", value="-1")
                   td
-                    button.btn.btn-default(onclick="max_legend_set(document.getElementById('field_input_max_datarate').value)") set 
+                    button.btn.btn-default(onclick="max_legend_set(document.getElementById('field_input_max_datarate').value)") Set 
                   td 
-                  td time end
+                  td End time
                   td
                     input(id="field_history_end", value="-1")
                   td
                     button.btn.btn-default(onclick="get_TPC_data(document.getElementById('field_history_end').value)") 👀
                     &nbsp;
-                    button.btn.btn-default(onclick="usetimestamp('field_history_end')") use displayed time
-                    
-                    
+                    button.btn.btn-default(onclick="usetimestamp('field_history_end')") Use displayed time
+
+
                 tr
-                  td set minimum datarate
+                  td Set minimum datarate
                   td
                     input(id="field_input_min_datarate", value="-1")
                   td
-                    button.btn.btn-default(onclick="min_legend_set(document.getElementById('field_input_min_datarate').value)") set 
+                    button.btn.btn-default(onclick="min_legend_set(document.getElementById('field_input_min_datarate').value)") Set 
                   td
-                  td averaging time
+                  td Bin width
                   td 
                     input(id="field_history_window", value="10")
                   td
-                    button.btn.btn-default(onclick="history_draw()") draw trendlines
+                    button.btn.btn-default(onclick="history_draw()") Draw trendlines
                     &nbsp;
                     button.btn.btn-default(onclick='saveAsPng(svgObject2)') 💾
-                    
-                
+
+
           div.row(style="width:100%;margin:0;padding-top:5px;background-color:#f0f0f0;")
-            button.btn.btn-default(onclick="change_frame_sizes('svg_frame1')") resize PMT view
+            button.btn.btn-default(onclick="change_frame_sizes('svg_frame1')") Resize PMT view
             &nbsp;
-            button.btn.btn-default(onclick="change_frame_sizes('svg_frame2')") resize trend view
-            
-        
+            button.btn.btn-default(onclick="change_frame_sizes('svg_frame2')") Resize trend view
+
+
         canvas#canvas(width="800", height="400" style='visibility:hidden;height:0px;')
 
   script.
