@@ -19,19 +19,12 @@
         text.dataline, polyline.dataline{
             cursor:
                 pointer;
-            stroke-width:
-                1;
-            opacity:
-                50%;
         }
-        
         g:hover text.dataline, g:hover polyline.dataline{
             font-weight:
                 bold;
             stroke-width:
                 2;
-            opacity:
-                100%;
         }
         
        .border, .axis{

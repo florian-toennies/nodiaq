@@ -7,7 +7,7 @@ block extrahead
   script(src="javascripts/bootstrap-toggle.min.js", type="text/javascript")
   link(rel="stylesheet", href="stylesheets/bootstrap-toggle.css")
   
-  script(src="javascripts/monitor_tpc_datarate.js", type='text/javascript')
+  script(src="javascripts/monitor_scripts.js", type='text/javascript')
   
   
   
@@ -110,7 +110,7 @@ block content
                         &nbsp;
                         button.btn.btn-default(onclick='saveAsPng(svgObject2)') save trends as .png
           
-          div(style="width:800px;resize: horizontal; overflow: hidden; border: 1px dotted red;")
+          div(style="width:800px;resize: horizontal; overflow: hidden;")
             object(type="image/svg+xml" id="svg_frame2" data="/images/monitor_history.svg" style="width:100%;" class="historyview" )
                     
           
@@ -123,3 +123,8 @@ block content
         initialize_pmts();
     }, 300);
     });
+    
+    // changes link from /help to /help/monitor
+  script
+    $(lhelp).find("a").attr("href", "/help/monitor")
+  

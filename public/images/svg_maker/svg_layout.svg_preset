@@ -82,7 +82,7 @@
         }
         .legend{
             font-size:
-                .5em;
+                .4em;
             text-anchor:
                 start;
         }
