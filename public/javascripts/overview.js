@@ -397,8 +397,8 @@ function UpdateFromReaders(){
 		document.goDiagram.model.setDataProperty(dat, "rate", data['rate'].toFixed(2) + " MB/s");
 		document.goDiagram.model.setDataProperty(dat, "status", (data['status']));
 		document.goDiagram.model.setDataProperty(dat, "buffer", data['buffer_length'].toFixed(2) + " MB/s");
-		Object.keys(data['boards']).forEach(function(digi) {				
-		    var key = document.board_key_list[digi.toString()];		
+		Object.keys(data['boards']).forEach(function(digi) {
+		    var key = document.board_key_list[digi.toString()];
 		    var dat = document.goDiagram.model.findNodeDataForKey(key);
 		    document.goDiagram.model.setDataProperty(dat, "rate", 
 							     data['boards'][digi].toFixed(2) + " MB/s");
@@ -410,7 +410,7 @@ function UpdateFromReaders(){
 	    $.getJSON(prefix+"status/get_controller_status?controller="+controller, function(data){
 		var rd = data['host'];
 		
-		// Get key for this node                                                                    
+		// Get key for this node
 		var key = document.reader_keys[rd];
             var dat = document.goDiagram.model.findNodeDataForKey(key);
 		//document.goDiagram.model.setDataProperty(dat, "rate", data['rate'].toFixed(2) + " MB/s");

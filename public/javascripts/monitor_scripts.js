@@ -723,10 +723,10 @@ function history_draw(){
     var time_list = [];
     
     var x_steps = 4;
-    var x0 = 45;
-    var x1 = 430;
-    var y0 = 225;
-    var y1 = 25;
+    var x0 = parseFloat(svgObject2.getElementById("str_x_000").getAttribute("x"));
+    var x1 = parseFloat(svgObject2.getElementById("str_x_100").getAttribute("x"));
+    var y0 = parseFloat(svgObject2.getElementById("str_y_000").getAttribute("y"));
+    var y1 = parseFloat(svgObject2.getElementById("str_y_100").getAttribute("y"));
     var dx_ = x1 - x0;
     var dy_ = y1 - y0;
     
@@ -862,8 +862,8 @@ function history_draw(){
             var text_this = document.createElementNS("http://www.w3.org/2000/svg", "text");
             text_this.setAttribute("class", "dataline");
             text_this.setAttribute("style", "fill:"+color_this+";font-size:.75em;text-anchor:end;");
-            text_this.setAttribute("x", 460);
-            text_this.setAttribute("y", 40 + 10*i);
+            text_this.setAttribute("x", parseFloat(svgObject2.getElementById("pmtlabel").getAttribute("x")));
+            text_this.setAttribute("y", parseFloat(svgObject2.getElementById("pmtlabel").getAttribute("y")) + 15*(i+1));
             text_this.innerHTML = pmt_id;
             //svgObject2.children[0].appendChild(text_this);
             group_this.appendChild(text_this)

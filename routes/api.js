@@ -1,6 +1,7 @@
 var express = require("express");
 var url = require("url");
 var bcrypt = require('bcrypt-nodejs');
+var ObjectId = require('mongodb').ObjectID;
 var router = express.Router();
 
 var last_api_call = {};
@@ -81,14 +82,12 @@ router.get("/getstatus/:host", checkKey, function(req, res) {
   } else {
     options['limit'] = 1;
   }
-
   collection.find(query, options, function(err, docs) {
     if (err) {
       return res.send(JSON.stringify({message : err.message}));
     }
     return res.send(JSON.stringify(docs));
   });
-  return res.send(JSON.stringify({message : 'Query returned no documents'}));
 });
 
 router.get("/geterrors", checkKey, function(req, res) {
@@ -124,7 +123,10 @@ function GetControlDoc(collection, detector, callback) {
 
 function GetDetectorStatus(collection, detector, callback) {
   var timeout = 30;
-  var now = Math.floor(new Date().getTime()/1000) - timeout;
+  try{
+  var now = Math.floor(new Date()/1000 - timeout);
+  var oid = ObjectId(now.toString(16) + "0000000000000000");
+  }catch(error){callback(error.name + " " + error.message, null);}
   var query = {detector : detector};//, '_id' : {$gte : oid}};
   var options = {sort : {'_id' : -1}, limit : 1};
   collection.find(query, options, function(err, docs) {
