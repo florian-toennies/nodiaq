@@ -724,8 +724,8 @@ function history_draw(){
     var time_list = [];
     
     var x_steps = 4;
-    var x0 = 50;
-    var x1 = 450;
+    var x0 = 45;
+    var x1 = 430;
     var y0 = 225;
     var y1 = 25;
     var dx_ = x1 - x0;
@@ -857,23 +857,28 @@ function history_draw(){
                 }
             }
             
+            var group_this = document.createElementNS("http://www.w3.org/2000/svg", "g");
+            group_this.setAttribute("class", "dataline")
             
             var text_this = document.createElementNS("http://www.w3.org/2000/svg", "text");
             text_this.setAttribute("class", "dataline");
             text_this.setAttribute("style", "fill:"+color_this+";font-size:.75em;text-anchor:end;");
-            text_this.setAttribute("x", 499);
-            text_this.setAttribute("y", 30 + 10*i);
+            text_this.setAttribute("x", 460);
+            text_this.setAttribute("y", 40 + 10*i);
             text_this.innerHTML = pmt_id;
-            svgObject2.children[0].appendChild(text_this);
+            //svgObject2.children[0].appendChild(text_this);
+            group_this.appendChild(text_this)
+            
             
             var line_this = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
             line_this.setAttribute("class", "dataline");
             line_this.setAttribute("points", str_points);
             line_this.setAttribute("fill", "none");
-            line_this.setAttribute("style", "stroke:"+color_this+";stroke-width:3");
-            svgObject2.children[0].appendChild(line_this);
+            line_this.setAttribute("style", "stroke:"+color_this+";");
+            //svgObject2.children[0].appendChild(line_this);
+            group_this.appendChild(line_this)
             
-            
+            svgObject2.children[0].appendChild(group_this);
         }
     }
     

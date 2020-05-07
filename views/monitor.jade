@@ -105,15 +105,10 @@ block content
                     button.btn.btn-default(onclick="history_draw()") draw trendlines
                     &nbsp;
                     button.btn.btn-default(onclick='saveAsPng(svgObject2)') save trends as .png
-                
-      object(type="image/svg+xml" id="svg_frame2" data="/images/monitor_history.svg" style="width:50%;max-width:700px;" class="historyview" )
+          div(style="width:800px;resize: horizontal; overflow: hidden; border: 1px dotted red;")
+            object(type="image/svg+xml" id="svg_frame2" data="/images/monitor_history.svg" style="width:100%;" class="historyview" )
                     
-                
-          div.row(style="width:100%;margin:0;padding-top:5px;background-color:#f0f0f0;")
-            button.btn.btn-default(onclick="change_frame_sizes('svg_frame1')") resize PMT view
-            &nbsp;
-            button.btn.btn-default(onclick="change_frame_sizes('svg_frame2')") resize trend view
-            
+          
         
         canvas#canvas(width="800", height="400" style='visibility:hidden;height:0px;')
 
