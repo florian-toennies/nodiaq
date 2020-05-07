@@ -182,9 +182,9 @@
     // LEGEND
     // color gradient for legend
     <linearGradient id="gradiendtLegend" x1="0%" y1="100%" x2="0%" y2="0%">
-        <stop offset="10%" style="stop-color:rgb(6, 214, 160);" />
+        <stop offset="10%" style="stop-color:rgb(12, 17, 120);" />
         <stop offset="50%" style="stop-color:rgb(23, 162, 184);" />
-        <stop offset="90%" style="stop-color:rgb(12, 17, 120);" />
+        <stop offset="90%" style="stop-color:rgb(6, 214, 160);" />
     </linearGradient>
 
     <rect
@@ -286,7 +286,7 @@
     <metadata id='list_all_links' property='["1.0", "0.2", "0.4", "1.4", "2.4", "2.3", "1.2", "3.0", "0.1", "2.1", "1.1", "0.3", "2.0"]' ></metadata>
 
 
-    <metadata id='dict_color_scheme' property='{"10": [6, 214, 160], "50": [23, 162, 184], "90": [12, 17, 120]}' ></metadata>
+    <metadata id='dict_color_scheme' property='{"10": [12, 17, 120], "50": [23, 162, 184], "90": [6, 214, 160]}' ></metadata>
 
     <text
         x="103.75"
