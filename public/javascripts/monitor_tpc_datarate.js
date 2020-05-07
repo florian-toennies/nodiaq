@@ -49,14 +49,14 @@ var global_colors_available = ["#b00000", "#00b000", "#0000b0", "#b0b000", "#b00
 var global_colors_use = [];
 
 function min_legend_set(){
-    new_value = parseFloat(window.prompt("new lower bound (in kB/s)", pmt_min_rate));
+    new_value = parseFloat(window.prompt("new lower bound in kB/s (current: " + pmt_min_rate + " kB/s)", pmt_min_rate));
     if(new_value > 0){
         update_color_scheme(min = new_value);
     }
 }
 
 function max_legend_set(){
-    new_value = parseFloat(window.prompt("new upper bound (in kB/s)", pmt_max_rate));
+    new_value = parseFloat(window.prompt("new upper bound in kB/s (current: " + pmt_max_rate + " kB/s)", pmt_max_rate));
     if(new_value > 0){
         update_color_scheme(min = pmt_min_rate, max = new_value);
     }
@@ -150,8 +150,6 @@ function update_color_scheme(min=pmt_min_rate, max=pmt_max_rate){
     svgObject1.getElementById("str_legend_025").textContent = pmt_rate_025;
     svgObject1.getElementById("str_legend_000").textContent = pmt_rate_000;
     
-    document.getElementById("field_input_min_datarate").value = pmt_min_rate
-    document.getElementById("field_input_max_datarate").value = pmt_max_rate
     
     if(global_pmt_rates != undefined){
         PMT_setcolour(global_pmt_rates)
@@ -711,6 +709,7 @@ function pseudo_live(){
 function history_draw(){
     if(array_toggled_pmts.length == 0){
         var pmts = false;
+        alert("please select desired channels by clicking on them in the channel view.")
     } else {
         var pmts = array_toggled_pmts.join(",");
     }

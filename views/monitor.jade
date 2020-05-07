@@ -50,61 +50,66 @@ block content
             button.btn.btn-info(onclick="pseudo_live()") playback
             &nbsp;
             button.btn.btn-info(onclick="start_live_interval()") show live data
-            
+        
+          <br/>
+          <br/>
+          <br/>
+          
+          // controls for live view
           div.row(style="width:100%;margin:0;padding-top:5px;background-color:#f0f0f0;")
-              table
+            table
                 tr
-                  td(colspan="3", style="font-weight:bold;text-align:center") PMT view
-                  td(style="width:50px")
-                  td(colspan="3", style="font-weight:bold;text-align:center") Trend view
-                tr
-                  td time displayed
-                  td
-                    input(id="field_current_timestamp", value="-1")
-                  td
-                    button.btn.btn-default(onclick="get_TPC_data(document.getElementById('field_current_timestamp').value)") show
-                    &nbsp;
-                    button.btn.btn-default(onclick='saveAsPng(svgObject1)') save as .png
-                  td 
-                  td time start
-                  td
-                    input(id="field_history_start", value="-1")
-                  td
-                    button.btn.btn-default(onclick="get_TPC_data(document.getElementById('field_history_start').value)") show
-                    &nbsp;
-                    button.btn.btn-default(onclick="usetimestamp('field_history_start')") use displayed time
-                  
-                  
-                tr
-                  td set maximum datarate
-                  td
-                    input(id="field_input_max_datarate", value="-1")
-                  td
-                    button.btn.btn-default(onclick="max_legend_set(document.getElementById('field_input_max_datarate').value)") set 
-                  td 
-                  td time end
-                  td
-                    input(id="field_history_end", value="-1")
-                  td
-                    button.btn.btn-default(onclick="get_TPC_data(document.getElementById('field_history_end').value)") show
-                    &nbsp;
-                    button.btn.btn-default(onclick="usetimestamp('field_history_end')") use displayed time
-                    
+                    td(colspan="3", style="font-weight:bold;text-align:left") channel view
                     
                 tr
-                  td set minimum datarate
-                  td
-                    input(id="field_input_min_datarate", value="-1")
-                  td
-                    button.btn.btn-default(onclick="min_legend_set(document.getElementById('field_input_min_datarate').value)") set 
-                  td
-                  td averaging time
-                  td 
-                    input(id="field_history_window", value="10")
-                  td
-                    button.btn.btn-default(onclick="history_draw()") draw trendlines
-                    &nbsp;
-                    button.btn.btn-default(onclick='saveAsPng(svgObject2)') save trends as .png
+                    td time displayed
+                    td
+                        input(id="field_current_timestamp", value="-1")
+                    td
+                        button.btn.btn-default(onclick="get_TPC_data(document.getElementById('field_current_timestamp').value)") show
+                        
+                  
+                tr
+                    td(colspan="3")
+                        button.btn.btn-default(onclick="max_legend_set()") set max datarate
+                        &nbsp;
+                        button.btn.btn-default(onclick="min_legend_set()") set min datarate
+                        &nbsp;
+                        button.btn.btn-default(onclick='saveAsPng(svgObject1)') save as .png
+                        
+          <br/>
+          <br/>
+          <br/>
+          // controls for history
+          div.row(style="width:100%;margin:0;padding-top:5px;background-color:#f0f0f0;")
+            table
+                tr
+                    td(colspan="3", style="font-weight:bold;text-align:left") Trend view
+                tr
+                    td time start
+                    td
+                        input(id="field_history_start", value="-1")
+                    td
+                        button.btn.btn-default(onclick="get_TPC_data(document.getElementById('field_history_start').value)") show
+                        &nbsp;
+                        button.btn.btn-default(onclick="usetimestamp('field_history_start')") use displayed time
+                tr 
+                    td time end
+                    td
+                        input(id="field_history_end", value="-1")
+                    td
+                        button.btn.btn-default(onclick="get_TPC_data(document.getElementById('field_history_end').value)") show
+                        &nbsp;
+                        button.btn.btn-default(onclick="usetimestamp('field_history_end')") use displayed time
+                tr
+                    td averaging time
+                    td 
+                        input(id="field_history_window", value="10")
+                    td
+                        button.btn.btn-default(onclick="history_draw()") draw trendlines
+                        &nbsp;
+                        button.btn.btn-default(onclick='saveAsPng(svgObject2)') save trends as .png
+          
           div(style="width:800px;resize: horizontal; overflow: hidden; border: 1px dotted red;")
             object(type="image/svg+xml" id="svg_frame2" data="/images/monitor_history.svg" style="width:100%;" class="historyview" )
                     
