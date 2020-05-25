@@ -270,4 +270,26 @@ router.get('/get_command_queue', ensureAuthenticated, function(req,res){
 	});
 });
 
+router.get('/get_bootstrax_status', ensureAuthenticated, function(req, res) {
+  var q = url.parse(req.url, true).query;
+  var collection = req.runs_db.get("bootstrax");
+  collection.find({}, function(e, docs) {
+    var ret = {
+      'eb0.xenon.local' : 'OFFLINE',
+      'eb1.xenon.local' : 'OFFLINE',
+      'eb2.xenon.local' : 'OFFLINE',
+      'eb3.xenon.local' : 'OFFLINE',
+      'eb4.xenon.local' : 'OFFLINE',
+      'eb5.xenon.local' : 'OFFLINE
+    };
+    if (e) return res.json({"error" : e.message});
+    var now = new Date();
+    for (i in docs) {
+      var doc = docs[i];
+      ret[doc['host']] = [doc['time']-now, doc['state'], doc['started']-now];
+    }
+    return res.json(ret);
+  });
+});
+
 module.exports = router;
