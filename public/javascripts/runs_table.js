@@ -20,14 +20,13 @@ function CheckMongoQuery(){
 function InitializeRunsTable(divname){
 
     $('#detectorselector label').on("click", function() {
-        console.log(this.childNodes[0].value);
         document.detector = this.childNodes[0].value;
         $(document.datatable_div).DataTable().destroy();
         $(document.datatable_div).DataTable(document.datatable_options);
     });
 
     document.detector = 'xenonnt';
-    var table_options = {                                                                   
+    var table_options = {
         processing : true,
         serverSide : true,
 	//scrollCollapse: true,
@@ -77,17 +76,14 @@ function InitializeRunsTable(divname){
 	      }
 	    },
             { data : "user"},
-            { data : "start", format: 'DD. MMM.YYYY HH:mm', type: 'datetime'},
+            { data : "start", format: 'YYYY-MM-DD HH:mm', type: 'datetime'},
             { data : "end", defaultContent: "",
 		"render": function(data, type, row){
 		    
 		  if(typeof(row) === "undefined" || typeof(row.end) === "undefined" ||
 		     typeof(row.start) === "undefined")
 		      return "not set"
-		    //console.log(row);
 		  tdiff = (new Date(row.end)).getTime() - (new Date(row.start)).getTime();
-		    //console.log(tdiff);
-		    //console.log("TDIFF");
 		    var hours = Math.floor(tdiff/(1000*3600));
 		    var mins = Math.floor(tdiff/(1000*60)) - (60*hours);
 		    var secs = Math.floor(tdiff/(1000)) - (3600*hours + 60*mins);
@@ -134,7 +130,7 @@ function InitializeRunsTable(divname){
 	    {
 		targets: [6],
 		render: function(data){
-		    return moment(data).format('DD. MMM. YYYY HH:mm');
+		    return moment(data).format('YYYY-MM-DD HH:mm');
 		}
 	    }
 	],
@@ -157,7 +153,6 @@ function InitializeRunsTable(divname){
 
 
     $(divname + ' tbody').on( 'click', 'td', function () {
-    	//console.log($(this));
     	if(!$(this).hasClass("not-selectable")){
 	        $(this).parent().toggleClass('selected');
     	    $("#addtagrow").slideDown();
@@ -174,17 +169,11 @@ function InitializeRunsTable(divname){
 	    var runs = [];
 	    for(var i=0; i<table.rows('.selected')[0].length; i++)
 			runs.push(table.rows('.selected').data()[i]['number']);
-	    //console.log("RUNS");
-	    //console.log(runs);
-	    //if(runs.length>0)
-	    //console.log("Adding comment!")
-	    //console.log(comment);
-	    //console.log(runs);
 			$.ajax({
 		    	type: "POST",
 		    	url: "runsui/addcomment",
-		    	data: {"runs": runs, "comment": comment, "user": "web user"},		   
-		    	success: function(){ console.log("Redraw"); table.ajax.reload();},
+		    	data: {"runs": runs, "comment": comment, "user": "web user"},
+		    	success: function(){ table.ajax.reload();},
 		    	error:   function(jqXHR, textStatus, errorThrown) {
 				alert("Error, status = " + textStatus + ", " +
 			    	  "error thrown: " + errorThrown
@@ -206,8 +195,8 @@ function InitializeRunsTable(divname){
 		$.ajax({
 		    type: "POST",
 		    url: "runsui/addtags",
-		    data: {"runs": runs, "tag": tag, "user": "web user"},		   
-		    success: function(){ console.log("Redraw"); table.ajax.reload();},
+		    data: {"runs": runs, "tag": tag, "user": "web user"},
+		    success: function(){ table.ajax.reload();},
 		    error:   function(jqXHR, textStatus, errorThrown) {
 			alert("Error, status = " + textStatus + ", " +
 			      "error thrown: " + errorThrown
@@ -230,7 +219,7 @@ function InitializeRunsTable(divname){
 				$.ajax({
 		    		type: "POST",
 		    		url: "runsui/addtags",
-		    		data: {"runs": runs, "tag": tag, "user": "web user"},		   
+		    		data: {"runs": runs, "tag": tag, "user": "web user"},
 		    success: function(){ $("#newtag").val(""); ShowDetail(runs[0])},
 		    error:   function(jqXHR, textStatus, errorThrown) {
 			alert("Error, status = " + textStatus + ", " +
@@ -254,7 +243,7 @@ function InitializeRunsTable(divname){
 		    		type: "POST",
 		    		url: "runsui/addcomment",
 		    		data: {"runs": runs, "comment": comment, "user": "web user"},		   
-		    		success: function(){ console.log("ADDED COMMENT"); $("#newcomment").val(""); ShowDetail(runs[0])},
+		    		success: function(){ $("#newcomment").val(""); ShowDetail(runs[0])},
 		    		error:   function(jqXHR, textStatus, errorThrown) {
 			alert("Error, status = " + textStatus + ", " +
 			      "error thrown: " + errorThrown
@@ -290,8 +279,8 @@ function ShowDetail(run, experiment){
 	// Set base data
 	document.getElementById("detail_Number").innerHTML = data['number'];
 	$("#detail_Detectors").html(data['detector']);
-	$("#detail_Start").html(moment(data['start']).format('DD.MM.YYYY HH:mm'));
-	$("#detail_End").html(moment(data['end']).format('DD.MM.YYYY HH:mm'));
+	$("#detail_Start").html(moment(data['start']).format('YYYY-MM-DD HH:mm'));
+	$("#detail_End").html(moment(data['end']).format('YYYY-MM-DD HH:mm'));
 	$("#detail_User").html(data['user']);
 	$("#detail_Mode").html(data['mode']);
 	$("#detail_Source").html(data['source']);
@@ -300,7 +289,7 @@ function ShowDetail(run, experiment){
 	for(var i in data['tags']){
 	    var row = data['tags'][i];
 	    tag_html += "<tr><td>" + row['name'] + "</td><td>" + row['user'] + "</td><td>";
-	    tag_html += moment(row['date']).format("DD.MM.YYYY HH:mm") + "</td>";
+	    tag_html += moment(row['date']).format("YYYY-MM-DD HH:mm") + "</td>";
 	    if(row['user'] === window['user']){
 		tag_html += ("<td><button onclick='RemoveTag("+data['number']+", "+
 			     '"'+row['user']+'"'+", "+'"'+row['name']+'"');
@@ -317,9 +306,9 @@ function ShowDetail(run, experiment){
 	    if(typeof row["comment"] != "undefined")
 		comment_html += row['comment'];
 	    else
-		comment_html += row["text"];				    
+		comment_html += row["text"];
 	    comment_html += "</td><td>";
-	    comment_html += moment(row['date']).format("DD.MM.YYYY HH:mm") + "</td></tr>";
+	    comment_html += moment(row['date']).format("YYYY-MM-DD HH:mm") + "</td></tr>";
 	}
 	$("#detail_Comments").html(comment_html);
 	
