@@ -279,9 +279,9 @@ router.get('/get_bootstrax_status', ensureAuthenticated, function(req, res) {
       _id : {$substr : ['$host', 0, 3]},
       state : {$first : '$state'},
       time : {$first : {$divide : [{$subtract : [now, '$time']}, 1000]}},
-      target {$first : '$target'},
+      target : {$first : '$target'},
       cores : {$first : '$cores'},
-      run : {$first : {$ifNull : ['$run', 'none']}},
+      run : {$first : {$ifNull : ['$run_id', 'none']}},
     }},
     {$sort : {_id : 1}}
   ], function(e, docs) {

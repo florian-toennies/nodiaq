@@ -1,7 +1,7 @@
 #command_panel{
   max-height: 30vh;
   overflow-y: scroll;
-  width: 50%;
+  width: 100%;
   cursor: pointer;
 }
 
@@ -10,7 +10,6 @@
     background-color: #fff;
     margin-top: -1px;
     border-right: 0px;
-
 }
 
 #command_panel a{
@@ -39,7 +38,7 @@
 #bootstrax_panel {
   max-height: 30vh;
   overflow-y: scroll;
-  width: 50%;
+  width: 100%;
 }
 
 .bootstrax_panel_entry {

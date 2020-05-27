@@ -183,9 +183,11 @@ function UpdateBootstrax() {
           html += "<span style=\"color:green\">"+doc['_id'] + " is processing run " + doc['run'] + " to " + doc['target'] + " on " + doc['cores'] + " cores";
         } else {
           html += "<span style=\"color:orange\">"+doc['_id'] + " is " + doc['state'];
+        }
         html += " (" + doc['time'].toFixed(0) + " seconds ago)</span></div>";
+      }
+      $("#bootstrax_panel").html(html);
     });
-    $("#bootstrax_panel").html(html);
 }
 
 function UpdateCeph(){
