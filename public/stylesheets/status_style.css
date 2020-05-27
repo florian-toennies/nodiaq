@@ -1,7 +1,7 @@
 #command_panel{
   max-height: 30vh;
   overflow-y: scroll;
-  width: 100%;
+  width: 50%;
   cursor: pointer;
 }
 
@@ -34,3 +34,21 @@
   width:100%;
   height: 40px;
   border-bottom: 1px solid #ccc;
+}
+
+#bootstrax_panel {
+  max-height: 30vh;
+  overflow-y: scroll;
+  width: 50%;
+}
+
+.bootstrax_panel_entry {
+  border: 1px solid #ccc;
+  background-color: #fff;
+  margin-top: -1px;
+  border-right: 0px;
+}
+
+.boostrax_panel_entry:hover{
+  background-color: #eee;
+}
