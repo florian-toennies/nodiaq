@@ -103,7 +103,7 @@
             display:
                 block;
         }
-        .opt, .vme, .amp{
+        .opt, .vme, .amp, .array_HE{
             visibility: hidden;
         }
         
