@@ -209,10 +209,8 @@ function color_scheme(x){
     } else {
         if(document.getElementById("legend_color_scale_log").checked){
             return(Math.log(x/pmt_min_rate)/Math.log(pmt_diff_base)/pmt_diff)
-            console.log("log")
         } else{
             return((x - pmt_min_rate)/(pmt_max_rate - pmt_min_rate))
-            console.log("lin")
         }
     }
 }
@@ -221,10 +219,8 @@ function color_scheme(x){
 function color_scheme_inverse(x){
     if(document.getElementById("legend_color_scale_log").checked){
         return(pmt_min_rate*pmt_diff_base**(pmt_diff*x));
-        console.log("log")
     } else{
         return(pmt_min_rate + (pmt_max_rate - pmt_min_rate)*x)
-        console.log("lin")
     }
     
 }
