@@ -26,6 +26,7 @@ block content
               &nbsp;
               select(name='view_style', onchange="move_all_pmt_pos(this.value)")
                 option(value='array') Array
+                option(value='array_HE') High Energy Array
                 option(value='vme') VME-crates
                 option(value='amp') Amplifiers
                 option(value='opt') Optical Links
@@ -34,6 +35,10 @@ block content
               label.form-check-label
                 span datarate scale: &nbsp;
                 input#legend_auto_set(type="checkbox" checked data-toggle="toggle" data-onstyle="success" data-offstyle="warning" data-on="auto" data-off="fixed" data-size='small')
+            div.form-check-inline 
+              label.form-check-label
+                span color scale: &nbsp;
+                input#legend_color_scale_log(onchange='update_color_scheme()', type="checkbox" checked data-toggle="toggle" data-onstyle="success" data-offstyle="warning" data-on="log" data-off="lin" data-size='small')
             
             
           div.row(style="width:100%;margin:0;padding-top:5px;background-color:#f0f0f0;")
