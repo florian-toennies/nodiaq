@@ -21,7 +21,7 @@ runsdb.once('open', function callback ()
 	    runsTableSchema = new Schema(
 		{
 		    number : {type: Number, required: true},
-		    detector: [String],
+		    detectors: [String],
 		    start : Date,
 		    end : Date,
 		    user: String,

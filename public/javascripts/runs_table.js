@@ -64,7 +64,8 @@ function InitializeRunsTable(divname){
         	    return "<button style='padding:3px;padding-left:5px;padding-right:5px;background-color:#ef476f;color:#eee' class='btn btn-defailt btn-xs' onclick='ShowDetail(" + data + ', "'+document.detector+'"'+");'>show</button>"}
 		},
             { data : "number" , searchable: true},
-            { data : "detector" },
+            { data : "detectors", "render" : function(data, type, row)
+              {return String(data);}},
             { data : "mode", searchable: true },
             { data : "bootstrax", searchable: false,
 	      "render": function(data, type, row){
