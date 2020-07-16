@@ -1,7 +1,8 @@
 var max_pmt_id = 0;
 var results_empty={};
+var global_json;
 var global_pmt_rates;
-
+var global_timestamps_txt;
 
 var timestamps      = [];
 var timestamps_txt  = [];
@@ -43,6 +44,11 @@ var json_pmt_id_to_reader = {};
 var list_all_links = [];
 var dict_all_rates = {}
 
+// wheter the color scale is logarithmic
+var scale_log = true;
+
+// all names of valid views
+var all_names =  ["array", "array_HE", "vme", "off", "amp", "opt"];
 
 //var global_colors_available = ["aliceblue", "antiquewhite", "aqua", "aquamarine", "azure", "beige", "bisque", "black", "blanchedalmond", "blue", "blueviolet", "brown", "burlywood", "cadetblue", "chartreuse", "chocolate", "coral", "cornflowerblue", "cornsilk", "crimson", "cyan", "darkblue", "darkcyan", "darkgoldenrod", "darkgray", "darkgreen", "darkgrey", "darkkhaki", "darkmagenta", "darkolivegreen", "darkorange", "darkorchid", "darkred", "darksalmon", "darkseagreen", "darkslateblue", "darkslategray", "darkslategrey", "darkturquoise", "darkviolet", "deeppink", "deepskyblue", "dimgray", "dimgrey", "dodgerblue", "firebrick", "floralwhite", "forestgreen", "fuchsia", "gainsboro", "ghostwhite", "gold", "goldenrod", "greenyellow", "honeydew", "hotpink", "indianred", "indigo", "ivory", "khaki", "lavender", "lavenderblush", "lawngreen", "lemonchiffon", "lightblue", "lightcoral", "lightcyan", "lightgoldenrodyellow", "lightgray", "lightgreen", "lightgrey", "lightpink", "lightsalmon", "lightseagreen", "lightskyblue", "lightslategrey", "lightsteelblue", "lightyellow", "limegreen", "linen", "magenta", "maroon", "mediumaquamarine", "mediumblue", "mediumorchid", "mediumpurple", "mediumseagreen", "mediumslateblue", "mediumspringgreen", "mediumturquoise", "mediumvioletred", "midnightblue", "mintcream", "mistyrose", "moccasin", "navajowhite", "navy", "oldlace", "olive", "olivedrab", "orange", "orangered", "orchid", "palegoldenrod", "palegreen", "paleturquoise", "palevioletred", "papayawhip", "peachpuff", "peru", "pink", "plum", "powderblue", "purple", "red", "rosybrown", "royalblue", "saddlebrown", "salmon", "sandybrown", "seagreen", "seashell", "sienna", "silver", "skyblue", "slateblue", "slategray", "slategrey", "snow", "springgreen", "steelblue", "tan", "teal", "thistle", "tomato", "turquoise", "violet", "wheat", "white", "whitesmoke", "yellow", "yellowgreen"];
 var global_colors_available = ["#b00000", "#00b000", "#0000b0", "#b0b000", "#b000b0", "#00b0b0", "#b0b0b0"];
@@ -201,13 +207,22 @@ function color_scheme(x){
     } else if(x > pmt_max_rate){
         return(1)
     } else {
-        return(Math.log(x/pmt_min_rate)/Math.log(pmt_diff_base)/pmt_diff)
+        if(document.getElementById("legend_color_scale_log").checked){
+            return(Math.log(x/pmt_min_rate)/Math.log(pmt_diff_base)/pmt_diff)
+        } else{
+            return((x - pmt_min_rate)/(pmt_max_rate - pmt_min_rate))
+        }
     }
 }
 
 // convert percentate to datarate
 function color_scheme_inverse(x){
-    return(pmt_min_rate*pmt_diff_base**(pmt_diff*x));
+    if(document.getElementById("legend_color_scale_log").checked){
+        return(pmt_min_rate*pmt_diff_base**(pmt_diff*x));
+    } else{
+        return(pmt_min_rate + (pmt_max_rate - pmt_min_rate)*x)
+    }
+    
 }
 
 function whiten_all_pmts(){
@@ -304,7 +319,7 @@ function initialize_pmts(){
 function move_all_pmt_pos(name = "array"){
     
     
-    var all_names =  ["array", "vme", "off", "amp", "opt"];
+    
     for(var i = 0; i < all_names.length; i += 1){
         
         var name_dostuff = all_names[i]
@@ -380,7 +395,7 @@ function PMT_setcolour(json_result, timestamp){
         
         timestamps[i]       = parseInt("0x"+json_result[i]["lastid"].substring(0,8));
         timestamps_txt[i]   = json_result[i]["_id"].substring(0,7) + ": " + get_human_date(date_ts);
-
+        
         
         if( tmp == null || Object.keys(tmp).length > 0){
             got_updates = true;
@@ -399,26 +414,20 @@ function PMT_setcolour(json_result, timestamp){
         }
     }
     
+    
+    global_timestamps_txt = timestamps_txt
     global_pmt_rates = pmt_rates
+    global_json = json_result;
     global_tmp = tmp;
     global_link_rates = link_rates
     
     
-    svgObject1.getElementById("str_legend_log").textContent = ""
     if(got_updates == false){
         no_data_counter += 1;
         if(no_data_counter >= max_data_misses){
             console.log("stopping auto load");
             stop_intervals();
-            if(timestamp  != false){
-                svgObject1.getElementById("str_legend_log").textContent = "it seems no data is available for " + timestamp;
-            } else {
-                svgObject1.getElementById("str_legend_log").textContent = "it seems no live data is available";
-            }
-        } else {
-            svgObject1.getElementById("str_legend_log").textContent = "trying to get data ("+no_data_counter+")";
         }
-        
         var t_sorting_duration = Date.now() - t_sorting_start
         return([false, t_sorting_duration, false]);
     }else if(no_data_counter > 0){
@@ -475,6 +484,7 @@ function PMT_setcolour(json_result, timestamp){
         
     }
     
+    
     if(document.getElementById("legend_auto_set").checked){
         update_color_scheme(min=pmt_rate_min, max=pmt_rate_max)
     }
@@ -502,6 +512,7 @@ function PMT_setcolour(json_result, timestamp){
     svgObject1.getElementById("str_reader_time_1").textContent = timestamps_txt[0];
     svgObject1.getElementById("str_reader_time_2").textContent = timestamps_txt[1];
     svgObject1.getElementById("str_reader_time_3").textContent = timestamps_txt[2];
+    svgObject1.getElementById("str_reader_time_4").textContent = timestamps_txt[3];
     
     return([true, t_sorting_duration, t_coloring_duration]);
 };
@@ -664,7 +675,6 @@ function toggle_pmt(pmt_id){
         
     }
     
-    svgObject1.getElementById("str_legend_log").textContent = global_colors_available.length + " colors left";
     console.log(array_toggled_pmts);
     console.log(global_colors_use);
     
@@ -896,7 +906,6 @@ function history_draw(){
     )
     
     if(isNaN(time_start) || isNaN(time_end) || isNaN(time_width)){
-        svgObject1.getElementById("str_legend_log").textContent = "please check your values";
         return(0);
     }
     
