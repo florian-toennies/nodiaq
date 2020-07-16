@@ -27,7 +27,6 @@ router.get('/', ensureAuthenticated, function(req, res) {
     res.render('index', { title: 'Express', user: req.user });
 });
 
-		   
 router.get('/detector_history', ensureAuthenticated, function(req, res){
     var db = req.db;
     var collection = db.get('aggregate_status');
@@ -93,8 +92,6 @@ router.get('/account/request_github_access', ensureAuthenticated, function(req, 
     };
     console.log(options);
     const request = http.request(options, (response) => {
-	//console.log(`STATUS: ${res.statusCode}`);
-	//console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
 	response.setEncoding('utf8');
 	response.on('data', (chunk) => {
 	    console.log(`BODY: ${chunk}`);
@@ -279,7 +276,7 @@ function TryToFindUser(cursor, email, collection, callback){
        null,
        privatekey.private_key,
        ['https://www.googleapis.com/auth/spreadsheets']);
-    //authenticate request                                                                                   
+    //authenticate request
     jwtClient.authorize(function (err, tokens) {
 	if (err) {
 	    console.log(err);
@@ -331,7 +328,7 @@ function TryToFindUser(cursor, email, collection, callback){
 
 		    callback(true);
 		    return;
-		}		
+		}
 	    }
 
 	    // Can't find our person

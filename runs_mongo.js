@@ -6,9 +6,9 @@ var runsdb = mongoose.connection;
 var runs;
 var runsTableSchema;
 var xenon1tRunsSchema;
-var xenon1t_runs_collection = 'runs_new';
+var xenon1t_runs_collection = process.env.RUNS_MONGO_COLLECTION_1T;
 
-DataTable.configure({ verbose: true, debug : true });
+DataTable.configure({ verbose: false, debug : false });
 mongoose.plugin(DataTable.init);
 mongoose.connect(dbURI, {authSource : process.env.RUNS_MONGO_AUTH_DB});
 
@@ -64,10 +64,6 @@ exports.getDataForDataTable = function getData (request, response) {
 	detector = request.query['detector'];
     if(typeof request.query['conditions'] !== 'undefined')
 	conditions = JSON.parse(request.query['conditions']);
-    //console.log("CONDITIONS: ");
-    //console.log(conditions);
-    //console.log("QUERY");
-    //console.log(request.query);
     // Date filtering
     if(request.query['date_min'] !== undefined){
 	if(request.query['date_min'] !== '' && 
@@ -101,9 +97,6 @@ exports.getDataForDataTable = function getData (request, response) {
 		i=j;
 	if(i != -1)
 	    query.columns.splice(i, 1);
-        //console.log("NEW QUERY");
-	//console.log(query);
-	//console.log("That was new query");
 	runsModel1T.dataTable(query,  {"conditions": conditions}).then(
                             function (data) {
                                 response.send(data);

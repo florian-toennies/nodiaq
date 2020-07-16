@@ -112,7 +112,7 @@ router.get('/runsfractions', ensureAuthenticated, function(req, res){
     var total = days*86400*1000;
     var querydays = new Date(new Date() - total);
     collection.aggregate([
-      {$match : {detector : 'tpc', start : {$gt : querydays}}},
+      {$match : {detectors : 'tpc', start : {$gt : querydays}}},
       {$project : {mode : 1, user : 1, start : 1, end : 1}},
       {$group : {
         _id : '$mode',
@@ -120,7 +120,7 @@ router.get('/runsfractions', ensureAuthenticated, function(req, res){
           $sum : {
             $divide : [
               {$subtract : [
-                {$ifNull : ['$end', '$start']},
+                {$ifNull : ['$end', new Date()]},
                 '$start'
               ]}, // subtract
               total] // divide

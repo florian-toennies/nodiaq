@@ -46,7 +46,7 @@ router.get('/get_current_shifters', ensureAuthenticated, function(req, res){
 				    catch(error){
 					users[j][fields[k][0]] = 'Not set';
 				    }
-				}				
+				}
 			    }
 			}
 		    }
@@ -109,6 +109,7 @@ function getNextDayOfWeek(date, dayOfWeek) {
     resultDate.setDate(date.getDate() + (7 + dayOfWeek - date.getDay()) % 7);
     return resultDate;
 }
+
 router.post('/add_shifts', ensureAuthenticated, function(req, res){
     var db = req.users_db;
     var collection = db.get('shifts');
@@ -125,7 +126,7 @@ router.post('/add_shifts', ensureAuthenticated, function(req, res){
     // You can only do this if you're the operations manager. Check permissions
     if(typeof(req.user.groups) == "undefined" || !req.user.groups.includes("operations"))
 	return res.send(JSON.stringify({"res": "Woah, who do you think you are there buddy?"}));
-    
+
     var weekday = req.body.shift_change_day;
     var shift_type = req.body.shift_type;
     var credit_multiplier = req.body.credit_multiplier;
@@ -153,19 +154,19 @@ router.post('/add_shifts', ensureAuthenticated, function(req, res){
 	start.setTime(end_of_shift.getTime());
     }
     collection.insert(docs);
-    return res.sendStatus(200);    
+    return res.sendStatus(200);
 });
+
 router.post('/remove_shifts', ensureAuthenticated, function(req, res){
     var db = req.users_db;
     var collection = db.get("shifts");
-    
     var start = new Date(req.body.start_date);
     var end = new Date(req.body.end_date);
     var type = req.body.shift_type;
 
     // You can only do this if you're the operations manager. Check permissions
     if(typeof(req.user.groups) == "undefined" || !req.user.groups.includes("operations"))
-	return res.send(JSON.stringify({"res": "Berechtigung nicht vorgewiesen. Bitte begrÃnden."}));
+	return res.send(JSON.stringify({"res": "Berechtigung nicht vorgewiesen. Bitte begründen."}));
     
     Query = {"start": {"$gte": start, "$lte": end}};
     if(type != "all")

@@ -92,10 +92,10 @@ async function PopulateProfile(mongo_doc, github_profile, ldap_profile, callback
     }
     if(!(isEmpty(ldap_profile)))
 	ret_profile['ldap_info'] = ldap_profile;
-    // display API key set or not                                              
+    // display API key set or not
     if(typeof mongo_doc['api_username'] !== 'undefined')
         ret_profile['api_key'] = "SET";
-    
+
     callback(ret_profile);
 }
 
@@ -139,7 +139,7 @@ var OPTS = {
     bindDn: process.env.LDAP_BIND_DN,
     bindCredentials: process.env.LDAP_BIND_CREDENTIALS,
     searchBase: 'ou=xenon,ou=accounts,dc=lngs,dc=infn,dc=it',
-      searchFilter: '(uid={{username}})' //'(uid=%(user)s)'                                              
+      searchFilter: '(uid={{username}})' //'(uid=%(user)s)'
   },
     usernameField: 'user',
     passwordField: 'password'
@@ -166,7 +166,7 @@ passport.use(new LdapStrategy(OPTS,
 							   });
 					 return done(null, ret_profile);
 				     });
-                                 }); // end mongo query                 
+                                 }); // end mongo query
              }));
 
 
