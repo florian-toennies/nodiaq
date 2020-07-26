@@ -6,6 +6,25 @@ var logger = require('morgan');
 var bodyParser = require("body-parser");
 var gp="";
 
+
+// function to show status on databases or collections
+function show_state(db_or_coll, desc = false){
+    var state = eval(db_or_coll)["_state"];
+    var colour = "\33[93m";
+    if(state == "open"){
+        colour = "\33[92m";
+    } else if(state == "closed"){
+        colour = "\33[91m";
+    }
+    if(desc != false){
+        console.log(desc);
+    }
+    
+    console.log(colour + db_or_coll + ":\n\t" + state + "\33[0m");
+    
+}
+
+
 // General MongoDB Access via monk
 var mongo = require('mongodb');
 var ObjectID = mongo.ObjectID;
@@ -26,15 +45,28 @@ var dax_cstr = process.env.DAQ_URI;
 //console.log(dax_cstr);
 var db = monk(dax_cstr, {authSource: process.env.DAQ_MONGO_AUTH_DB});
 
+<<<<<<< HEAD
 //var monitor_cstr = "mongodb://"+process.env.DAQ_MONGO_USER +":"+process.env.DAQ_MONGO_PASSWORD+"@"+process.env.DAQ_MONGO_HOST+":"+process.env.DAQ_MONGO_PORT+"/"+process.env.DAQ_MONGO_DB;
 // use monitor uri to unify usage
 var monitor_cstr = process.env.MONITOR_URI
 var monitor_db = monk(monitor_cstr, {authSource: process.env.DAQ_MONGO_AUTH_DB});
+=======
+
+var monitor_cstr = process.env.MONITOR_URI;
+var monitor_client = new mongo.MongoClient(monitor_cstr, {authSource: process.env.DAQ_MONGO_AUTH_DB});
+var monitor_db;
+//console.log(monitor_cstr);
+monitor_client.connect(function(err) {
+    console.log(err);
+    monitor_db = monitor_client.db('daq');
+});
+
+>>>>>>> master
 
 // For Runs DB Datatable
 var runs_mongo = require("./runs_mongo");
 
-// For email confirmations
+//// For email confirmations
 var nodemailer = require("nodemailer");
 var transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -69,6 +101,7 @@ var shiftRouter = require('./routes/shifts');
 var adminRouter = require('./routes/admin');
 var equipmentRouter = require('./routes/equipment');
 var apiRouter = require('./routes/api');
+var TPCRouter   = require('./routes/tpc');
 
 // Using express!
 var app = express();
@@ -80,10 +113,15 @@ app.use(bodyParser.urlencoded({extended: true}));
 // Session caching
 var session = require('express-session');
 var MongoDBStore = require('connect-mongodb-session')(session);
+<<<<<<< HEAD
 //var dax_cstr = process.env.DAQ_MONGO_USER + ":" + process.env.DAQ_MONGO_PASSWORD + "@" + 
     //process.env.DAQ_MONGO_HOST + ":" + process.env.DAQ_MONGO_PORT + "/" +
     //process.env.DAQ_MONGO_DB;
     // already definied further up
+=======
+
+
+>>>>>>> master
 var store = new MongoDBStore({
   uri: dax_cstr,
   collection: 'mySessions'
@@ -157,6 +195,8 @@ app.use(function(req,res,next){
     req.monitor_db = monitor_db;
     req.ObjectID = ObjectID;
     req.detectors = detectors;
+    
+    req.show_state = show_state;
     next();
 });
 
@@ -180,6 +220,7 @@ app.use('/shifts', shiftRouter);
 app.use('/equipment', equipmentRouter);
 app.use('/admin', adminRouter);
 app.use('/api', apiRouter);
+app.use('/tpc', TPCRouter);
 
 
 // catch 404 and forward to error handler

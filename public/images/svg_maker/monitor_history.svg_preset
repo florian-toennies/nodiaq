@@ -2,6 +2,7 @@
 <svg id="svg2"
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 %%svg_viewport_history_total_width%% %%svg_viewport_history_total_height%%"
+    svg_maker_version="%%svg_maker_version%%"
 >
     <style>
         text{

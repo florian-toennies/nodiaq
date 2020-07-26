@@ -4,33 +4,128 @@ var router = express.Router();
 var gp = '';
 
 
-function ensureAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) { return next(); }
-    return res.redirect(gp+'/login');
-}
+var mongo = require('mongodb');
+var monk = require('monk');
 
-router.get('/', ensureAuthenticated, function(req, res) {
-    res.render('monitor', { title: 'Monitor', user: req.user });
+
+var dax_cstr = process.env.DAQ_URI;
+//console.log("DAX DB");
+//console.log(dax_cstr);
+
+
+
+
+// just for testing
+router.get('/ut',
+    function(req, res) {
+        var show_state = req.show_state;
+        var db = req.db
+        
+        
+        show_state("db", "inside router /tpc/ut");
+        
+        res.send("<br/>db state: " + db["_state"]);
+    }
+)
+
+
+/* GET TPC page. */
+router.get('/', function(req, res) {
+    res.render('tpclive', { title: 'TPC live Datarate' });
 });
 
-// obtain first and last entire in status collection where channels entrie is not empty
-router.get('/get_limits', ensureAuthenticated, function(req, res){
-    var db = req.monitor_db;
-    console.log(db)
+
+
+router.get('/test', function(req,res){
+    show_state = req.show_state;
     
-    var collection = db.get("status");
-    var mongo_pipeline = [];
     
-    // only take reader 0 to 2 and non empty channel entries
-    mongo_pipeline.push({
+    var runs_db = req.runs_db;
+    var users_db = req.users_db;
+    
+    
+    show_state("db", "in router tpc/test");
+    show_state("runs_db", "in router tpc/test");
+    show_state("users_db ", "in router tpc/test");
+    
+    //res.json(db);
+    res.send("state of db: " + db["_state"] );
+});
+
+
+router.get('/updates',function(req,res){
+    //res.json()
+    
+    var db = req.db;
+    var collection = db.get('status');
+    
+    
+    var oid_min = ObjectId(0);
+    var full_query = []
+    
+    
+    full_query.push({"$match":{"host":{$regex:"reader[0-2]_reader_0", $options:"$i" }}});     // keep match at 0th position
+    full_query.push({"$sort": {"_id":-1}});              // keep sort at 1st position
+    full_query.push({"$limit": 15});                     // keep limit at 2nd position
+            // keep group at 3rd position
+    full_query.push({"$group": {_id: "$host", lastid:{"$last": "$_id"}, channels:{"$last":"$channels"}}});
+    
+    
+    // append time filter if parameter unixtime is given in url
+    var int_unixtime = parseInt(req.query.unixtime);
+    if(!isNaN(int_unixtime)){
+        
+        if(int_unixtime > 0){
+        
+            
+            str_unixtime_min = (int_unixtime-1).toString(16) + "0000000000000000";
+            str_unixtime_max = (int_unixtime+1).toString(16) + "0000000000000000";
+            
+            var oid_min = ObjectId(str_unixtime_min);
+            var oid_max = ObjectId(str_unixtime_max);
+            
+            full_query[0] = {
+                "$match": {
+                    "_id":{
+                        "$gt": oid_min,
+                        "$lt": oid_max
+                    },
+                    "host":{
+                        $regex: "reader[0-2]_reader_0", $options:"$i"
+                    }
+                },
+            };
+        };
+    };
+    
+    collection.aggregate(
+        full_query,
+        function(e,docs){
+            res.json(docs);
+        }
+        
+    );
+    
+    
+});
+
+
+router.get('/get_limits',function(req,res){
+    var db = req.db;
+    var collection = db.get('status');
+    
+    json_filter = {"limit":1, "sort":{"_id": -1}}
+    
+    var full_query = [];
+    
+    full_query.push({
         "$match":{
-            "host": {$regex:"reader[0-3]_reader_0", $options:"$i" },
+            "host": {$regex:"reader[0-2]_reader_0", $options:"$i" },
             "channels":{$exists: true, $ne: {}},
         }
     });
     
-    // calculate unixtime from object id
-    mongo_pipeline.push({
+    full_query.push({
        "$project":{
             _id: 1,
             unixtime : {
@@ -44,9 +139,7 @@ router.get('/get_limits', ensureAuthenticated, function(req, res){
         }
     });
     
-    
-    // obtain first and last entrie
-    mongo_pipeline.push({
+    full_query.push({
         $group: {
             _id: null,
             // for whatever reason they are inverted
@@ -54,14 +147,18 @@ router.get('/get_limits', ensureAuthenticated, function(req, res){
             last: { $first: "$$ROOT" },
         }
     });
+            //last: {"$last": "$_id"},
+        //}
+    //});
+    
+    full_query.push({$limit: 2});
     
     
-    // limit to two entires just to be sure
-    mongo_pipeline.push({$limit: 2});
     
-    // run actual request
+    
+    
     collection.aggregate(
-        mongo_pipeline,
+        full_query,
         function(e,docs){
             res.json(docs);
         }
@@ -73,86 +170,45 @@ router.get('/get_limits', ensureAuthenticated, function(req, res){
 
 
 
-router.get('/get_updates', ensureAuthenticated,function(req,res){
-    var db = req.monitor_db;
+
+router.get('/get_history',function(req,res){
+    var db = req.db;
     var collection = db.get('status');
-        ObjectID = req.ObjectID;
-    
-    var oid_min = ObjectID(0);
-    
-    // start mongo pipeline with empty array
-    var mongo_pipeline = []
-    mongo_pipeline.push({"$match":{"host":{$regex:"reader[0-3]_reader_0", $options:"$i" }}});
-    mongo_pipeline.push({"$sort": {"_id":-1}});
-    mongo_pipeline.push({"$limit": 15});
-    mongo_pipeline.push({"$group": {_id: "$host", lastid:{"$last": "$_id"}, channels:{"$last":"$channels"}}});
-    
-    
-    // append time filter if parameter unixtime is given in url
-    var int_unixtime = parseInt(req.query.unixtime);
-    if(!isNaN(int_unixtime)){
-        
-        if(int_unixtime > 0){
-            str_unixtime_min = (int_unixtime-1).toString(16) + "0000000000000000";
-            str_unixtime_max = (int_unixtime+1).toString(16) + "0000000000000000";
-            
-            var oid_min = ObjectID(str_unixtime_min);
-            var oid_max = ObjectID(str_unixtime_max);
-            
-            mongo_pipeline[0]["$match"]["_id"] = {
-                    "$gt": oid_min,
-                    "$lt": oid_max
-            }
-        }
-    }
-    console.log(mongo_pipeline[0]["$match"]);
-    collection.aggregate(
-        mongo_pipeline,
-        function(e,docs){
-            res.json(docs);
-        }
-        
-    );
-});
-
-
-
-// returns data that are back in time
-// requires int_time_start, int_time_end and int_time_averaging_window
-// averages then the data over int_time_averaging_window
-router.get('/get_history', ensureAuthenticated,function(req,res){
-    var db = req.monitor_db;
-    var collection = db.get('status');
-        ObjectID = req.ObjectID;
-    
     
     // initialize used variables
     var json_pmts = [];
-    var int_time_start = false;
-    var int_time_end   = false;
-    var int_time_averaging_window = false;
+    var int_time_start = 1581601938;
+    var int_time_end   = 1581602315;
+    //var int_time_start = 1581601940;
+    //var int_time_end   = 1581601951;
+    var int_time_averaging_window = 10;
     
     // get all the time specifics
     var tmp = parseInt(req.query.int_time_start);
     if(!isNaN(tmp) && tmp > 0){
         var int_time_start = tmp
     }
+    var str_time_start = (int_time_start).toString(16) + "0000000000000000";
+    var oid_time_start = ObjectId(str_time_start);
+    
     var tmp = parseInt(req.query.int_time_end);
     if(!isNaN(tmp) && tmp > 0){
         var int_time_end = tmp
     }
+    var str_time_end = (int_time_end+1).toString(16) + "0000000000000000";
+    var oid_time_end = ObjectId(str_time_end);
+    
+    
     var tmp = parseInt(req.query.int_time_averaging_window);
     if(!isNaN(tmp) && tmp > 0){
         var int_time_averaging_window = tmp
     }
     
-    
-    // create time objects for comparission
-    var str_time_start = (int_time_start).toString(16) + "0000000000000000";
-    var oid_time_start = ObjectID(str_time_start);
-    var str_time_end = (int_time_end+1).toString(16) + "0000000000000000";
-    var oid_time_end = ObjectID(str_time_end);
-    
+    //console.log(
+        //"\nint_time_start: " + int_time_start +
+        //"\nint_time_end: " + int_time_end +
+        //"\nint_time_averaging_window: " + int_time_averaging_window
+    //)
     
     // get all pmt ids that are required
     var tmp_json_pmts = req.query.str_pmts.split(",");
@@ -165,19 +221,9 @@ router.get('/get_history', ensureAuthenticated,function(req,res){
         }
     }
     
-    // test if data given was ok
-    if(
-        json_pmts.length == 0 ||
-        int_time_start == false ||
-        int_time_end == false ||
-        int_time_averaging_window == false
-    ){
-        console.log("something is zero")
-        res.send("false");
-        return(404);
-    } else {
-        console.log("oK")
-    }
+    
+    
+    var oid_min = ObjectId(0);
     
     
     var json_project_pmts = {};
@@ -197,7 +243,7 @@ router.get('/get_history', ensureAuthenticated,function(req,res){
     mongo_pipeline.push(
     {"$match":{
         "_id":{"$gt": oid_time_start,"$lt": oid_time_end},
-        "host":{$regex:"reader[0-3]_reader_0", $options:"$i" }}
+        "host":{$regex:"reader[0-2]_reader_0", $options:"$i" }}
     });
     
     // create time in seconds and kick out unnecesarry pmts
@@ -279,15 +325,24 @@ router.get('/get_history', ensureAuthenticated,function(req,res){
 });
 
 
-// get last update on individual reader
-router.get('/update/:reader', ensureAuthenticated,function(req,res){
-    var runs_db = req.runs_db;
-    var collection = runs_db.get('status');
+
+
+router.get('/update_map',function(req,res){
+    var db = req.db;
+    var collection = db.get('cable_map');
+    
+    collection.find({},{},function(e,docs){
+        res.json(docs);
+    })
+});
+
+router.get('/update/:reader',function(req,res){
+    var db = req.db;
+    var collection = db.get('status');
     
     collection.find({host: "reader"+req.params.reader+"_reader_0"},{limit:1, sort:{_id:-1}},function(e,docs){
         res.json(docs);
     })
 });
 
-
-module.exports = router;
+module.exports = router
