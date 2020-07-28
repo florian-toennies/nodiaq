@@ -448,9 +448,9 @@ function PMT_setcolour(json_result, timestamp){
         svgObject1.getElementById("rate_opt_txt_"+str_link).textContent = link_rates[str_link].toFixed(2)
         
         if(link_rates[str_link] > 70){
-            svgObject1.getElementById("rate_opt_circ_"+str_link).style.fill = rgb( 189,  33,  48)
+            svgObject1.getElementById("rate_opt_circ_"+str_link).style.fill = "rgb( 189,  33,  48)"
         } else if(link_rates[str_link] > 60){
-            svgObject1.getElementById("rate_opt_circ_"+str_link).style.fill = rgb( 211, 158,   0)
+            svgObject1.getElementById("rate_opt_circ_"+str_link).style.fill = "rgb( 211, 158,   0)"
         } else {
             svgObject1.getElementById("rate_opt_circ_"+str_link).style.fill = "none"
         }
