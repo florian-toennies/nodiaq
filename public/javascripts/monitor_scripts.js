@@ -539,6 +539,9 @@ function color_pmts(){
             var rgb_r = pmt_color_this[0]
             var rgb_g = pmt_color_this[1]
             var rgb_b = pmt_color_this[2]
+            
+            pmt_rate_sum = pmt_rate_sum + pmt_rate;
+            
         } else {
             pmt_rate_txt = "no data";
             var rgb_r = 188;
@@ -546,8 +549,6 @@ function color_pmts(){
             var rgb_b = 188;
         }
         
-        // normalizing the colors
-        pmt_rate_sum = pmt_rate_sum + pmt_rate;
         
         var rgb_string = "rgb(" + rgb_r + ", " + rgb_g + ", " + rgb_b + ")"
         //console.log("pmt" + i + ": " + rgb_string)
