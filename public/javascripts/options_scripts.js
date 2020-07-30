@@ -1,7 +1,6 @@
 function PopulateModeList(div){
     $.getJSON("options/options_list", function(data){
 		var html = "";
-		console.log(data);
 		var detectors = ['tpc', 'muon_veto', 'neutron_veto', 'include'];
 		var detector_names = ["TPC", "Muon Veto", "Neutron Veto", 'Includes'];
 		for(var j in detectors){
@@ -13,7 +12,6 @@ function PopulateModeList(div){
 		    	html+="<option value='"+data[detector][i]+"'>"+data[detector][i]+"</option>";
 		}
 		document.getElementById(div).innerHTML = html;
-		console.log(div);
 		$("#"+div).prop('disabled', false);
 		$('#'+div).selectpicker();
 		

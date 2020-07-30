@@ -6,9 +6,9 @@ block extrahead
   script(src="javascripts/logui_script.js", type="text/javascript")
   script(src="javascripts/tabulator.min.js" type="text/javascript")
 
-block content     
+block content
   div.main-container(style="width:100%;padding:25")
-    
+
     div.input-group.mb-3#newentry(style='padding-top:5px')
       input.form-control#log_entry_box(type="text", name="entry", placeholder="New Log Entry...")
       div.input-group-append
@@ -40,17 +40,17 @@ block content
       div.modal-content
         div.modal-body
           h4 Close Open Errors
-          hr                    
+          hr
           h5 Step 1: Write something sensible describing how the error is solved
           textarea#sensible_input(style="width:90%;" rows='3' placeholder='Some sensible thing')
           br
           br
-          h5 Step 2: Acknowledge you have at least a vague idea what you're doing          
+          h5 Step 2: Acknowledge you have at least a vague idea what you're doing
           input#close_error_ack(type='checkbox')
           span &nbsp;I acknowledge I have at least a vague idea what I'm doing&nbsp;
           br
-          br          
-          h5 Step 3: Click 'submit' to close the errors          
+          br
+          h5 Step 3: Click 'submit' to close the errors
           button.btn.btn-primary(type='submit' onclick="CloseOpenErrors()") Submit
 
   script.
@@ -64,4 +64,4 @@ block content
       UpdateLogTable("#log_table");
       CheckFlash();
      });
-     
+

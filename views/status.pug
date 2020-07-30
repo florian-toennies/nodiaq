@@ -8,7 +8,7 @@ block extrahead
   link(href="stylesheets/custom-select.css", rel="stylesheet")
   script(src="javascripts/highcharts-more.js", type='text/javascript')
   script(src="javascripts/solid-gauge.js", type='text/javascript')
-    
+
 block content
   - var tpc_readers = [["reader0", "reader0_reader_0"], ["reader1", 'reader1_reader_0'], ["reader2", 'reader2_reader_0'], ["reader3", "reader3_reader_0"], ["Muon Veto", "reader5_reader_0"], ["Neutron Veto", "reader6_reader_0"]];
   - var tpc_controllers = [["TPC aux", "reader0_controller_0"], ["NV aux", "reader6_controller_0"], ["MV_aux", "reader5_controller_0"]];
@@ -22,8 +22,7 @@ block content
   div.row(style='margin:0')
     div.fullsizechart.det_card
       div.chart_header(style='font-size:12px')
-        strong(style='font-size:22px') Status History
-        &nbsp;&nbsp;
+        strong(style='font-size:22px') Status History &nbsp;&nbsp;
         strong(style='font-size:12px') Time: &nbsp;
         select.cselect#menu_history_s(style="width:100px")
           option(value=172800) 48h
@@ -32,55 +31,55 @@ block content
           option(value=43200) 12h
           option(value=21600) 6h
           option(value=3600) 1h
-        &nbsp;&nbsp;
-        strong(style='font-size:12px') Resolution: &nbsp;
+
+        strong(style='font-size:12px') &nbsp;&nbsp; Resolution: &nbsp;
         select.cselect#menu_resolution_s(style="width:100px")
           option(value=10) 10s
           option(value=30) 30s
           option(value=60 selected) 1m
           option(value=300) 5m
           option(value=600) 10m
-        &nbsp;&nbsp;
-        strong(style='font-size:12px') Variable: &nbsp;
+
+        strong(style='font-size:12px') &nbsp;&nbsp; Variable: &nbsp;
         select.cselect#menu_variable_s(style="width:100px")
           option(value='rate') Data rate
           option(value='buff') Buffer size
           option(value='strax') Strax buffer
-        &nbsp;&nbsp;
-        button.btn.btn-info#update_button(style="height:80%;padding-top:3px" onclick="RedrawRatePlot()") Update
+
+        button.btn.btn-info#update_button(style="height:80%;padding-top:3px" onclick="RedrawRatePlot()") &nbsp;&nbsp; Update
       div.chart_body#rate_chart(style="height:300px")
   div.row(style="width:100%;margin:0;padding-top:5px")
     each reader in tpc_readers
       div.col-xs-6.col-sm-6.col-md-3(style='padding-left:0;padding-right:0')
-        div.det_card(id='#{reader[1]}_statdiv')
+        div.det_card(id=`${reader[1]}_statdiv`)
           strong #{reader[0]} is &nbsp;
-          span(id='#{reader[1]}_status')
+          span(id=`${reader[1]}_status`)
           p(style='margin-bottom:5px')
-            span(id='#{reader[1]}_rate' style='font-size:40px')
+            span(id=`${reader[1]}_rate` style='font-size:40px')
             strong &nbsp; MB/s
           p(style='margin-bottom:-5px;font-size:10px;color:#888888')
             span Checked in &nbsp;
-            span(id='#{reader[1]}_check-in')
+            span(id=`${reader[1]}_check-in`)
             span &nbsp; seconds ago
     each controller in tpc_controllers
       div.col-xs-6.col-sm-6.col-md-3(style='padding-left:0;padding-right:0')
         div.det_card
           strong #{controller[0]} is &nbsp;
-          span(id='#{controller[1]}_status')
+          span(id=`${controller[1]}_status`)
           p
-            div(id='#{controller[1]}_devices' style='font-size:10px')
+            div(id=`${controller[1]}_devices` style='font-size:10px')
           p(style='margin-bottom:-5px;font-size:10px;color:#888888')
             span Checked in &nbsp;
-            span(id='#{controller[1]}_checkin')
+            span(id=`${controller[1]}_checkin`)
             span &nbsp; seconds ago
     div.col-sm-12.col-md-12.col-lg-6(style="padding:0px;padding-top:5px;padding-bottom:5px;border:0px solid #ccc;")
       div.det_card_noheight
         a(href="https://ceph.io")
           img(src="images/ceph_logo.png" style="height:35px")
         span(style='font-size:12px')
-          span(style='align:left')&nbsp;&nbsp;
+          span(style='align:left') &nbsp;&nbsp;
           strong(style='align:left')#ceph_status
-          span(style='align:left')&nbsp; Occupancy: &nbsp;
+          span(style='align:left') &nbsp; Occupancy: &nbsp;
           span(style='aligh:left')#ceph_filltext
         div.row#osd_div
     div.col-sm-12.col-md-12.col-lg-6(style="padding:5px;border:0px solid #ccc;")

@@ -10,7 +10,7 @@ var xenon1t_runs_collection = process.env.RUNS_MONGO_COLLECTION_1T;
 
 DataTable.configure({ verbose: false, debug : false });
 mongoose.plugin(DataTable.init);
-mongoose.connect(dbURI, {authSource : process.env.RUNS_MONGO_AUTH_DB});
+mongoose.connect(dbURI, {authSource : process.env.RUNS_MONGO_AUTH_DB, useNewUrlParser:true});
 
 
 runsdb.on('error', console.error.bind(console, 'connection error:'));

@@ -6,7 +6,7 @@ block extrahead
   script(src="javascripts/equipment_script.js", type="text/javascript")
   script(src="javascripts/datatables.min.js" type="text/javascript")
 
-block content     
+block content
   div.det_card_noheight#header
     span
       h5 DAQ Equipment Database
@@ -39,36 +39,33 @@ block content
               div.col-3(style='margin-bottom:3px')
                 strong #{att[0]}
               div.col-9(style='margin-bottom:3px')
-                input(type='text' name='#{att[1]}', id='input_#{att[1]}' style='width:100%')
+                input(type='text' name=`${att[1]}`, id=`input_${att[1]}` style='width:100%')
             div.col-3
               strong Comment
             div.col-9
               textarea(type='text' rows='2' name='comment' id='input_comment' style="width:100%")
-         div.col-12
-           button.btn.btn-info.float-right(onclick="SubmitNewForm()") Submit
-         br
+          div.col-12
+            button.btn.btn-info.float-right(onclick="SubmitNewForm()") Submit
+          br
 
-          
   div.modal.fade#detail_modal(tabindex='-1' role='dialog')
     div.modal-dialog.modal-lg(role='document')
       div.modal-content
         div.modal-body
           h4 
-            span#detail_manufacturer
-            &nbsp;
+            span#detail_manufacturer &nbsp;
             span#detail_model
-          hr                    
+          hr
           div.row
             div.col-3
               strong Serial
             div.col-9
-              span#detail_serial
-              &nbsp;
+              span#detail_serial &nbsp;
               span.float-right
                 i.fa.fa-edit#edit_serial
             div.col-3
               strong Type
-            div.col-9	  
+            div.col-9
               span#detail_type
               span.float-right
                 i.fa.fa-edit#edit_type
@@ -89,7 +86,7 @@ block content
             div.col-9
               span#detail_purchaser
               span.float-right
-                i.fa.fa-edit#edit_purchaser	      
+                i.fa.fa-edit#edit_purchaser
             div.col-3
               strong Comment
             div.col-9
@@ -106,4 +103,4 @@ block content
       DrawActiveLink("#lequipment");
       InitializeTable("#equipment_table");
      });
-     
+

@@ -1,5 +1,4 @@
 function FillAPIInfo(userdoc){
-	console.log(userdoc);
 	if(typeof userdoc['api_key'] === 'undefined' || typeof userdoc['api_username'] === 'undefined'){
 		$("#request_api_button").show();
 	}
@@ -12,6 +11,5 @@ function FillAPIInfo(userdoc){
 function ReqXenonGroup(group){
 
     $.getJSON("account/request_github_access?group=" + group, function(data){
-	console.log(data);
     });
 }

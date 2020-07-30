@@ -18,7 +18,7 @@ router.get('/areThereErrors', ensureAuthenticated, function(req, res){
     var error_codes = [2, 3, 4]; //warning, error, fatal
     collection.find({"priority": {"$in": error_codes}}, {}, function(e, docs){
 	var ndocs = docs.length;
-	return res.send(JSON.stringify({"error_docs": ndocs}));
+	return res.json({"error_docs": ndocs});
     });
 });			
 
@@ -35,7 +35,6 @@ router.get('/getMessages', ensureAuthenticated, function(req, res){
 
     if (typeof limit == 'undefined')
         limit = 100; //sure, why not
-    console.log(include);
     collection.find({"priority": {"$in": include}},  { "sort": {"_id": -1}, "limit" : parseInt(limit) },
                     function(e,docs){
                         var ret = [];
@@ -47,7 +46,7 @@ router.get('/getMessages', ensureAuthenticated, function(req, res){
                             }
                             ret.push(rd);
                         }
-                        return res.send(JSON.stringify(ret));
+                        return res.json(ret);
                         });
 });
 
@@ -65,7 +64,7 @@ router.post('/new_log_message', ensureAuthenticated, (req, res) => {
 	"time": new Date()
     }
     collection.insert(idoc);
-    return res.send(JSON.stringify(idoc));
+    return res.json(idoc);
 });
 
 router.post('/acknowledge_errors', ensureAuthenticated, (req, res) => {
@@ -84,7 +83,7 @@ router.post('/acknowledge_errors', ensureAuthenticated, (req, res) => {
     collection.update(matchdoc, updatedoc, {"multi": true},
 		      function(err, doc){
 			  if(err == null)
-			      return res.send(JSON.stringify(updatedoc));
+			      return res.json(updatedoc);
 			  else
 			      return res.status(400).send('Failed to update DB');
 		      });
