@@ -24,8 +24,8 @@ var pmt_default_style;
 
 
 // min/max for legend
-var pmt_min_rate = 16;
-var pmt_max_rate = 160;
+var pmt_min_rate = 1;
+var pmt_max_rate = 3501;
 var pmt_diff_base = 10;
 var pmt_diff;
 
