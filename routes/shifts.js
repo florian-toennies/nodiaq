@@ -50,7 +50,7 @@ router.get('/get_current_shifters', ensureAuthenticated, function(req, res){
 			    }
 			}
 		    }
-		    return res.send(JSON.stringify(users));
+		    return res.json(users);
 		});
 	});
 });
@@ -81,7 +81,7 @@ router.get('/get_shifts', ensureAuthenticated, function(req, res){
 				"shifter": doc['shifter']
 			    })
 			}
-			return res.send(ret); //JSON.stringify(ret));
+			return res.json(ret); //JSON.stringify(ret));
 		    });
     
 });
@@ -98,7 +98,7 @@ router.get("/total_shift_aggregates", ensureAuthenticated, function(req, res){
 		  "years": {$push: {"year": "$_id.yr", "count": "$count"}}}},
         {$sort: {"total": -1}}], 
 			 function(err, result){
-			     res.send(result);
+			     res.json(result);
 			 });
     
 });

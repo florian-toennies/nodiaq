@@ -19,21 +19,21 @@ router.get('/get_run_doc', ensureAuthenticated, function(req, res){
     if(typeof num !== 'undefined')
 	num = parseInt(num, 10);
     if(typeof num === "undefined")
-	return res.send(JSON.stringify({}));
+	return res.json({});
     if(typeof q.experiment === "undefined" || q.experiment === "xenonnt"){
 	var collection = db.get(process.env.RUNS_MONGO_COLLECTION);
 	collection.find({"number": num}, function(e, docs){
 		if(docs.length ===0)
-		  return res.send(JSON.stringify({}));
-		return res.send(JSON.stringify(docs[0]));
+		  return res.json({});
+		return res.json(docs[0]);
 	});
     }
     else if(q.experiment === "xenon1t"){
 	var collection = db.get(process.env.RUNS_MONGO_COLLECTION_1T);
 	collection.find({"number": num}, function(e, docs){
 	    if(docs.length ===0)
-		return res.send(JSON.stringify({}));
-	    return res.send(JSON.stringify(docs[0]));
+		return res.json({});
+	    return res.json(docs[0]);
 	});
     }
 });

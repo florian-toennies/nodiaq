@@ -31,7 +31,7 @@ router.get('/getEquipment', ensureAuthenticated, function(req, res){
 			    ret.push(appdoc);
 			    
                         }
-                        return res.send(JSON.stringify(ret));
+                        return res.json(ret);
                     });
 });
 
@@ -43,18 +43,18 @@ router.post('/record_update', ensureAuthenticated, (req, res) => {
     var db = req.db;
     var collection = db.get("equipment");
     if(typeof req.body.priority == 'undefined')
-	return res.send(JSON.stringify({"result": "no priority"}));
+	return res.json({"result": "no priority"});
     
     // Case, item action
     if(req.body.priority == 'add_item'){
 	if(typeof req.body.data == 'undefined')
-	    return res.send(JSON.stringify({"result": "no item to add"}));
+	    return res.json({"result": "no item to add"});
 	var newItemData = req.body.data;
 	var req_fields = ['manufacturer', 'model', 'type', 'serial', 'status', 'purchaser'];
 	for(var i in req_fields){
 	    if(typeof newItemData[req_fields[i]] === 'undefined')
-		return res.send(JSON.stringify({"result": "missing field " +
-						req_fields[i]}));
+		return res.json({"result": "missing field " +
+						req_fields[i]});
 	}
 	var extra_fields = ['location', 'comment'];
 	for(var i in extra_fields){
@@ -82,12 +82,11 @@ router.post('/record_update', ensureAuthenticated, (req, res) => {
 
 	    idocs.push(ndoc);
 	}
-	console.log(idocs);
 	collection.insert(idocs, function(err, result){
 	    if(err==null)
-		return res.send(JSON.stringify({"result": 'success'}));
+		return res.json({"result": 'success'});
 	    else
-		return res.status(400).send(JSON.stringify({"result": err}));
+		return res.status(400).json({"result": err});
 	});
     }
     else if(req.body.priority == 'update_field'){
@@ -97,7 +96,7 @@ router.post('/record_update', ensureAuthenticated, (req, res) => {
 	    console.log("HERE");
 	    collection.find({"_id": req.body.id}, function(e,docs){
 		if(docs.length != 1)
-		    return res.status(400).send(JSON.stringify({"result": "database error"}));
+		    return res.status(400).json({"result": "database error"});
 		var doc = docs[0];
 		var oldvalue = "[NOT SET]";
 		if(typeof doc[req.body.field] !== "undefined")
@@ -116,14 +115,14 @@ router.post('/record_update', ensureAuthenticated, (req, res) => {
 		collection.update({"_id": req.body.id}, updatedoc,
 				  function(err, doc){
 				      if(err == null)
-					  return res.send(JSON.stringify({"result": "success"}));
+					  return res.json({"result": "success"});
 				      else
-					  return res.status(400).send(JSON.stringify({"result": "database error"}));
+					  return res.status(400).json({"result": "database error"});
 				  });
 	    });
 	}
 	else
-	    return res.status(400).send(JSON.stringify({"result": "missing required fields in request"}));
+	    return res.status(400).json({"result": "missing required fields in request"});
     }
     else
 	return res.status(400).send("Didn't include priority");

@@ -45,7 +45,6 @@ var transporter = nodemailer.createTransport({
 // Routers for all the sub-sites
 var indexRouter = require('./routes/index');
 var optionsRouter = require('./routes/options');
-var playlistRouter = require('./routes/playlist');
 var hostsRouter = require('./routes/hosts');
 var runsRouter = require('./routes/runsui');
 var userRouter = require('./routes/users');
@@ -153,7 +152,6 @@ app.get('/runtable/getDatatable', runs_mongo.getDataForDataTable);
 app.use('/', indexRouter);
 app.use('/options', optionsRouter);
 app.use('/hosts', hostsRouter);
-app.use('/playlist', playlistRouter);
 app.use('/runsui', runsRouter);
 app.use('/logui', logRouter);
 app.use('/help', helpRouter);

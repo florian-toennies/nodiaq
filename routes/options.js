@@ -25,7 +25,7 @@ router.get("/options_list", ensureAuthenticated, function(req, res){
 			    retlist[docs[i]['detector']].push(docs[i]['name']);
 		    }
 
-			return res.send(JSON.stringify(retlist));
+			return res.json(retlist);
 		    });
 });
 
@@ -33,14 +33,14 @@ router.get("/options_json", ensureAuthenticated, function(req, res){
     var query = url.parse(req.url, true).query;
     var name = query.name;
     if(typeof name == "undefined")
-	return res.send(JSON.stringify({"ERROR": "No name provided"}));
+	return res.json({"ERROR": "No name provided"});
 
     var db = req.db;
     var collection = db.get('options');
     collection.findOne({"name": name}, {},
 		       function(e, doc){
 			   try{
-			       return res.send(JSON.stringify(doc));
+			       return res.json(doc);
 			   }
 			   catch(error){
 			       return res.send(JSON.stringify({"ERROR":
@@ -57,7 +57,7 @@ router.post("/set_run_mode", ensureAuthenticated, function(req, res){
 
     // Check permissions
     if(typeof(req.user.groups) == "undefined" || !req.user.groups.includes("daq"))
-	return res.send(JSON.stringify({"res": "I can't allow you to do that Dave"}));
+	return res.json({"res": "I can't allow you to do that Dave"});
     
     var collection = db.get('options');
 	if(typeof doc['name'] === 'undefined')
@@ -77,7 +77,7 @@ router.get("/remove_run_mode", ensureAuthenticated, function(req, res){
 
     // Check permissions
     if(typeof(req.user.groups) == "undefined" || !req.user.groups.includes("daq"))
-	return res.send(JSON.stringify({"res": "I can't allow you to do that Dave"}));
+	return res.json({"res": "I can't allow you to do that Dave"});
     
     collection.remove({'name': name}, {},
 		      function(e){
