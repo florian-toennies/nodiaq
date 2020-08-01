@@ -3,7 +3,7 @@ var passport = require('passport');
 var monk = require('monk');
 var runs_cstr = process.env.USERS_URI;
 var runs_db = monk(runs_cstr, {authSource: process.env.USERS_MONGO_AUTH_DB});
-//console.log("Runs db in user auth " + runs_cstr);
+//console.log("Runs db in user auth ");
 
 passport.serializeUser(function(user, done) {
     done(null, user);
@@ -100,7 +100,7 @@ async function PopulateProfile(mongo_doc, github_profile, ldap_profile, callback
 passport.use(new GitHubStrategy({
     clientID: process.env.GITHUB_OATH_CLIENT_ID,
     clientSecret: process.env.GITHUB_OATH_CLIENT_SECRET,
-    callbackURL: "https://xenon1t-daq.lngs.infn.it/test/auth/github/callback",
+    callbackURL: "https://xenonnt.lngs.infn.it/auth/github/callback",
     scope: ['user:email', 'user:name', 'user:login', 'user:id', 'user:avatar_url'],
   },
   function(accessToken, refreshToken, profile, done) {
