@@ -100,7 +100,7 @@ async function PopulateProfile(mongo_doc, github_profile, ldap_profile, callback
 passport.use(new GitHubStrategy({
     clientID: process.env.GITHUB_OATH_CLIENT_ID,
     clientSecret: process.env.GITHUB_OATH_CLIENT_SECRET,
-    callbackURL: "https://xenonnt.lngs.infn.it/auth/github/callback",
+    callbackURL: "https://xenon1t-daq.lngs.infn.it/auth/github/callback",
     scope: ['user:email', 'user:name', 'user:login', 'user:id', 'user:avatar_url'],
   },
   function(accessToken, refreshToken, profile, done) {
