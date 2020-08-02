@@ -24,8 +24,8 @@ var pmt_default_style;
 
 
 // min/max for legend
-var pmt_min_rate = 16;
-var pmt_max_rate = 160;
+var pmt_min_rate = 1;
+var pmt_max_rate = 3501;
 var pmt_diff_base = 10;
 var pmt_diff;
 
@@ -448,9 +448,9 @@ function PMT_setcolour(json_result, timestamp){
         svgObject1.getElementById("rate_opt_txt_"+str_link).textContent = link_rates[str_link].toFixed(2)
         
         if(link_rates[str_link] > 70){
-            svgObject1.getElementById("rate_opt_circ_"+str_link).style.fill = rgb( 189,  33,  48)
+            svgObject1.getElementById("rate_opt_circ_"+str_link).style.fill = "rgb( 189,  33,  48)"
         } else if(link_rates[str_link] > 60){
-            svgObject1.getElementById("rate_opt_circ_"+str_link).style.fill = rgb( 211, 158,   0)
+            svgObject1.getElementById("rate_opt_circ_"+str_link).style.fill = "rgb( 211, 158,   0)"
         } else {
             svgObject1.getElementById("rate_opt_circ_"+str_link).style.fill = "none"
         }
@@ -539,6 +539,9 @@ function color_pmts(){
             var rgb_r = pmt_color_this[0]
             var rgb_g = pmt_color_this[1]
             var rgb_b = pmt_color_this[2]
+            
+            pmt_rate_sum = pmt_rate_sum + pmt_rate;
+            
         } else {
             pmt_rate_txt = "no data";
             var rgb_r = 188;
@@ -546,8 +549,6 @@ function color_pmts(){
             var rgb_b = 188;
         }
         
-        // normalizing the colors
-        pmt_rate_sum = pmt_rate_sum + pmt_rate;
         
         var rgb_string = "rgb(" + rgb_r + ", " + rgb_g + ", " + rgb_b + ")"
         //console.log("pmt" + i + ": " + rgb_string)
