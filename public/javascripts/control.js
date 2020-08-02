@@ -129,6 +129,12 @@ function DefineButtonRules(){
 	}
 	//return;
     });
+    $("#lz_softstop").change(function(){
+	if($("#lz_softstop").is(":checked")){
+	    alert("You want to go soft on LZ? I hope you aren't an AC");
+	    $("#lz_softstop").bootstrapToggle('off');
+	}
+    });
 }
 
 function PopulateRunsList(callback){
@@ -149,6 +155,7 @@ function PopulateRunsList(callback){
 
     	}}(detector)));
 	$("#remote_lz").bootstrapToggle('off');
+	$("#lz_softstop").bootstrapToggle('off');
 	document.getElementById("lz_mode").innerHTML = "<option value='shit'><strong>xenon leak mode</strong></option><option value='goblind'><strong>HV spark mode</strong></option><option value='oops'><strong>find dark matter but it turns out not to be dark matter mode</strong></option><option value='n'><strong>Only measure neutrons because of all our teflon mode</strong></option><option value='blow'><strong>Lots of radon mode (note, this mode cannot be turned off)</strong></option>";
 	
 	}
@@ -177,6 +184,10 @@ function PullServerData(callback){
 			else
 			    $(divname).val(doc[att]);
 			}
+            if (doc['finish_run_on_stop'] == 'true')
+                $("#" + detector + "_softstop").prop('selected', true);
+            else
+                $("#" + detector + "_softstop").prop('selected', false);
 
 		    if(detector === "tpc"){
 			if(doc['link_mv'] === 'true')
@@ -231,6 +242,7 @@ function PostServerData(){
 	    thisdet['link_mv'] = $("#link_mv").is(":checked");
 	    thisdet['link_nv'] = $("#link_nv").is(":checked");
 	}
+        thisdet["finish_run_on_stop"] = $("#"+detector+"_softstop").is(":checked");
 	post.push(thisdet);
     }
 

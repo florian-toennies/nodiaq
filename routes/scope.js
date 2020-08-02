@@ -55,6 +55,16 @@ router.get("/available_targets", ensureAuthenticated, function(req, res) {
 });
 
 router.get("/get_data", ensureAuthenticated, function(req, res) {
+  var collection = req.db.get("eb_monitor");
+  collection.find({host : 'eb2.xenon.local'}, {sort : {_id : -1}, limit : 1}, function(err, docs) {
+      if (err || docs.length == 0) {
+        return res.json({message : 'Microstrax is currently unavailable, please try again later'});
+      }
+      var dt = new Date() - docs[0]['time'];
+      var timeout = 120*1000; // 2 minutes
+      if (dt > timeout) {
+        return res.json({message : 'Microstrax is currently unavailable, please try again later'});
+      }
   try{
     var sp = new URL(req.url, BA).searchParams;
   }catch(err){
@@ -86,7 +96,8 @@ router.get("/get_data", ensureAuthenticated, function(req, res) {
     }).on('error', (err) => {
       return res.json({message : err.message});
     });
-  });
+  }); // http.get
+  }); // eb2 is available
 });
 
 module.exports = router;

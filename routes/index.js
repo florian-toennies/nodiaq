@@ -375,7 +375,7 @@ router.post("/linkGithub", (req, res) => {
 
 				// Synchronous
 				const cryptoRandomString = require('crypto-random-string');
-				var random_hash = cryptoRandomString(128);
+				var random_hash = cryptoRandomString({length : 128, type : 'url-safe'});
 				collection.update({"email": req.body.email},
 						  {"$set": {"github_temp": req.body.github,
 							    "github_hash": random_hash}});

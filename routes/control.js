@@ -16,7 +16,6 @@ router.get('/modes', ensureAuthenticated, function(req, res){
     var collection = db.get("options");
     var q = url.parse(req.url, true).query;
     var detector = q.detector;
-    console.log(detector);
     collection.find({"detector": detector},
 		    {"sort": {"name": 1}},
 		    function(e, docs){

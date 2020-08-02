@@ -50,7 +50,7 @@ router.get("/get_host_history", ensureAuthenticated, function(req, res){
 			names = {"mem": "Memory%", "cpu": "CPU%", "swap": "Swap%"};
 			for(i in sdoc){
 			    var oid = new req.ObjectID(sdoc[i]['_id']);
-			    var dt = Date.parse(oid.getTimestamp();
+			    var dt = Date.parse(oid.getTimestamp());
 			    r["cpu"].unshift([dt, sdoc[i]['cpu_percent']]);
 			    r["mem"].unshift([dt, sdoc[i]['virtual_memory']['percent']]);
 			    r["swap"].unshift([dt, sdoc[i]['swap_memory']['percent']]);

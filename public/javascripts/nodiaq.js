@@ -88,7 +88,6 @@ function CheckForErrors(){
 			     && !($("#submit_changes").hasClass("FYOU"))){
 			      //FYouButton('submit_changes');
 			      //$("#submit_changes").addClass("FYOU");
-			      console.log("Should prevent submit_changes here");
 			  }
 		      }
 		      else{
