@@ -14,11 +14,11 @@ block content
     hr
     div.row
       div.col-sm-3.col-xs-12
-        img(src="#{user.picture_url}", style="width:100%;max-width:200px;")
+        img(src=`${user.picture_url}`, style="width:100%;max-width:200px;")
         h5 #{user.first_name} #{user.last_name}
         h6 #{user.position} at #{user.institute}
         h6 Member since: #{user.start_date.toString().substring(4, 15)}
-    
+
       div.col-sm-9.col-xs-12
         table
           tr
@@ -50,11 +50,11 @@ block content
           tr
             td My GitHub
             td
-              a(href='#{user.github_home}') Link
+              a(href=`${user.github_home}`) Link
           tr
             td(style="width:150px")
               strong API Credentials
-             td
+            td
           tr
             td Username
             td#api_username
@@ -73,7 +73,7 @@ block content
         i.fab.fa-github &nbsp;
         span Request XENONnT GitHub Access
     div.float-right(style="margin-right:20px;")
-      a.btn.btn-info#request_api_button(href="account/request_api_key", style="display:block") Request (new) API Key    
+      a.btn.btn-info#request_api_button(href="account/request_api_key", style="display:block") Request (new) API Key
  
     div.modal.fade#updateModal(tabindex="-1" role="dialog")
       div.modal-dialog(role="document")
@@ -82,26 +82,25 @@ block content
             form(method="post" action="updateContactInfo")
               div.form-group
                 label.form-label(for="email") Email
-                input.form-control(type="email" value="#{user.email}" name="email")
+                input.form-control(type="email" value=`${user.email}` name="email")
               div.form-group
                 label.form-label(for="skype") Skype
-                input.form-control(type="text" value="#{user.skype}" name="skype")
+                input.form-control(type="text" value=`${user.skype}` name="skype")
               div.form-group
                 label.form-label(for="phone") Phone
-                input.form-control(type="tel" value="#{user.cell}" name="cell")
+                input.form-control(type="tel" value=`${user.cell}` name="cell")
               div.form-group
                 label.form-label(for="favorite_color") Favorite Color
                 input.form-control#form_color(type="color" name="favorite_color")
               br
-              button.btn.btn-info(type="submit") Submit
-              &nbsp;&nbsp;&nbsp;
+              button.btn.btn-info(type="submit") Submit &nbsp;&nbsp;&nbsp;
               button.btn.btn-default(type='button' data-dismiss='modal') Close
   script.
     $(document).ready(function(){
     	DrawActiveLink("#laccount");
-      var userdoc = JSON.parse('!{JSON.stringify(user)}');      
+      var userdoc = JSON.parse('!{JSON.stringify(user)}');
       FillAPIInfo(userdoc);
-      if('#{user.favorite_color}' != "not set"){
+      if("#{user.favorite_color}" != "not set"){
         $("#form_color").val("#{user.favorite_color}");
       }
     });

@@ -28,8 +28,8 @@ router.get('/get_broker_status', ensureAuthenticated, function(req, res){
     collection.find({},
 		    function(e, sdoc){
 			if(sdoc.length === 0)
-			    return res.send(JSON.stringify({}));
-			return res.send(JSON.stringify(sdoc));
+			    return res.json({});
+			return res.json(sdoc);
 		    });
 });
 
@@ -44,14 +44,14 @@ router.get('/get_detector_status', ensureAuthenticated, function(req, res){
 	{"sort": {"_id": -1}, "limit": 1},
 	function(e, sdoc){
 		if(sdoc.length === 0)
-			return res.send(JSON.stringify({}));
+			return res.json({});
 		var rdoc = sdoc[0];
 		var now = new Date();
 		var oid = new req.ObjectID(rdoc['_id']);
 		var indate = Date.parse(oid.getTimestamp());
 		rdoc['checkin'] = parseInt((now-indate)/1000, 10);
 		rdoc['timestamp'] = indate;
-		return res.send(JSON.stringify(rdoc));
+		return res.json(rdoc);
 	});
 });
 
@@ -66,17 +66,17 @@ router.get('/get_controller_status', ensureAuthenticated, function(req, res){
 	{"sort": {"_id": -1}, "limit": 1},
 	function(e, sdoc){
 		if(sdoc.length === 0)
-			return res.send(JSON.stringify({}));
+			return res.json({});
 		var rdoc = sdoc[0];
 		var now = new Date();
 		var oid = new req.ObjectID(rdoc['_id']);
 		var indate = Date.parse(oid.getTimestamp());
 		rdoc['checkin'] = parseInt((now-indate)/1000, 10);
 		rdoc['timestamp'] = indate;
-		return res.send(JSON.stringify(rdoc));
+		return res.json(rdoc);
 	});
 });
-			
+
 router.get('/get_reader_status', ensureAuthenticated, function(req, res){
     var db=req.db;
     var collection = db.get('status');
@@ -88,7 +88,7 @@ router.get('/get_reader_status', ensureAuthenticated, function(req, res){
 	{'host': host}, {'sort': {'_id': -1}, 'limit': 1},
 	function(e, sdoc){
 	    if(sdoc.length == 0)
-		return res.send(JSON.stringify({}));
+		return res.json({});
 	    var rdoc = sdoc[0];
 	    // console.log(rdoc);
 	    // Basically return sdoc but we want to add time
@@ -99,7 +99,7 @@ router.get('/get_reader_status', ensureAuthenticated, function(req, res){
 	    var indate = Date.parse(oid.getTimestamp());
 	    rdoc['checkin'] = parseInt((now-indate)/1000, 10);
 	    rdoc['ts'] = indate;
-	    return res.send(JSON.stringify(rdoc));
+	    return res.json(rdoc);
 	});
 });
 
@@ -135,30 +135,10 @@ router.get('/get_digitizer_history', ensureAuthenticated, function(req, res){
                             var dt = Date.parse(oid.getTimestamp());
 			    ret['rates'].unshift([dt, docs[i]['boards'][digitizer]]);
 			}
-			return res.send(JSON.stringify(ret));
+			return res.json(ret);
                     });
 });
-router.get('/get_reader_history_dumb', ensureAuthenticated, function(req, res){
-    var db = req.db;
-    var collection = db.get('status');
 
-    var q = url.parse(req.url, true).query;
-    var reader = q.reader;
-    var limit  = parseInt(q.limit);
-    var resolution = parseInt(q.res);
-
-    var query = {"host": reader};
-    collection.find(query, {'sort': {'_id': -1}, 'limit': limit},
-                    function(e, docs){
-                        ret = {"rates": []};
-                        for(i in docs){
-                            var oid = new req.ObjectID(docs[i]['_id']);
-                            var dt = Date.parse(oid.getTimestamp());
-                            ret['rates'].unshift([dt, docs[i]['rate']]);
-                        }
-                        return res.send(JSON.stringify(ret));
-                    });
-});
 router.get('/get_reader_history', ensureAuthenticated, function(req,res){
     var db = req.db;
     var collection = db.get('status');
@@ -174,7 +154,7 @@ router.get('/get_reader_history', ensureAuthenticated, function(req,res){
     if(typeof limit == 'undefined')
 	limit = (new Date()).getTime() - 100*1000; // 100 s into past
     if(typeof reader == 'undefined')
-	return res.send(JSON.stringify({}));
+	return res.json({});
     if(typeof res == 'undefined')
 	resolution = 60; //1m
 
@@ -243,7 +223,7 @@ router.get('/get_reader_history', ensureAuthenticated, function(req,res){
 	else
 	    ret = {'error': err};
 	
-	return res.send(JSON.stringify(ret));
+	return res.json(ret);
     });
 	
 });

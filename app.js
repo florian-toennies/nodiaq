@@ -10,12 +10,12 @@ var gp="";
 var mongo = require('mongodb');
 var ObjectID = mongo.ObjectID;
 var monk = require('monk');
-var runs_cstr = process.env.RUNS_URI;
 
 console.log("");
 console.log("NOW: " + new Date());
 console.log("");
 
+var runs_cstr = process.env.RUNS_URI;
 //console.log("Runs DB " + runs_cstr);
 var runs_db = monk(runs_cstr, {authSource : process.env.RUNS_MONGO_AUTH_DB});
 
@@ -36,22 +36,18 @@ var nodemailer = require("nodemailer");
 var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
+      type : 'OAuth2',
+      clientID : process.env.DAQ_CONFIRMATION_OAUTH_ID,
+      clientSecret : process.env.DAQ_CONFIRMATION_OAUTH_SECRET,
       user: process.env.DAQ_CONFIRMATION_ACCOUNT,
-      pass: process.env.DAQ_CONFIRMATION_PASSWORD
+      //pass: process.env.DAQ_CONFIRMATION_PASSWORD
   }
 });
 
 
-// Define detectors
-var detectors = {
-    "det_0": ["fdaq00_reader_0",
-	    "fdaq00_reader_1"]
-};
-
 // Routers for all the sub-sites
 var indexRouter = require('./routes/index');
 var optionsRouter = require('./routes/options');
-var playlistRouter = require('./routes/playlist');
 var hostsRouter = require('./routes/hosts');
 var runsRouter = require('./routes/runsui');
 var userRouter = require('./routes/users');
@@ -80,12 +76,11 @@ var MongoDBStore = require('connect-mongodb-session')(session);
 var dax_cstr = process.env.DAQ_MONGO_USER + ":" + process.env.DAQ_MONGO_PASSWORD + "@" + 
     process.env.DAQ_MONGO_HOST + ":" + process.env.DAQ_MONGO_PORT + "/" +
     process.env.DAQ_MONGO_AUTH_DB;
-			
 var store = new MongoDBStore({
   uri: 'mongodb://' + dax_cstr,
   collection: 'mySessions'
 });
- 
+
 store.on('connected', function() {
   store.client; // The underlying MongoClient object from the MongoDB driver
 });
@@ -96,7 +91,7 @@ store.on('error', function(error) {
   assert.ifError(error);
   assert.ok(false);
 });
- 
+
 app.use(session({
   secret: process.env.EXPRESS_SESSION,
   cookie: {
@@ -117,8 +112,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-
-
 // End auth
 // End long stuff
 //require("./mongo_session_cache.js")
@@ -133,7 +126,7 @@ app.use('/je', express.static(__dirname + '/node_modules/jsoneditor/dist/'));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -153,7 +146,6 @@ app.use(function(req,res,next){
     req.users_db = users_db;
     req.monitor_db = db;
     req.ObjectID = ObjectID;
-    req.detectors = detectors;
     next();
 });
 
@@ -163,7 +155,6 @@ app.get('/runtable/getDatatable', runs_mongo.getDataForDataTable);
 app.use('/', indexRouter);
 app.use('/options', optionsRouter);
 app.use('/hosts', hostsRouter);
-app.use('/playlist', playlistRouter);
 app.use('/runsui', runsRouter);
 app.use('/logui', logRouter);
 app.use('/help', helpRouter);

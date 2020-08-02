@@ -13,6 +13,7 @@ function PopulateAvailableRuns(divname){
 	    html += "<option value="+data[i]+">"+data[i]+"</option>";
 	}
 	document.getElementById(divname).innerHTML = html;
+    FillTargets();
     });
 }
 

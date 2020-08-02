@@ -8,19 +8,6 @@ function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) { return next(); }
     return res.redirect(gp+'/login');
 }  
-function GetNextRunIdentifier(req, res, callback){
-    var db = req.runs_db;
-    var collection = db.get('run');
-    collection.find(
-	{},  { "sort": {"_id": -1}, "limit" : 1 },
-	function(e, docs){
-	    var run_identifier = 0;
-	    if(docs.length>0)
-		run_identifier = parseInt(docs[0]['run_identifier']) + 1;
-	    callback(run_identifier.toString());
-	}
-    );
-};
 
 /* GET home page. */
 router.get('/', ensureAuthenticated, function(req, res) {
@@ -39,7 +26,7 @@ router.get('/detector_history', ensureAuthenticated, function(req, res){
     if(typeof(limit) == 'undefined')
 	limit = 1;
     if(typeof(detector) == 'undefined')
-	return res.send(JSON.stringify({}));
+	return res.json({});
 
     collection.find({'detector': detector}, {'sort': {'_id': -1}, 'limit': parseInt(limit)},
 		    function(e, docs){
@@ -50,10 +37,9 @@ router.get('/detector_history', ensureAuthenticated, function(req, res){
 			    ret['rates'].unshift([dt, docs[i]['rate']]);
 			    ret['buffs'].unshift([dt, docs[i]['buff']]);
 			}
-			return res.send(JSON.stringify(ret));
+			return res.json(ret);
 		    });
 });
-
 
 router.get('/account', ensureAuthenticated, function(req, res){
     res.render('account', { user: req.user });
@@ -70,7 +56,7 @@ router.get('/account/request_github_access', ensureAuthenticated, function(req, 
     // Just in case
     if(group != 'xenon1t' && group != 'xenonnt'){
 	console.log(group);
-	return res.send(JSON.stringify({"error": "sneaky"}));
+	return res.json({"error": "sneaky"});
     }
 
     options = {
@@ -95,7 +81,7 @@ router.get('/account/request_github_access', ensureAuthenticated, function(req, 
 	response.setEncoding('utf8');
 	response.on('data', (chunk) => {
 	    console.log(`BODY: ${chunk}`);
-	    //return response.send(JSON.stringify(chunk));
+	    //return response.json(chunk);
 	});
 	response.on('end', () => {
 	    console.log('No more data in response.');
@@ -117,7 +103,7 @@ router.get('/account/request_api_key', ensureAuthenticated, function(req, res){
     var key = apikey();
 
     // Hash it
-    const bcrypt = require('bcrypt-nodejs');
+    const bcrypt = require('bcrypt');
     const saltRounds = 10;
     //var salt = bcrypt.genSaltSync(saltRounds);
     //var hash = bcrypt.hashSync(key, salt);
@@ -389,7 +375,7 @@ router.post("/linkGithub", (req, res) => {
 
 				// Synchronous
 				const cryptoRandomString = require('crypto-random-string');
-				var random_hash = cryptoRandomString(128);
+				var random_hash = cryptoRandomString({length : 128, type : 'url-safe'});
 				collection.update({"email": req.body.email},
 						  {"$set": {"github_temp": req.body.github,
 							    "github_hash": random_hash}});

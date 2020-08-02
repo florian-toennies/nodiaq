@@ -8,9 +8,9 @@ function ensureAuthenticated(req, res, next) {
     return res.redirect(gp+'/login');
 }
 
-router.get('/', ensureAuthenticated, function(req, res) {
+router.get('/', function(req, res) {
     // Get our user's institute
-    res.render('shifts', { title: 'Shifts', user:req.user });
+    res.redirect('https://xenon1t-daq.lngs.infn.it/shifts/');
 });
 
 router.get('/get_current_shifters', ensureAuthenticated, function(req, res){
@@ -50,7 +50,7 @@ router.get('/get_current_shifters', ensureAuthenticated, function(req, res){
 			    }
 			}
 		    }
-		    return res.send(JSON.stringify(users));
+		    return res.json(users);
 		});
 	});
 });
@@ -81,7 +81,7 @@ router.get('/get_shifts', ensureAuthenticated, function(req, res){
 				"shifter": doc['shifter']
 			    })
 			}
-			return res.send(ret); //JSON.stringify(ret));
+			return res.json(ret); //JSON.stringify(ret));
 		    });
     
 });
@@ -98,7 +98,7 @@ router.get("/total_shift_aggregates", ensureAuthenticated, function(req, res){
 		  "years": {$push: {"year": "$_id.yr", "count": "$count"}}}},
         {$sort: {"total": -1}}], 
 			 function(err, result){
-			     res.send(result);
+			     res.json(result);
 			 });
     
 });
@@ -109,7 +109,7 @@ function getNextDayOfWeek(date, dayOfWeek) {
     resultDate.setDate(date.getDate() + (7 + dayOfWeek - date.getDay()) % 7);
     return resultDate;
 }
-
+/*
 router.post('/add_shifts', ensureAuthenticated, function(req, res){
     var db = req.users_db;
     var collection = db.get('shifts');
@@ -233,5 +233,5 @@ router.post('/modify_shift', ensureAuthenticated, function(req, res){
     
 
 });
-
+*/
 module.exports = router;

@@ -23,8 +23,8 @@ router.get("/get_host_status", ensureAuthenticated, function(req, res){
                     {"sort": {"_id": -1}, "limit": 1},
                     function(e, sdoc){
                         if(sdoc.length == 0)
-                            return res.send(JSON.stringify({}));
-                        return res.send(JSON.stringify(sdoc[0]));
+                            return res.json({});
+                        return res.json(sdoc[0]);
                     });
 });
 
@@ -43,7 +43,7 @@ router.get("/get_host_history", ensureAuthenticated, function(req, res){
 			if(typeof(sdoc)=="undefined")
 			    console.log(e);
 			if(sdoc.length==0)
-			    return res.send(JSON.stringify({}));
+			    return res.json({});
 
 			// Mem %, CPU %, Disk % on each disk
 			r = {"mem": [], "cpu": [], "swap": []};
@@ -66,7 +66,7 @@ router.get("/get_host_history", ensureAuthenticated, function(req, res){
 			for(i in r)
 			    ret.push({"type": "area", "name": names[i], "data": r[i]})
 
-			return res.send(JSON.stringify(ret));			
+			return res.json(ret);
 		    });
 });
 

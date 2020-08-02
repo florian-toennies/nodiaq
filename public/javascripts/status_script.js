@@ -269,7 +269,7 @@ function UpdateFromReaders(){
             var rd = data['host'];
 	    var color = data['checkin'] > CHECKIN_TIMEOUT ? 'red' : 'black';
 	    $("#"+rd+"_statdiv").css("color", color);
-            document.getElementById(rd+"_status").innerHTML = GetStatus(data['status'], data['checkin']);
+        document.getElementById(rd+"_status").innerHTML = GetStatus(data['status'], data['checkin']);
             document.getElementById(rd+"_rate").innerHTML   = data['rate'].toFixed(2);// + " MB/s";
             document.getElementById(rd+"_check-in").innerHTML   = data['checkin'];
 

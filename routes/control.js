@@ -16,7 +16,6 @@ router.get('/modes', ensureAuthenticated, function(req, res){
     var collection = db.get("options");
     var q = url.parse(req.url, true).query;
     var detector = q.detector;
-    console.log(detector);
     collection.find({"detector": detector},
 		    {"sort": {"name": 1}},
 		    function(e, docs){
@@ -28,7 +27,7 @@ router.get('/modes', ensureAuthenticated, function(req, res){
 				rd = docs[i]['description'];
 			    ret.push([rs, rd]);
 			}
-			return res.send(JSON.stringify(ret));
+			return res.json(ret);
 		    });
 });
 
@@ -39,9 +38,8 @@ router.get("/get_control_docs", ensureAuthenticated, function(req, res){
     // Fetch n entries that have not been processed
     collection.find({},
 		    function(e, docs){
-			    return res.send(JSON.stringify(docs));
+			    return res.json(docs);
 	});
-		   
 });
 
 router.post('/set_control_docs', ensureAuthenticated, function(req, res){
@@ -52,8 +50,9 @@ router.post('/set_control_docs', ensureAuthenticated, function(req, res){
     var j = 0;
     for(var i=0; i<data.length; i+=1){
     	data[i]['user'] = req.user.last_name;
-    	collection.update({"detector": data[i]['detector']}, data[i],  {upsert:true},
-    	function(){
+    	collection.update({"detector": data[i]['detector']}, {$set : data[i]},  {upsert:true},
+    	function(err, result){
+            if (err) console.log("CONTROL ERROR: " + err.message);
     		j+=1;
     		if(j===data.length)
     			return res.sendStatus(200);

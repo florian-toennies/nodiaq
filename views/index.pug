@@ -18,12 +18,11 @@ block extrahead
     script(src="/javascripts/d3.v5.js", type="text/javascript")
     script(src="/javascripts/d3_relation.js", type="text/javascript")
     script(src="/javascripts/d3-bboxCollide.js ", type="text/javascript")
-  
 
-block content     
+block content
   div.main-container(style='background-color:#eeeeee;margin:-5px;padding:15px;height:100vh')
     div.det_card
-        span.fontscale Welcome #{user.first_name}, feel free to look around but careful touching anything! This is an alpha-level preview. Also, it will be rebooted randomly, go down for days, change colors, crash your browser, mine bitcoin in the background, install funny cookies, and do all kinds of crazy stuff. So don't be surprised.
+        span.fontscale Welcome #{user.first_name}, to the XENONnT DAQ control interface.
     br
 
     div.row
@@ -31,37 +30,36 @@ block content
         div.col-md-4.col-xs-12
           div.det_card_noheight
             h5
-              //
-                img(src="/images/#{val[0]}_icon.png" style="margin-top:-10px;height:35px;")
-                span &nbsp;&nbsp;
+              img(src=`/images/${val[0]}_icon.png` style="margin-top:-10px;height:35px;")
+              span &nbsp;&nbsp;
               span(style='font-size:14px;color:#333333;') The #{val[1]} is &nbsp;
-               strong(id="#{val[0]}_status")
-            p              
-              span(style='font-size:40px' id="#{val[0]}_rate")
+               strong(id=`${val[0]}_status`)
+            p
+              span(style='font-size:40px' id=`${val[0]}_rate`)
               strong &nbsp; MB/s
-            p(style='font-size:10px')              
+            p(style='font-size:10px')
               span Run &nbsp;
-              strong(id="#{val[0]}_run")
+              strong(id=`${val[0]}_run`)
               span &nbsp; in &nbsp;
-              strong(id="#{val[0]}_mode")
+              strong(id=`${val[0]}_mode`)
               span &nbsp; mode with &nbsp;
-              strong(id="#{val[0]}_readers")
+              strong(id=`${val[0]}_readers`)
               span &nbsp; nodes &nbsp;
     br
     div.row(style='margin:0px')
       div.col-12.col-md-6.det_card_noheight
         div.row
           div.col-12
-            strong Run History &nbsp;&nbsp;        
+            strong Run History &nbsp;&nbsp;
             div.btn-group.btn-group-toggle#pie_button(data-toggle="buttons")
               label.btn.btn-secondary
-                input(type="radio" name="options" id="option1" autocomplete="off" value=10) 
+                input(type="radio" name="options" id="option1" autocomplete="off" value=10)
                 span 10 days
               label.btn.btn-secondary.active
-                input(type="radio" name="options" id="option2" autocomplete="off" value=30 checked) 
+                input(type="radio" name="options" id="option2" autocomplete="off" value=30 checked)
                 span 30 days
               label.btn.btn-secondary
-                input(type="radio" name="options" id="option3" autocomplete="off" value=90) 
+                input(type="radio" name="options" id="option3" autocomplete="off" value=90)
                 span 90 days
 
         div#pie_box
@@ -76,8 +74,7 @@ block content
       canvas#d3_canvas(style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);")
       div#graph_canvas(style="width:100%;min-width:600px;height:65%;min-height:800px;")
       div#plot_div(style="width:100%;height:30%")
-    
-    
+
   script.
     $(document).ready(function(){
       DetectorInfoLoop();
@@ -87,9 +84,4 @@ block content
       $("#pie_button :input").change(function() {
          DrawPie("pie_box", $(this).val());
       });
-      //DrawOverviewCharts();
-      //UpdateOverviewPage();
-      //GetOptionsFiles(DrawMap);
-      //GetOptionsFiles(DrawTree);
-      //UpdateFromReaders();
     });

@@ -3,7 +3,7 @@ var passport = require('passport');
 var monk = require('monk');
 var runs_cstr = process.env.USERS_URI;
 var runs_db = monk(runs_cstr, {authSource: process.env.USERS_MONGO_AUTH_DB});
-//console.log("Runs db in user auth " + runs_cstr);
+//console.log("Runs db in user auth ");
 
 passport.serializeUser(function(user, done) {
     done(null, user);
@@ -58,8 +58,6 @@ function GenerateDAQID(mongo_doc){
 
 // GithubStrategy
 var GitHubStrategy = require('passport-github2').Strategy;
-var GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID;
-var GITHUB_CLIENT_SECRET = process.env.GITHUB_SECRET_KEY;
 async function PopulateProfile(mongo_doc, github_profile, ldap_profile, callback){
 
     var ret_profile = {};
@@ -100,8 +98,8 @@ async function PopulateProfile(mongo_doc, github_profile, ldap_profile, callback
 }
 
 passport.use(new GitHubStrategy({
-    clientID: GITHUB_CLIENT_ID,
-    clientSecret: GITHUB_CLIENT_SECRET,
+    clientID: process.env.GITHUB_OATH_CLIENT_ID,
+    clientSecret: process.env.GITHUB_OATH_CLIENT_SECRET,
     callbackURL: "https://xenon1t-daq.lngs.infn.it/auth/github/callback",
     scope: ['user:email', 'user:name', 'user:login', 'user:id', 'user:avatar_url'],
   },
