@@ -10,7 +10,7 @@ function ensureAuthenticated(req, res, next) {
 
 router.get('/', function(req, res) {
     // Get our user's institute
-    res.redirect('https://xenon1t-daq.lngs.infn.it/shifts/');
+    res.redirect(301, 'https://xenon1t-daq.lngs.infn.it/shifts/');
 });
 
 router.get('/get_current_shifters', ensureAuthenticated, function(req, res){

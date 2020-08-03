@@ -11,7 +11,7 @@ block extrahead
   link(rel="stylesheet" href="https://rawgithub.com/yesmeck/jquery-jsonview/master/dist/jquery.jsonview.css")
   script(type="text/javascript" src="https://rawgithub.com/yesmeck/jquery-jsonview/master/dist/jquery.jsonview.js")
 
-block content     
+block content
   div.main-container(style="height:100%")
     div.row.det_card_noheight#addtagrow(style="display:none;padding-left:20px;")
       div.col-md-12.col-lg-6
@@ -41,12 +41,12 @@ block content
       div.col-4.align-right(style="margin-top:5px")
         div.btn-group.btn-group-toggle#detectorselector(data-toggle="buttons")
           label.btn.btn-secondary.active(name='xenonnt')
-            input(value="xenonnt" type="radio" autocomplete="off" checked) 
+            input(value="xenonnt" type="radio" autocomplete="off" checked)
             span(name='xenonnt') XENONnT
           label.btn.btn-secondary(name='xenon1t')
-            input(type="radio" autocomplete="off" value="xenon1t") 
+            input(type="radio" autocomplete="off" value="xenon1t" disabled)
             span(name='xenon1t') XENON1T
-  
+
     br
     div.det_card_noheight#resize_wrapper(style="height:90%;width:100%;background-color:white;padding-top:15px")
       table.nowrap.table-hover(style="background-color:white")#runs_table

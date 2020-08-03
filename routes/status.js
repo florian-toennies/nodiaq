@@ -147,20 +147,16 @@ router.get('/get_reader_history', ensureAuthenticated, function(req,res){
     var reader = q.reader;
     var limit  = parseInt(q.limit);
     var resolution = parseInt(q.res);
-    var digitizer = parseInt(q.digitizer);
 
-    if(typeof digitizer == 'undefined')
-	digitizer = -1;
     if(typeof limit == 'undefined')
-	limit = (new Date()).getTime() - 100*1000; // 100 s into past
+	limit = 86400; // 1d into past
     if(typeof reader == 'undefined')
 	return res.json({});
     if(typeof res == 'undefined')
 	resolution = 60; //1m
 
-    var t = limit;
+    var t = new Date() - limit*1000;
     var id = objectIdWithTimestamp(t);
-
     // Fancy-pants aggregation to take binning into account
     var query = {"host": reader, "_id": {"$gt": id}};
     collection.aggregate([

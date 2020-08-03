@@ -45,8 +45,7 @@ function RedrawRatePlot(){
     document.reader_data = {};
     var colors = {"rate": "#1c0877", "buff": "#df3470", "strax": "#3dd89f"};
     DrawProgressRate(0);
-    var limit = (new Date()).getTime() - parseInt(history)*1000;
-    console.log(document.reader_data);
+    var limit = parseInt(history);
     for(i in readers){
 	var reader = readers[i];
 	$.getJSON("status/get_reader_history?limit="+limit+"&res="+resolution+"&reader="+reader, 
@@ -58,7 +57,7 @@ function RedrawRatePlot(){
 		      for (var key in data) {
 			  // check if the property/key is defined in the object itself, not in parent
 			  if (!data.hasOwnProperty(key)) 
-			      continue;		
+			      continue;
 			  document.reader_data[key] = data[key];
 		      }
 		      if(Object.keys(document.reader_data).length == readers.length){
@@ -447,59 +446,3 @@ function UpdateChart(host, ts, rate, buff){
     }
 }
 
-function DrawInitialCharts(){
-    document.charts = {};
-    document.last_time_charts = {};
-
-    var colors = {"rate": "#1c0877", "buff": "#df3470", "strax": "#3dd89f"}
-    for(i in readers){
-	var reader = readers[i];
-	$.getJSON("status/get_reader_history?limit=1000&reader="+reader, function(data){
-	    // Can't do anything if no data
-	    if(Object.keys(data).length==0)
-		return;
-	    var host = Object.keys(data)[0];
-	    document.last_time_charts[host] = data[host]['rates'][data[host]['rates'].length-1];
-	    var series = [
-		{"type": "area", "name": "transfer rate", "data": data[host]['rates'], 'color': colors['rate']},
-		{"type": "area", "name": "buffered data", "data": data[host]['buffs'], 'color': colors['buff']}
-	    ];
-
-	    var div = host+"_chartdiv";
-	    document.charts[host] = Highcharts.chart(
-		div, {
-		    chart: {
-			zoomType: 'x',
-			margin: [5, 5, 20, 80],
-		    },
-		    plotOptions: {
-            	series: {
-               	 	fillOpacity: 0.3,
-               	 	lineWidth: 1
-            	}	
-        	},
-		    credits: {
-			enabled: false,
-		    },
-		    title: {
-			text: '',
-		    },
-		    xAxis: {
-			type: 'datetime',
-		    },
-		    yAxis: {
-			title: {
-			    text: "MB/s",
-			},
-			min: 0,
-		    },
-		    legend: {
-			enabled: false,
-		    },
-		    series: series,
-		});
-	});
-    }
-
-
-}

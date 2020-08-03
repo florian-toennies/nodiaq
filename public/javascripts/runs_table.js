@@ -291,13 +291,13 @@ function ShowDetail(run, experiment){
 	    var row = data['tags'][i];
 	    tag_html += "<tr><td>" + row['name'] + "</td><td>" + row['user'] + "</td><td>";
 	    tag_html += moment(row['date']).format("YYYY-MM-DD HH:mm") + "</td>";
-	    if(row['user'] === window['user']){
+	    //if(row['user'] === window['user']){
 		tag_html += ("<td><button onclick='RemoveTag("+data['number']+", "+
 			     '"'+row['user']+'"'+", "+'"'+row['name']+'"');
 		tag_html += ")' class='btn btn-warning'>Remove tag</button></td></tr>";
-	    }
-	    else
-		tag_html += "<td></td></tr>";
+	    //}
+	    //else
+		//tag_html += "<td></td></tr>";
 	}
 	$("#detail_Tags").html(tag_html);
 	var comment_html = "";

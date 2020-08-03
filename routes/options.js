@@ -20,9 +20,14 @@ router.get("/options_list", ensureAuthenticated, function(req, res){
 			retlist = {};
 			for(var i in docs){
 				if(typeof retlist[docs[i]['detector']] === 'undefined'){
-					retlist[docs[i]['detector']] = []
+					retlist[docs[i]['detector']] = [];
 				}
-			    retlist[docs[i]['detector']].push(docs[i]['name']);
+                if (typeof docs[i]['detector'] === 'object') { // ['tpc', 'muon_veto']
+                    for (var j in docs[i]['detector'])
+                        retlist[docs[i]['detector'][j]].push(docs[i]['name']);
+                } else {
+			        retlist[docs[i]['detector']].push(docs[i]['name']);
+                }
 		    }
 
 			return res.json(retlist);
