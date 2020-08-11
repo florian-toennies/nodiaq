@@ -15,11 +15,10 @@ router.get('/', ensureAuthenticated, function(req, res) {
 // obtain first and last entire in status collection where channels entrie is not empty
 router.get('/get_limits', ensureAuthenticated, function(req, res){
     var db = req.monitor_db;
-    console.log(db)
-    
+
     var collection = db.get("status");
     var mongo_pipeline = [];
-    
+
     // only take reader 0 to 2 and non empty channel entries
     mongo_pipeline.push({
         "$match":{
@@ -104,7 +103,7 @@ router.get('/get_updates', ensureAuthenticated,function(req,res){
             }
         }
     }
-    console.log(mongo_pipeline[0]["$match"]);
+    //console.log(mongo_pipeline[0]["$match"]);
     collection.aggregate(
         mongo_pipeline,
         function(e,docs){
@@ -171,11 +170,11 @@ router.get('/get_history', ensureAuthenticated,function(req,res){
         int_time_end == false ||
         int_time_averaging_window == false
     ){
-        console.log("something is zero")
+        //console.log("something is zero")
         res.send("false");
         return(404);
     } else {
-        console.log("oK")
+        //console.log("oK")
     }
     
     

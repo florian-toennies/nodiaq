@@ -37,6 +37,7 @@ router.get('/get_run_doc', ensureAuthenticated, function(req, res){
 	});
     }
 });
+
 router.post('/addtags', ensureAuthenticated, function(req, res){
     var db = req.runs_db;
     var collection = db.get(process.env.RUNS_MONGO_COLLECTION);
@@ -67,12 +68,18 @@ router.post('/removetag', ensureAuthenticated, function(req, res){
     var run = req.body.run;
     var tag = req.body.tag;
     var user = req.user.last_name;
+    var tag_user = req.body.user;
+
+    if (tag_user != user) { // deleting someone else's tag
+        if ((typeof user.groups == 'undefined') || !('ac' in user.groups || 'admin' in user.groups))
+            return res.status(418).send("Permission denied");
+    }
 
     // Convert runs to int
     runint = parseInt(run);
     // Update one
     collection.update({"number": runint},
-		      {"$pull": {"tags": {"name": tag, "user": user}}},
+		      {"$pull": {"tags": {"name": tag, "user": tag_user}}},
 		      {multi:false}, function(){
 			  return res.sendStatus(200);
 		      });

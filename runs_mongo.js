@@ -8,7 +8,7 @@ var runsTableSchema;
 var xenon1tRunsSchema;
 var xenon1t_runs_collection = process.env.RUNS_MONGO_COLLECTION_1T;
 
-DataTable.configure({ verbose: false, debug : false });
+//DataTable.configure({ verbose: false, debug : false });
 mongoose.plugin(DataTable.init);
 mongoose.connect(dbURI, {authSource : process.env.RUNS_MONGO_AUTH_DB, useNewUrlParser:true, useUnifiedTopology: true});
 
@@ -81,15 +81,15 @@ exports.getDataForDataTable = function getData (request, response) {
 	    conditions['start'] = {"$lt": new Date(request.query['date_max'])};
     }
     //console.log(conditions);
-    if(detector == 'xenonnt')
+    if(detector == 'xenonnt'){
 	runsModel.dataTable(request.query,  {"conditions": conditions}).then(
 			    function (data) {
 				response.send(data);
 			    }).catch(
 				function(err){
-				    console.log(err);
+				    console.log('RUNS DB ERROR ' + err);
 				});
-    else{
+    }else{
 	var i = -1;
 	var query = request.query;
 	for(var j=0; j<query.columns.length; j+=1)

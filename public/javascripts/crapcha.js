@@ -64,8 +64,6 @@ var crapcha = {
         t = this.randomize(270).toString(15);
         t = this.pad([t, 3]);
       }
-	console.log(r);
-	console.log(t);
       captcha.push(t);
     }
 

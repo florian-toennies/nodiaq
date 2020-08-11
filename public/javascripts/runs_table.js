@@ -29,17 +29,16 @@ function InitializeRunsTable(divname){
     var table_options = {
         processing : true,
         serverSide : true,
-	//scrollCollapse: true,
-        //pageResize: true,
-	//scrollY: 100, 
-	//scrollX: false,
-	//scrollResize: true,
         paging: true,
-        //lengthChange: true,
-	//responsive: true,
+        scrollY: "80%",
+        scrollCollapse: true,
+        lengthChange: true,
+        //responsive: true,
         
-        order: [[1, "desc"]],
-        iDisplayLength: 100,
+        order: [[1, "desc"]], // descending sort order
+        pageLength:100,
+        //iDisplayLength: 100,
+        lengthMenu : [10, 25, 50, 100],
 
 	// Custom DOM settings to add date filters to datatable header
 	dom: "<'row'<'col-sm-3'l><'col-sm-6 text-center'b><'col-sm-3'f>>" +
@@ -50,6 +49,7 @@ function InitializeRunsTable(divname){
             url: 'runtable/getDatatable',
             beforeSend: function ( jqXHR,  settings) {
                 //console.log(jqXHR);
+                //console.log(settings.url);
             },
             data: function ( d ) {
                 return $.extend( {}, d, {
