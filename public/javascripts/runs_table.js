@@ -55,9 +55,16 @@ function InitializeRunsTable(divname){
                 return $.extend( {}, d, {
 		    "date_min": $('#datepicker_from').val(),
 		    "date_max": $('#datepicker_to').val(),
-		    "detector": document.detector
+		    "detector": document.detector,
+            "start" : d.start/d.length,
 		});
             },
+            /*dataFilter: function(data) {
+                var x = jQuery.parseJSON(data);
+                for (key in x) if (key != 'data') console.log(key + ' ' + x[key]);
+                console.log(x.data[0]);
+                return data;
+            },*/
         },
         columns : [
         	{ data : "number", "render": function(data, type, row){

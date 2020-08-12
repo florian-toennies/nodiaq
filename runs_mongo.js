@@ -82,13 +82,18 @@ exports.getDataForDataTable = function getData (request, response) {
     }
     //console.log(conditions);
     if(detector == 'xenonnt'){
-	runsModel.dataTable(request.query,  {"conditions": conditions}).then(
+        runsModel.dataTable(request.query, {conditions: conditions})
+        .then((data) => response.send(data))
+        .catch(function(err) {
+            console.log("RUNS DB ERROR " + err); return response.send({error: err})
+        });
+/*	runsModel.dataTable(request.query,  {"conditions": conditions}).then(
 			    function (data) {
 				response.send(data);
 			    }).catch(
 				function(err){
 				    console.log('RUNS DB ERROR ' + err);
-				});
+				});*/
     }else{
 	var i = -1;
 	var query = request.query;
