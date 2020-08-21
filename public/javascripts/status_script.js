@@ -162,7 +162,20 @@ function UpdateStatusPage(){
     UpdateFromReaders();
     UpdateCeph();
     UpdateBootstrax();
+    UpdateDispatcher();
     setTimeout(UpdateStatusPage, 5000);
+}
+
+function UpdateDispatcher() {
+  $.getJSON("status/get_detector_status?detector=tpc", (data) => {
+    if (typeof data.checkin != 'undefined' && data.checkin < 10) {
+      $("#dispatcher_status").html("online");
+      $("#dispatcher_status").css("color", "#00ee00");
+    } else {
+      $("#dispatcher_status").html("offline");
+      $("#dispatcher_status").css("color", "#ee0000");
+    }
+  });
 }
 
 function UpdateBootstrax() {
@@ -170,7 +183,7 @@ function UpdateBootstrax() {
       if (data.length == 0)
         return;
       var html = "";
-      var timeout = 20*1000; // seconds since last update
+      var timeout = 20; // seconds since last update
       for (var i in data) {
         var doc = data[i];
         html += "<div class=\"bootstrax_panel_entry\">"
