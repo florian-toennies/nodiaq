@@ -158,9 +158,11 @@ router.get("/detector_status/:detector", checkKey, function(req, res) {
 router.post("/setcommand/:detector", checkKey, function(req, res) {
   var q = url.parse(req.url, true).query;
   var user = q.api_user;
-  var data = req.body.data;
+  var data = req.body;
   var detector = req.params.detector;
   var ctrl_coll = req.db.get("detector_control");
+  var agg_coll = req.db.get("aggregate_status");
+  var options_coll = req.db.get("options");
   GetControlDoc(ctrl_coll, detector, function(err, doc) {
     if (err) {
       return res.json({message: err});
@@ -192,7 +194,6 @@ router.post("/setcommand/:detector", checkKey, function(req, res) {
         return res.json({message: 'MV must be unlinked to control via API'});
       }
       // now we check the detector status
-      var agg_coll = req.db.get("aggregate_status");
       GetDetectorStatus(agg_coll, detector, function(errstat, status_doc) {
         if (errstat) {
           return res.json({message: errstat});
@@ -214,8 +215,7 @@ router.post("/setcommand/:detector", checkKey, function(req, res) {
               return res.json({message: 'Update successful'});
             });
         } else {
-          var options_coll = req.db.get("options");
-          options_coll.countDocuments({name: data.mode}, options, function(counterr, count) {
+          options_coll.count({name: data.mode}, options, function(counterr, count) {
             if (counterr) return res.json({message: err.message});
             if (count == 0) return res.json({message: 'No options document named ' + data.mode});
             // FINALLY we can tell the system to do something
