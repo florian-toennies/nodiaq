@@ -36,11 +36,11 @@ var nodemailer = require("nodemailer");
 var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-      type : 'OAuth2',
-      clientID : process.env.DAQ_CONFIRMATION_OAUTH_ID,
-      clientSecret : process.env.DAQ_CONFIRMATION_OAUTH_SECRET,
+      //type : 'OAuth2',
+      //clientID : process.env.DAQ_CONFIRMATION_OAUTH_ID,
+      //clientSecret : process.env.DAQ_CONFIRMATION_OAUTH_SECRET,
       user: process.env.DAQ_CONFIRMATION_ACCOUNT,
-      //pass: process.env.DAQ_CONFIRMATION_PASSWORD
+      pass: process.env.DAQ_CONFIRMATION_PASSWORD
   }
 });
 

@@ -13,48 +13,6 @@ router.get('/', function(req, res) {
     res.redirect(301, 'https://xenon1t-daq.lngs.infn.it/shifts/');
 });
 
-router.get('/get_current_shifters', ensureAuthenticated, function(req, res){
-    var db = req.users_db;
-    var collection = db.get("shifts");
-
-    var today = new Date();
-    collection.find(
-	{"start": {"$lte": today},"end": {"$gte": today}},
-	function(e, docs){
-	    var users = [];
-	    var qusers = [];
-	    for(var i in docs){
-		users.push({"shifter": docs[i]['shifter'], 
-			    "shift_type": docs[i]['type']});
-		qusers.push(docs[i]['shifter']);
-	    }
-	    var user_collection = db.get("users");
-	    user_collection.find(
-		{"daq_id": {"$in": qusers}},
-		function(err, cursor){
-		    for(var i in cursor){
-			for(var j in users){
-			    if(cursor[i]['daq_id'] === users[j]['shifter']){
-				users[j]['shifter_name'] = cursor[j]['first_name'] + cursor[j]['last_name'];
-				
-				fields = [ ['shifter_email', 'email'], ['shifter_phone', 'cell'],
-					   ['shifter_skype', 'skype'], ['shifter_github', 'github']];
-				for(var k in fields){
-				    try{
-					users[j][fields[k][0]] = cursor[j][fields[k][1]];
-				    }
-				    catch(error){
-					users[j][fields[k][0]] = 'Not set';
-				    }
-				}
-			    }
-			}
-		    }
-		    return res.json(users);
-		});
-	});
-});
-
 router.get('/get_shifts', ensureAuthenticated, function(req, res){
     // FullCalendar will call this function to populate itself
     // The arguments are fixed as 'start' and 'end', which are ISO dates
