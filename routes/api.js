@@ -24,16 +24,16 @@ function checkKey(req, res, next) {
     return res.json({});
   }
   var collection = req.users_db.get("users");
-  var query = {api_username : user};
-  var options = {api_key : 1};
+  var query = {api_username: user};
+  var options = {api_key: 1};
   collection.findOne(query, options, function(e, docs) {
     if (e) {
-      return res.json({message : e.message});
+      return res.json({message: e.message});
     }
     if (docs.length == 0 || typeof(docs.api_key) == 'undefined')
-      return res.json({message : 'Access denied'});
+      return res.json({message: 'Access denied'});
     bcrypt.compare(key, docs.api_key, function(err, ret) {
-      if (err) return res.json({message : err});
+      if (err) return res.json({message: err});
       if (ret == true) {
         return next();
 /*        if (typeof(last_api_call[user]) == 'undefined') {
@@ -44,7 +44,7 @@ function checkKey(req, res, next) {
           last_api_call[user].push(now);
           var then = last_api_call[user].shift();
           if (Math.abs(now - then) < MAX_TIME_FOR_CALLS) {
-            return res.json({message : 'Chill'});
+            return res.json({message: 'Chill'});
           } else {
             return next();
           }
@@ -53,14 +53,14 @@ function checkKey(req, res, next) {
           return next();
         } */
       } // if (ret == true)
-      return res.json({message : 'Access Denied'});
+      return res.json({message: 'Access Denied'});
     });
   });
 }
 
 router.get("/helloworld", checkKey, function(req, res) {
   var today = new Date();
-  return res.json({message : 'Hello to you too. The current time is ' + today.toUTCString()});
+  return res.json({message: 'Hello to you too. The current time is ' + today.toUTCString()});
 });
 
 router.get("/getstatus/:host", checkKey, function(req, res) {
@@ -72,18 +72,16 @@ router.get("/getstatus/:host", checkKey, function(req, res) {
     time_sec = parseInt(q.time_seconds);
   } catch(error){
   }
-  var query = {host : host};
-  var options = {sort : {'_id' : -1}};
+  var query = {host: host};
+  var options = {sort: {'_id': -1}};
   if (time_sec > 0) {
-    var now = Math.floor(new Date().getTime()/1000 - time_sec);
-    var oid = ObjectId(now.toString(16) + "0000000000000000");
-    query['_id'] = {$gte : oid};
+    query['time'] = {$gte: new Date(new Date()-time_sec*1000)};
   } else {
     options['limit'] = 1;
   }
   collection.find(query, options, function(err, docs) {
     if (err) {
-      return res.json({message : err.message});
+      return res.json({message: err.message});
     }
     return res.json(docs);
   });
@@ -97,18 +95,18 @@ router.get("/geterrors", checkKey, function(req, res) {
     min_level = parseInt(q.level);
   } catch(error){
   }
-  var query = {priority : {$gte : min_level, $lt : 5}};
-  var options = {sort : {'_id' : -1}, limit : 1};
+  var query = {priority: {$gte: min_level, $lt: 5}};
+  var options = {sort: {'_id': -1}, limit: 1};
   collection.find(query, options, function(err, docs) {
     if (err) {
-      return res.json({message : err.message});
+      return res.json({message: err.message});
     }
     return res.json(docs);
   });
 });
 
 function GetControlDoc(collection, detector, callback) {
-  var query = {detector : detector};
+  var query = {detector: detector};
   collection.find(query, function(err, docs) {
     if (err) {
       callback(err.msg, null);
@@ -122,12 +120,8 @@ function GetControlDoc(collection, detector, callback) {
 
 function GetDetectorStatus(collection, detector, callback) {
   var timeout = 30;
-  try{
-  var now = Math.floor(new Date()/1000 - timeout);
-  var oid = ObjectId(now.toString(16) + "0000000000000000");
-  }catch(error){callback(error.name + " " + error.message, null);}
-  var query = {detector : detector};//, '_id' : {$gte : oid}};
-  var options = {sort : {'_id' : -1}, limit : 1};
+  var query = {detector: detector, time: {$gte: new Date(new Date()-timeout*1000)}};
+  var options = {sort: {'_id': -1}, limit: 1};
   collection.find(query, options, function(err, docs) {
     if (err) {
       callback(err.message, null);
@@ -144,7 +138,7 @@ router.get("/getcommand/:detector", checkKey, function(req, res) {
   var collection = req.db.get("detector_control");
   GetControlDoc(collection, detector, function(err, doc) {
     if (err) {
-      return res.json({message : err});
+      return res.json({message: err});
     }
     return res.json(doc);
   });
@@ -155,7 +149,7 @@ router.get("/detector_status/:detector", checkKey, function(req, res) {
   var collection = req.db.get("aggregate_status");
   GetDetectorStatus(collection, detector, function(err, doc) {
     if (err) {
-      return res.json({'message' : err});
+      return res.json({message: err});
     }
     return res.json(doc);
   });
@@ -169,75 +163,75 @@ router.post("/setcommand/:detector", checkKey, function(req, res) {
   var ctrl_coll = req.db.get("detector_control");
   GetControlDoc(ctrl_coll, detector, function(err, doc) {
     if (err) {
-      return res.json({message : err});
+      return res.json({message: err});
     }
     // first - is the detector in "remote" mode?
     if (doc.remote == "false") {
-      return res.json({message : "Detector must be in remote mode to control via the API"});
+      return res.json({message: "Detector must be in remote mode to control via the API"});
     }
     // is the detector startable?
     if (data.active == "true" && doc.active != "false") {
-      return res.json({message : "Detector must be stopped first"});
+      return res.json({message: "Detector must be stopped first"});
     }
     // is the detector stoppable?
     if (data.active == "false" && doc.active != "true") {
-      return res.json({message : "Detector must be running to stop it"});
+      return res.json({message: "Detector must be running to stop it"});
     }
     // check linking status
     GetControlDoc(ctrl_coll, 'tpc', function(errtpc, tpc) {
       if (errtpc) {
-        return res.json({message : errtpc});
+        return res.json({message: errtpc});
       }
       if (detector == "tpc" && (tpc.link_nv != "false" || tpc.link_mv != "false")) {
-        return res.json({message : 'All detectors must be unlinked to start TPC via API'});
+        return res.json({message: 'All detectors must be unlinked to start TPC via API'});
       }
       if (detector == "neutron_veto" && tpc.link_nv != "false") {
-        return res.json({message : 'NV must be unlinked to control via API'});
+        return res.json({message: 'NV must be unlinked to control via API'});
       }
       if (detector == "muon_veto" && tpc.link_mv != "false") {
-        return res.json({message : 'MV must be unlinked to control via API'});
+        return res.json({message: 'MV must be unlinked to control via API'});
       }
       // now we check the detector status
       var agg_coll = req.db.get("aggregate_status");
       GetDetectorStatus(agg_coll, detector, function(errstat, status_doc) {
         if (errstat) {
-          return res.json({message : errstat});
+          return res.json({message: errstat});
         }
         if (status_doc.status != 0 && data.active != "false") {
-          return res.json({message : "Detector " + detector + 
+          return res.json({message: "Detector " + detector + 
             " must be IDLE (0) but is " + status_enum[status_doc.status] + 
             " (" + status_doc.status + ")"});
         }
         // now we validate the incoming command
         var update_doc = {};
-        var query = {detector : detector};
+        var query = {detector: detector};
         var options = {};
         if (data.active == "false") {
-          ctrl_coll.updateOne({detector : detector},
-            {$set : {active : 'false', user : user}}, options,
-            function(err, result) {
-              if (err) return res.json({message : err.message});
-              return res.json({message : 'Update successful'});
+          ctrl_coll.updateOne({detector: detector},
+            {$set: {active: 'false', user: user}}, options,
+            function(updateerr, result) {
+              if (updateerr) return res.json({message: err.message});
+              return res.json({message: 'Update successful'});
             });
         } else {
           var options_coll = req.db.get("options");
-          options_coll.countDocuments({name : data.mode}, options, function(err, result) {
-            if (result) return res.json({message : err.message});
-            if (result == 0) return res.json({message : 'No options document named ' + data.mode});
+          options_coll.countDocuments({name: data.mode}, options, function(counterr, count) {
+            if (counterr) return res.json({message: err.message});
+            if (count == 0) return res.json({message: 'No options document named ' + data.mode});
             // FINALLY we can tell the system to do something
             // now that the user input is sanitized to ISO-5
-            var update = {mode : data.mode, user : user,
-                          link_nv : "false", link_mv : "false"};
+            var update = {mode: data.mode, user: user,
+                          link_nv: "false", link_mv: "false"};
             if (typeof data.comment != 'undefined') update.comment = data.comment;
             if (typeof data.stop_after != 'undefined') {
               try {
                 update.stop_after = parseInt(data.stop_after);
               } catch (error) {}
             }
-            ctrl_coll.updateOne({detector : detector}, {$set : update}, options,
-                function(err, result) {
-                  if (err) return res.json({message : err.message});
-                  return res.json({message : 'Update successful'});
+            ctrl_coll.updateOne({detector: detector}, {$set: update}, options,
+                function(updateerr, result) {
+                  if (updateerr) return res.json({message: err.message});
+                  return res.json({message: 'Update successful'});
             });
           }); // count options docs
         } // data.active
